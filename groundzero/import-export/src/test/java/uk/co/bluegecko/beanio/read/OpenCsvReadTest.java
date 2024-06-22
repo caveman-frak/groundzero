@@ -1,7 +1,7 @@
 package uk.co.bluegecko.beanio.read;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static uk.co.bluegecko.beanio.read.OpenCvcReadTest.ThrowingBiConsumer.sneakyThrows;
+import static uk.co.bluegecko.beanio.read.OpenCsvReadTest.ThrowingBiConsumer.sneakyThrows;
 
 import com.opencsv.CSVReader;
 import com.opencsv.bean.ColumnPositionMappingStrategy;
@@ -22,7 +22,7 @@ import uk.co.bluegecko.data.model.Country;
 import uk.co.bluegecko.data.model.CountryData;
 import uk.co.bluegecko.data.model.CountryData.Fields;
 
-public class OpenCvcReadTest extends AbstractReadTest {
+public class OpenCsvReadTest extends AbstractReadTest {
 
 	@Test
 	void toCountryManualMapping() throws IOException {
