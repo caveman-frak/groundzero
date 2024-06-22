@@ -21,16 +21,17 @@ import uk.co.bluegecko.data.model.CountryData;
 import uk.co.bluegecko.data.model.CountryRecord;
 import uk.co.bluegecko.data.model.CountryValue;
 
-public class BeanIoCsvReadTest {
+public class BeanIoCsvReadTest extends AbstractReadTest {
 
-	public static final int HEADER = 1;
+	private static final String STREAM_NAME = "countries";
+	private static final String RECORD_NAME = "country";
 
 	@Test
 	void toDataWithMapping() throws IOException {
 		StreamFactory factory = StreamFactory.newInstance();
 		factory.loadResource("mapping/country.xml");
 
-		assertThat(readCountriesFromCsv(factory, "countries.csv"))
+		assertThat(readCountriesFromCsv(factory, FILENAME))
 				.hasSize(250)
 				.containsAll(CountryData.countries());
 	}
@@ -38,20 +39,9 @@ public class BeanIoCsvReadTest {
 	@Test
 	void toDataWithBuilder() throws IOException {
 		StreamFactory factory = StreamFactory.newInstance();
-		TypeHandler handler = new ToSetTypeHandler();
-		factory.define(new StreamBuilder("countries").format("csv").addRecord(
-				new RecordBuilder("country").type(CountryData.class)
-						.addField(new FieldBuilder("code"))
-						.addField(new FieldBuilder("name"))
-						.addField(new FieldBuilder("nativeName"))
-						.addField(new FieldBuilder("phone"))
-						.addField(new FieldBuilder("continent"))
-						.addField(new FieldBuilder("capital"))
-						.addField(new FieldBuilder("currencies").typeHandler(handler))
-						.addField(new FieldBuilder("languages").typeHandler(handler))
-		));
+		factory.define(streamBuilder(new RecordBuilder(RECORD_NAME).type(CountryData.class)));
 
-		assertThat(readCountriesFromCsv(factory, "countries.csv"))
+		assertThat(readCountriesFromCsv(factory, FILENAME))
 				.hasSize(250)
 				.containsAll(CountryData.countries());
 	}
@@ -60,31 +50,28 @@ public class BeanIoCsvReadTest {
 	@Disabled("No current support for creating records")
 	void toRecordWithBuilder() throws IOException {
 		StreamFactory factory = StreamFactory.newInstance();
-		TypeHandler handler = new ToSetTypeHandler();
-		factory.define(new StreamBuilder("countries").format("csv").addRecord(
-				new RecordBuilder("country").type(CountryRecord.class)
-						.addField(new FieldBuilder("code"))
-						.addField(new FieldBuilder("name"))
-						.addField(new FieldBuilder("nativeName"))
-						.addField(new FieldBuilder("phone"))
-						.addField(new FieldBuilder("continent"))
-						.addField(new FieldBuilder("capital"))
-						.addField(new FieldBuilder("currencies").typeHandler(handler))
-						.addField(new FieldBuilder("languages").typeHandler(handler))
-		));
+		factory.define(streamBuilder(new RecordBuilder(RECORD_NAME).type(CountryRecord.class)));
 
-		assertThat(readCountriesFromCsv(factory, "countries.csv"))
+		assertThat(readCountriesFromCsv(factory, FILENAME))
 				.hasSize(250)
-				.containsAll(CountryData.countries());
+				.containsAll(CountryRecord.countries());
 	}
 
 	@Test
 	@Disabled("No current support for creating immutable records")
 	void toValueWithBuilder() throws IOException {
 		StreamFactory factory = StreamFactory.newInstance();
+		factory.define(streamBuilder(new RecordBuilder(RECORD_NAME).type(CountryValue.class)));
+
+		assertThat(readCountriesFromCsv(factory, FILENAME))
+				.hasSize(250)
+				.containsAll(CountryValue.countries());
+	}
+
+	private StreamBuilder streamBuilder(RecordBuilder recordBuilder) {
 		TypeHandler handler = new ToSetTypeHandler();
-		factory.define(new StreamBuilder("countries").format("csv").addRecord(
-				new RecordBuilder("country").type(CountryValue.class)
+		return new StreamBuilder(STREAM_NAME).format("csv").addRecord(
+				recordBuilder
 						.addField(new FieldBuilder("code"))
 						.addField(new FieldBuilder("name"))
 						.addField(new FieldBuilder("nativeName"))
@@ -93,18 +80,14 @@ public class BeanIoCsvReadTest {
 						.addField(new FieldBuilder("capital"))
 						.addField(new FieldBuilder("currencies").typeHandler(handler))
 						.addField(new FieldBuilder("languages").typeHandler(handler))
-		));
-
-		assertThat(readCountriesFromCsv(factory, "countries.csv"))
-				.hasSize(250)
-				.containsAll(CountryData.countries());
+		);
 	}
 
 	private List<Country> readCountriesFromCsv(StreamFactory factory, String filename) throws IOException {
 		List<Country> countries = new ArrayList<>();
 		try (InputStream in = getClass().getClassLoader().getResourceAsStream(filename)) {
 			assertThat(in).isNotNull();
-			try (BeanReader reader = factory.createReader("countries", new InputStreamReader(in))) {
+			try (BeanReader reader = factory.createReader(STREAM_NAME, new InputStreamReader(in))) {
 				reader.skip(HEADER);
 
 				Country country;
