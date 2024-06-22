@@ -1,0 +1,18 @@
+<beanio xmlns="http://www.beanio.org/2012/03"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.beanio.org/2012/03 http://www.beanio.org/2012/03/mapping.xsd">
+
+  <stream name="countries" format="csv">
+    <typeHandler name="toSetHandler" class="uk.co.bluegecko.beanio.ToSetTypeHandler"/>
+    <record name="country" class="uk.co.bluegecko.data.model.CountryData">
+      <field name="code"/>
+      <field name="name"/>
+      <field name="nativeName"/>
+      <field name="phone"/>
+      <field name="continent"/>
+      <field name="capital"/>
+      <field name="currencies" typeHandler="toSetHandler"/>
+      <field name="languages" typeHandler="toSetHandler"/>
+    </record>
+  </stream>
+</beanio>
