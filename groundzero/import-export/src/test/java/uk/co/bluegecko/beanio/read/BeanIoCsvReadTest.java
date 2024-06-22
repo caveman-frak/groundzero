@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 import uk.co.bluegecko.beanio.ToSetTypeHandler;
 import uk.co.bluegecko.data.model.CountryData;
 
-public class BeanIoCsvTest {
+public class BeanIoCsvReadTest {
 
 	@Test
 	void toDataWithMapping() {
