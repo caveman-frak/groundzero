@@ -132,6 +132,7 @@ public class BeanIOCountryWriteTest extends AbstractBeanIoCountryTest {
 		assertThat(writer.toString()).contains("1,AD,Andorra,Andorra,376,Europe,Andorra la Vella,EUR,ca\n");
 	}
 
+
 	@Test
 	void fromRecordWithBuilder() {
 		StreamFactory factory = StreamFactory.newInstance();
