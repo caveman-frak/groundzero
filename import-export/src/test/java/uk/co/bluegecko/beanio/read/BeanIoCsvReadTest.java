@@ -7,6 +7,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.SortedMap;
+import java.util.function.BiFunction;
 import org.beanio.BeanReader;
 import org.beanio.StreamFactory;
 import org.beanio.builder.FieldBuilder;
@@ -18,18 +21,21 @@ import org.junit.jupiter.api.Test;
 import uk.co.bluegecko.beanio.ToSetTypeHandler;
 import uk.co.bluegecko.data.model.Country;
 import uk.co.bluegecko.data.model.CountryData;
+import uk.co.bluegecko.data.model.CountryReadOnly;
 import uk.co.bluegecko.data.model.CountryRecord;
 import uk.co.bluegecko.data.model.CountryValue;
 
 public class BeanIoCsvReadTest extends AbstractReadTest {
 
+	private static final String MAPPING_FILE = "mapping/country.xml";
 	private static final String STREAM_NAME = "countries";
 	private static final String RECORD_NAME = "country";
 
 	@Test
-	void toDataWithMapping() throws IOException {
+	void toDataWithMapping() {
 		StreamFactory factory = StreamFactory.newInstance();
-		factory.loadResource("mapping/country.xml");
+		// load the mapping file
+		factory.loadResource(MAPPING_FILE);
 
 		assertThat(readCountriesFromCsv(factory, FILENAME))
 				.hasSize(250)
@@ -37,64 +43,95 @@ public class BeanIoCsvReadTest extends AbstractReadTest {
 	}
 
 	@Test
-	void toDataWithBuilder() throws IOException {
+	void toDataWithBuilder() {
 		StreamFactory factory = StreamFactory.newInstance();
-		factory.define(streamBuilder(new RecordBuilder(RECORD_NAME).type(CountryData.class)));
+		// create a stream builder to define the record and fields
+		factory.define(streamBuilder(new RecordBuilder(RECORD_NAME).type(CountryData.class),
+				FIELDS, (f, e) -> f));
 
 		assertThat(readCountriesFromCsv(factory, FILENAME))
 				.hasSize(250)
 				.containsAll(CountryData.countries());
 	}
 
+	/**
+	 * For immutable/read-only beans we need to specify the field setter as #N (1 based) to represent the constructor
+	 * parameter index.
+	 */
 	@Test
-	@Disabled("No current support for creating records")
-	void toRecordWithBuilder() throws IOException {
+	void toReadOnlyWithBuilder() {
 		StreamFactory factory = StreamFactory.newInstance();
-		factory.define(streamBuilder(new RecordBuilder(RECORD_NAME).type(CountryRecord.class)));
+		factory.define(streamBuilder(new RecordBuilder(RECORD_NAME).type(CountryReadOnly.class),
+				FIELDS, (f, e) -> f.setter("#" + e.getKey())));
+
+		assertThat(readCountriesFromCsv(factory, FILENAME))
+				.hasSize(250)
+				.containsAll(CountryReadOnly.countries());
+	}
+
+	/**
+	 * For Java Record we need to specify the field setter as #N (1 based) to represent the constructor parameter index
+	 * and explicitly define the getter (as it does not correspond to the bean specification.
+	 */
+	@Test
+	void toRecordWithBuilder() {
+		StreamFactory factory = StreamFactory.newInstance();
+		factory.define(streamBuilder(new RecordBuilder(RECORD_NAME).type(CountryRecord.class),
+				FIELDS, (f, e) -> f.setter("#" + e.getKey()).getter(e.getValue())));
 
 		assertThat(readCountriesFromCsv(factory, FILENAME))
 				.hasSize(250)
 				.containsAll(CountryRecord.countries());
 	}
 
+	/**
+	 * Not currently aware of a way to get the bean created using the lombok {@link lombok.Builder}.
+	 */
 	@Test
-	@Disabled("No current support for creating immutable records")
-	void toValueWithBuilder() throws IOException {
+	@Disabled("No current support for creating bean with lombok builder / factory method")
+	void toValueWithBuilder() {
 		StreamFactory factory = StreamFactory.newInstance();
-		factory.define(streamBuilder(new RecordBuilder(RECORD_NAME).type(CountryValue.class)));
+		factory.define(streamBuilder(new RecordBuilder(RECORD_NAME).type(CountryValue.class),
+				FIELDS, (f, e) -> f.setter("#" + e.getValue())));
 
 		assertThat(readCountriesFromCsv(factory, FILENAME))
 				.hasSize(250)
 				.containsAll(CountryValue.countries());
 	}
 
-	private StreamBuilder streamBuilder(RecordBuilder recordBuilder) {
+	private StreamBuilder streamBuilder(RecordBuilder recordBuilder, SortedMap<Integer, String> fields,
+			BiFunction<FieldBuilder, Entry<Integer, String>, FieldBuilder> fieldBuilder) {
 		TypeHandler handler = new ToSetTypeHandler();
-		return new StreamBuilder(STREAM_NAME).format("csv").addRecord(
-				recordBuilder
-						.addField(new FieldBuilder("code"))
-						.addField(new FieldBuilder("name"))
-						.addField(new FieldBuilder("nativeName"))
-						.addField(new FieldBuilder("phone"))
-						.addField(new FieldBuilder("continent"))
-						.addField(new FieldBuilder("capital"))
-						.addField(new FieldBuilder("currencies").typeHandler(handler))
-						.addField(new FieldBuilder("languages").typeHandler(handler))
-		);
+		addFields(recordBuilder, handler, fields, fieldBuilder);
+		return new StreamBuilder(STREAM_NAME).format("csv").addRecord(recordBuilder);
 	}
 
-	private List<Country> readCountriesFromCsv(StreamFactory factory, String filename) throws IOException {
+	private void addFields(RecordBuilder recordBuilder, TypeHandler handler, SortedMap<Integer, String> fields,
+			BiFunction<FieldBuilder, Entry<Integer, String>, FieldBuilder> fieldBuilder) {
+		fields.entrySet().forEach(e -> {
+			FieldBuilder builder = new FieldBuilder(e.getValue());
+			if (SET_FIELDS.contains(e.getValue())) {
+				builder.typeHandler(handler);
+			}
+			recordBuilder.addField(fieldBuilder.apply(builder, e));
+		});
+	}
+
+	private List<Country> readCountriesFromCsv(StreamFactory factory, String filename) {
 		List<Country> countries = new ArrayList<>();
 		try (InputStream in = getClass().getClassLoader().getResourceAsStream(filename)) {
 			assertThat(in).isNotNull();
 			try (BeanReader reader = factory.createReader(STREAM_NAME, new InputStreamReader(in))) {
-				reader.skip(HEADER);
+				reader.skip(HEADERS);
 
 				Country country;
 				while ((country = (Country) reader.read()) != null) {
 					countries.add(country);
 				}
 			}
+		} catch (IOException e) {
+			System.err.printf("ERROR: Unable to load %s due to %s\n", filename, e.getMessage());
+			return List.of();
 		}
 		return countries;
 	}

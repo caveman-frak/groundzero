@@ -78,7 +78,7 @@ public class OpenCsvReadTest extends AbstractReadTest {
 		try (InputStream in = getClass().getClassLoader().getResourceAsStream(filename)) {
 			assertThat(in).isNotNull();
 			try (CSVReader reader = new CSVReader(new InputStreamReader(in))) {
-				reader.skip(HEADER);
+				reader.skip(HEADERS);
 
 				consumer.accept(reader, countries);
 			}
