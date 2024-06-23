@@ -2,6 +2,9 @@ package uk.co.bluegecko.csv.beanio.read;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -141,7 +144,11 @@ public class BeanIoCsvCountryReadTest extends AbstractBeanIoCountryTest {
 				2,"AE","United Arab Emirates","دولة الإمارات العربية المتحدة","971","Asia","Abu Dhabi","AED","ar"
 				""");
 		BeanReaderErrorHandler errorHandler = mock(BeanReaderErrorHandler.class);
-		assertThat(readCountriesFromCsv(factory, reader, r -> r.setErrorHandler(errorHandler))).hasSize(1);
+		doThrow(new RuntimeException()).when(errorHandler).handleError(any(BeanReaderException.class));
+		doNothing().when(errorHandler).handleError(any(InvalidRecordException.class));
+
+		assertThat(readCountriesFromCsv(factory, reader, r -> r.setErrorHandler(errorHandler)))
+				.hasSize(1);
 
 		ArgumentCaptor<BeanReaderException> captor = ArgumentCaptor.forClass(BeanReaderException.class);
 		verify(errorHandler, times(1)).handleError(captor.capture());
@@ -151,6 +158,10 @@ public class BeanIoCsvCountryReadTest extends AbstractBeanIoCountryTest {
 				.hasNoCause();
 		if (captor.getValue() instanceof InvalidRecordException exception) {
 			assertThat(exception.getRecordName()).isEqualTo("country");
+			assertThat(exception.getRecordContext().getLineNumber()).isEqualTo(2);
+			assertThat(exception.getRecordContext().getRecordName()).isEqualTo(RECORD_NAME);
+			assertThat(exception.getRecordContext().hasRecordErrors()).isFalse();
+			assertThat(exception.getRecordContext().hasFieldErrors()).isTrue();
 			assertThat(exception.getRecordContext().getFieldErrors())
 					.hasSize(1)
 					.containsKey("id")
