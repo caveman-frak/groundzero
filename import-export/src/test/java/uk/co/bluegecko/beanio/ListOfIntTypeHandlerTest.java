@@ -8,13 +8,13 @@ import org.beanio.types.TypeHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class ToListTypeHandlerTest {
+class ListOfIntTypeHandlerTest {
 
 	private TypeHandler handler;
 
 	@BeforeEach
 	void setUp() {
-		handler = new ToListTypeHandler();
+		handler = new ListOfIntTypeHandler();
 	}
 
 	@Test

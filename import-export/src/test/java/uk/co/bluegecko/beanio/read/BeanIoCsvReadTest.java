@@ -18,8 +18,8 @@ import org.beanio.builder.StreamBuilder;
 import org.beanio.types.TypeHandler;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import uk.co.bluegecko.beanio.ToListTypeHandler;
-import uk.co.bluegecko.beanio.ToSetTypeHandler;
+import uk.co.bluegecko.beanio.ListOfIntTypeHandler;
+import uk.co.bluegecko.beanio.SetOfStringTypeHandler;
 import uk.co.bluegecko.data.model.Country;
 import uk.co.bluegecko.data.model.CountryData;
 import uk.co.bluegecko.data.model.CountryReadOnly;
@@ -108,8 +108,8 @@ public class BeanIoCsvReadTest extends AbstractReadTest {
 
 	private void addFields(RecordBuilder recordBuilder, SortedMap<Integer, String> fields,
 			BiFunction<FieldBuilder, Entry<Integer, String>, FieldBuilder> fieldBuilder) {
-		TypeHandler setHandler = new ToSetTypeHandler();
-		TypeHandler listHandler = new ToListTypeHandler();
+		TypeHandler setHandler = new SetOfStringTypeHandler();
+		TypeHandler listHandler = new ListOfIntTypeHandler();
 		fields.entrySet().forEach(e -> {
 			FieldBuilder builder = new FieldBuilder(e.getValue());
 			if (SET_FIELDS.contains(e.getValue())) {

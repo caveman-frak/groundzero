@@ -3,27 +3,26 @@ package uk.co.bluegecko.beanio;
 import static org.springframework.util.StringUtils.hasText;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.beanio.types.TypeHandler;
 
-public class ToListTypeHandler implements TypeHandler {
+public class SetOfStringTypeHandler implements TypeHandler {
 
 	@Override
 	public Object parse(String text) {
-		return hasText(text) ? Arrays.stream(text.split(",")).map(Integer::valueOf).toList() : List.of();
+		return hasText(text) ? Arrays.stream(text.split(",")).collect(Collectors.toSet()) : Set.of();
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public String format(Object value) {
-		return value == null ? null : ((List<Integer>) value).stream().map(Object::toString)
-				.collect(Collectors.joining(","));
+		return value == null ? null : String.join(",", ((Iterable<String>) value));
 	}
 
 	@Override
 	public Class<?> getType() {
-		return List.class;
+		return Set.class;
 	}
 
 }
