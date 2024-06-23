@@ -1,0 +1,5 @@
+Id;Code;Name;Native;Phone;Continent;Capital;Currency;Languages
+1;'AD'  ;  'Andorra';'Andorra'  ;'375,376';'Europe';'Andorra la Vella';'EUR';'ca'
+2;'AE';'United Arab
+Emirates';'دولة الإمارات العربية المتحدة';971;'Asia';'Abu Dhabi';'AED,USD';'ar'
+3;'AF';'Afghanistan';'افغانستان';93;'Asia';'Kabul';'AFN';'ps,uz,tk'
