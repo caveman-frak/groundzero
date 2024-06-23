@@ -41,6 +41,9 @@ localization.
 Supports creating immutable beans or Java records using the field definitions, but does not directly support either
 factory constructors or [Lombok](https://projectlombok.org/) builders.
 
+Adding headers to output is easy but not obvious (need to create a header record definition with defaults for each
+field).
+
 ## OpenCSV
 
 [User Guide](https://opencsv.sourceforge.net/)
