@@ -1,5 +1,6 @@
 package uk.co.bluegecko.data.model;
 
+import static uk.co.bluegecko.data.fixture.CountriesRaw.toList;
 import static uk.co.bluegecko.data.fixture.CountriesRaw.toSet;
 
 import java.util.List;
@@ -15,7 +16,8 @@ public class CountryReadOnly implements Country.Bean {
 	String code;
 	String name;
 	String nativeName;
-	String phone;
+	@Singular
+	List<Integer> phones;
 	String continent;
 	String capital;
 	@Singular
@@ -28,7 +30,7 @@ public class CountryReadOnly implements Country.Bean {
 	}
 
 	public static Function<String[], CountryReadOnly> converter() {
-		return s -> new CountryReadOnly(s[0], s[1], s[2], s[3], s[4], s[5], toSet(s[6]), toSet(s[7]));
+		return s -> new CountryReadOnly(s[0], s[1], s[2], toList(s[3]), s[4], s[5], toSet(s[6]), toSet(s[7]));
 	}
 
 }

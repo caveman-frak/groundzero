@@ -4,11 +4,12 @@
 
   <stream name="countries" format="csv">
     <typeHandler name="toSetHandler" class="uk.co.bluegecko.beanio.ToSetTypeHandler"/>
+    <typeHandler name="toListHandler" class="uk.co.bluegecko.beanio.ToListTypeHandler"/>
     <record name="country" class="uk.co.bluegecko.data.model.CountryData">
       <field name="code"/>
       <field name="name"/>
       <field name="nativeName"/>
-      <field name="phone"/>
+      <field name="phones" typeHandler="toListHandler"/>
       <field name="continent"/>
       <field name="capital"/>
       <field name="currencies" typeHandler="toSetHandler"/>

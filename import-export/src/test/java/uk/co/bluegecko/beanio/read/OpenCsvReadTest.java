@@ -45,8 +45,9 @@ public class OpenCsvReadTest extends AbstractReadTest {
 			builder.stream().forEach(l::add);
 		})))
 				.hasSize(250)
-				/* TODO need to strip out currency and language fields as the processor can't handle them! */
+				/* TODO need to strip out phones, currency and language fields as the processor can't handle them! */
 				.containsAll(CountryData.countries().stream()
+						.peek(c -> c.setPhones(null))
 						.peek(c -> c.setCurrencies(null))
 						.peek(c -> c.setLanguages(null))
 						.toList());
@@ -66,6 +67,7 @@ public class OpenCsvReadTest extends AbstractReadTest {
 	private ArrayListValuedHashMap<Class<?>, Field> ignoredFields()
 			throws NoSuchFieldException {
 		ArrayListValuedHashMap<Class<?>, Field> fields = new ArrayListValuedHashMap<>();
+		fields.put(CountryData.class, CountryData.class.getDeclaredField("phones"));
 		fields.put(CountryData.class, CountryData.class.getDeclaredField("currencies"));
 		fields.put(CountryData.class, CountryData.class.getDeclaredField("languages"));
 		return fields;

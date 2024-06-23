@@ -18,6 +18,7 @@ import org.beanio.builder.StreamBuilder;
 import org.beanio.types.TypeHandler;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import uk.co.bluegecko.beanio.ToListTypeHandler;
 import uk.co.bluegecko.beanio.ToSetTypeHandler;
 import uk.co.bluegecko.data.model.Country;
 import uk.co.bluegecko.data.model.CountryData;
@@ -101,18 +102,22 @@ public class BeanIoCsvReadTest extends AbstractReadTest {
 
 	private StreamBuilder streamBuilder(RecordBuilder recordBuilder, SortedMap<Integer, String> fields,
 			BiFunction<FieldBuilder, Entry<Integer, String>, FieldBuilder> fieldBuilder) {
-		TypeHandler handler = new ToSetTypeHandler();
-		addFields(recordBuilder, handler, fields, fieldBuilder);
+		addFields(recordBuilder, fields, fieldBuilder);
 		return new StreamBuilder(STREAM_NAME).format("csv").addRecord(recordBuilder);
 	}
 
-	private void addFields(RecordBuilder recordBuilder, TypeHandler handler, SortedMap<Integer, String> fields,
+	private void addFields(RecordBuilder recordBuilder, SortedMap<Integer, String> fields,
 			BiFunction<FieldBuilder, Entry<Integer, String>, FieldBuilder> fieldBuilder) {
+		TypeHandler setHandler = new ToSetTypeHandler();
+		TypeHandler listHandler = new ToListTypeHandler();
 		fields.entrySet().forEach(e -> {
 			FieldBuilder builder = new FieldBuilder(e.getValue());
 			if (SET_FIELDS.contains(e.getValue())) {
-				builder.typeHandler(handler);
+				builder.typeHandler(setHandler);
+			} else if (LIST_FIELDS.contains(e.getValue())) {
+				builder.typeHandler(listHandler);
 			}
+
 			recordBuilder.addField(fieldBuilder.apply(builder, e));
 		});
 	}

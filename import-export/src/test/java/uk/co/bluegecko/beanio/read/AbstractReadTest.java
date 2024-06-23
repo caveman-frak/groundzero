@@ -13,11 +13,12 @@ public abstract class AbstractReadTest {
 			1, "code",
 			2, "name",
 			3, "nativeName",
-			4, "phone",
+			4, "phones",
 			5, "continent",
 			6, "capital",
 			7, "currencies",
 			8, "languages"));
 	static final Set<String> SET_FIELDS = Set.of("currencies", "languages");
+	static final Set<String> LIST_FIELDS = Set.of("phones");
 
 }

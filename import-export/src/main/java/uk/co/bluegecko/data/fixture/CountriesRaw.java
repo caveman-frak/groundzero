@@ -306,6 +306,10 @@ public class CountriesRaw {
 		return hasText(value) ? Arrays.stream(value.split(",")).collect(Collectors.toSet()) : Set.of();
 	}
 
+	public static List<Integer> toList(String value) {
+		return hasText(value) ? Arrays.stream(value.split(",")).map(Integer::valueOf).toList() : List.of();
+	}
+
 	public static <R> List<R> to(Function<String[], R> convert) {
 		return Arrays.stream(countries()).map(convert).toList();
 	}

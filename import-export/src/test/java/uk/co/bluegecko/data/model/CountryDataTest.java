@@ -10,7 +10,7 @@ class CountryDataTest {
 	void countries() {
 		assertThat(CountryData.countries()).hasSize(250).contains(
 				CountryData.builder()
-						.code("HT").name("Haiti").nativeName("Haïti").phone("509")
+						.code("HT").name("Haiti").nativeName("Haïti").phone(509)
 						.continent("North America").capital("Port-au-Prince").currency("HTG").currency("USD")
 						.language("fr").language("ht").build());
 	}

@@ -1,5 +1,6 @@
 package uk.co.bluegecko.data.model;
 
+import java.util.List;
 import java.util.Set;
 
 public interface Country {
@@ -10,7 +11,7 @@ public interface Country {
 
 	String nativeName();
 
-	String phone();
+	List<Integer> phones();
 
 	String continent();
 
@@ -28,7 +29,7 @@ public interface Country {
 
 		String getNativeName();
 
-		String getPhone();
+		List<Integer> getPhones();
 
 		String getContinent();
 
@@ -54,8 +55,8 @@ public interface Country {
 		}
 
 		@Override
-		default String phone() {
-			return getPhone();
+		default List<Integer> phones() {
+			return getPhones();
 		}
 
 		@Override
