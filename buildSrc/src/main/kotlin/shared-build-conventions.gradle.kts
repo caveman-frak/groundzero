@@ -35,6 +35,8 @@ idea {
     }
 }
 
+application.applicationDefaultJvmArgs = setOf("-XX:+EnableDynamicAgentLoading")
+
 dependencies {
     implementation(platform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES))
     implementation("org.springframework.boot:spring-boot-starter-json")

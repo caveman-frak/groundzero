@@ -1,19 +1,30 @@
 package uk.co.bluegecko.csv.beanio.read;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 import org.beanio.BeanReader;
+import org.beanio.BeanReaderErrorHandler;
+import org.beanio.BeanReaderException;
+import org.beanio.InvalidRecordException;
 import org.beanio.StreamFactory;
 import org.beanio.builder.CsvParserBuilder;
 import org.beanio.builder.RecordBuilder;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import uk.co.bluegecko.csv.beanio.AbstractBeanIoCountryTest;
 import uk.co.bluegecko.csv.data.model.Country;
 import uk.co.bluegecko.csv.data.model.CountryData;
@@ -118,21 +129,59 @@ public class BeanIoCsvCountryReadTest extends AbstractBeanIoCountryTest {
 						.build());
 	}
 
+	@Test
+	void toDataWithErrors() throws Exception {
+		StreamFactory factory = StreamFactory.newInstance();
+		// create a stream builder to define the record and fields
+		factory.define(streamBuilder(new RecordBuilder(RECORD_NAME).type(CountryData.class), FIELDS, (f, e) -> f));
+
+		Reader reader = new StringReader("""
+				id,code,name,nativeName,phones,continent,capital,currencies,languages
+				Foo,"AD","Andorra","Andorra","376","Europe","Andorra la Vella","EUR","ca"
+				2,"AE","United Arab Emirates","دولة الإمارات العربية المتحدة","971","Asia","Abu Dhabi","AED","ar"
+				""");
+		BeanReaderErrorHandler errorHandler = mock(BeanReaderErrorHandler.class);
+		assertThat(readCountriesFromCsv(factory, reader, r -> r.setErrorHandler(errorHandler))).hasSize(1);
+
+		ArgumentCaptor<BeanReaderException> captor = ArgumentCaptor.forClass(BeanReaderException.class);
+		verify(errorHandler, times(1)).handleError(captor.capture());
+		assertThat(captor.getValue())
+				.isInstanceOf(InvalidRecordException.class)
+				.hasMessage("Invalid 'country' record at line 2")
+				.hasNoCause();
+		if (captor.getValue() instanceof InvalidRecordException exception) {
+			assertThat(exception.getRecordName()).isEqualTo("country");
+			assertThat(exception.getRecordContext().getFieldErrors())
+					.hasSize(1)
+					.containsKey("id")
+					.containsValue(List.of("Type conversion error: Invalid Integer value 'Foo'"));
+		} else {
+			fail("Unexpected exception");
+		}
+	}
+
 	private List<Country> readCountriesFromCsv(StreamFactory factory, String filename) {
-		List<Country> countries = new ArrayList<>();
 		try (InputStream in = getClass().getClassLoader().getResourceAsStream(filename)) {
 			assertThat(in).describedAs("Missing input stream for '%s'", filename).isNotNull();
-			try (BeanReader reader = factory.createReader(STREAM_NAME, new InputStreamReader(in))) {
-				reader.skip(HEADERS);
-
-				Country country;
-				while ((country = (Country) reader.read()) != null) {
-					countries.add(country);
-				}
-			}
+			return readCountriesFromCsv(factory, new InputStreamReader(in), r -> {
+			});
 		} catch (IOException e) {
-			System.err.printf("ERROR: Unable to load %s due to %s\n", filename, e.getMessage());
+			System.err.printf("ERROR: Unable to load '%s' due to %s\n", filename, e.getMessage());
 			return List.of();
+		}
+	}
+
+	private static List<Country> readCountriesFromCsv(StreamFactory factory, Reader reader,
+			Consumer<BeanReader> augmentReader) {
+		List<Country> countries = new ArrayList<>();
+		try (BeanReader beanReader = factory.createReader(STREAM_NAME, reader)) {
+			augmentReader.accept(beanReader);
+			beanReader.skip(HEADERS);
+
+			Country country;
+			while ((country = (Country) beanReader.read()) != null) {
+				countries.add(country);
+			}
 		}
 		return countries;
 	}
