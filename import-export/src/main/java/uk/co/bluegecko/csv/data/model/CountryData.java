@@ -42,6 +42,10 @@ public class CountryData implements Country.Bean {
 		return CountriesRaw.to(converter());
 	}
 
+	public static CountryData countries(int index) {
+		return CountriesRaw.to(converter(), index);
+	}
+
 	public static Function<String[], CountryData> converter() {
 		return s -> new CountryData(integer(s[0]), s[1], s[2], s[3], toList(s[4]), s[5], s[6],
 				toSet(s[7]), toSet(s[8]));

@@ -7,22 +7,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
-import java.util.SortedMap;
-import java.util.function.BiFunction;
 import org.beanio.BeanReader;
 import org.beanio.StreamFactory;
 import org.beanio.builder.CsvParserBuilder;
-import org.beanio.builder.FieldBuilder;
 import org.beanio.builder.RecordBuilder;
-import org.beanio.builder.StreamBuilder;
-import org.beanio.types.TypeHandler;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import uk.co.bluegecko.csv.beanio.AbstractBeanIoCountryTest;
-import uk.co.bluegecko.csv.beanio.handler.ListOfIntTypeHandler;
-import uk.co.bluegecko.csv.beanio.handler.SetOfStringTypeHandler;
 import uk.co.bluegecko.csv.data.model.Country;
 import uk.co.bluegecko.csv.data.model.CountryData;
 import uk.co.bluegecko.csv.data.model.CountryReadOnly;
@@ -124,28 +116,6 @@ public class BeanIoCsvCountryReadTest extends AbstractBeanIoCountryTest {
 				.contains(CountryData.builder().id(3).code("AF").name("Afghanistan").nativeName("افغانستان").phone(93)
 						.continent("Asia").capital("Kabul").currency("AFN").languages(Set.of("ps", "uz", "tk"))
 						.build());
-	}
-
-	private StreamBuilder streamBuilder(RecordBuilder recordBuilder, SortedMap<Integer, String> fields,
-			BiFunction<FieldBuilder, Entry<Integer, String>, FieldBuilder> fieldBuilder) {
-		addFields(recordBuilder, fields, fieldBuilder);
-		return new StreamBuilder(STREAM_NAME).format("csv").addRecord(recordBuilder);
-	}
-
-	private void addFields(RecordBuilder recordBuilder, SortedMap<Integer, String> fields,
-			BiFunction<FieldBuilder, Entry<Integer, String>, FieldBuilder> fieldBuilder) {
-		TypeHandler setHandler = new SetOfStringTypeHandler();
-		TypeHandler listHandler = new ListOfIntTypeHandler();
-		fields.entrySet().forEach(e -> {
-			FieldBuilder builder = new FieldBuilder(e.getValue());
-			if (SET_FIELDS.contains(e.getValue())) {
-				builder.typeHandler(setHandler);
-			} else if (LIST_FIELDS.contains(e.getValue())) {
-				builder.typeHandler(listHandler);
-			}
-
-			recordBuilder.addField(fieldBuilder.apply(builder, e));
-		});
 	}
 
 	private List<Country> readCountriesFromCsv(StreamFactory factory, String filename) {

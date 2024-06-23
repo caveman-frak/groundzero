@@ -340,4 +340,8 @@ public class CountriesRaw {
 		return Arrays.stream(countries()).map(convert).toList();
 	}
 
+	public static <R> R to(Function<String[], R> convert, int index) {
+		return convert.apply(countries()[index]);
+	}
+
 }
