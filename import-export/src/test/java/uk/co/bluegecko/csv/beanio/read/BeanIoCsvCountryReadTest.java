@@ -76,8 +76,8 @@ public class BeanIoCsvCountryReadTest extends AbstractBeanIoCountryTest {
 	}
 
 	/**
-	 * For Java Record we need to specify the field setter as #N (1 based) to represent the constructor parameter index
-	 * and explicitly define the getter (as it does not correspond to the bean specification.
+	 * For Java {@link Record} we need to specify the field setter as #N (1 based) to represent the constructor
+	 * parameter index and explicitly define the getter (as it does not correspond to the bean specification.
 	 */
 	@Test
 	void toRecordWithBuilder() {
@@ -91,7 +91,7 @@ public class BeanIoCsvCountryReadTest extends AbstractBeanIoCountryTest {
 	}
 
 	/**
-	 * Not currently aware of a way to get the bean created using the lombok {@link lombok.Builder}.
+	 * Not currently aware of a way to get the bean created using a {@link lombok.Builder}.
 	 */
 	@Test
 	@Disabled("No current support for creating bean with lombok builder / factory method")

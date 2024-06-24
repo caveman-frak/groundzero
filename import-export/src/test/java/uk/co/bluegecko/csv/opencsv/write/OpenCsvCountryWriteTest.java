@@ -16,6 +16,9 @@ import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.junit.jupiter.api.Test;
 import uk.co.bluegecko.csv.data.fixture.CountriesRaw;
 import uk.co.bluegecko.csv.data.model.CountryData;
+import uk.co.bluegecko.csv.data.model.CountryReadOnly;
+import uk.co.bluegecko.csv.data.model.CountryRecord;
+import uk.co.bluegecko.csv.data.model.CountryValue;
 import uk.co.bluegecko.csv.opencsv.AbstractOpenCsvCountryTest;
 
 public class OpenCsvCountryWriteTest extends AbstractOpenCsvCountryTest {
@@ -100,6 +103,51 @@ public class OpenCsvCountryWriteTest extends AbstractOpenCsvCountryTest {
 					.withMappingStrategy(mappingStrategy(CountryData.class, new ArrayListValuedHashMap<>()))
 					.build();
 			beanToCsv.write(CountryData.countries(0));
+
+			assertThat(writer.toString()).contains("""
+					"1","AD","Andorra","Andorra","376","Europe","Andorra la Vella","EUR","ca"
+					""");
+		}
+	}
+
+	@Test
+	void fromReadOnlyBeanColumnMapping() throws Exception {
+		try (CharArrayWriter writer = new CharArrayWriter()) {
+
+			StatefulBeanToCsv<CountryReadOnly> beanToCsv = new StatefulBeanToCsvBuilder<CountryReadOnly>(writer)
+					.withMappingStrategy(mappingStrategy(CountryReadOnly.class, new ArrayListValuedHashMap<>()))
+					.build();
+			beanToCsv.write(CountryReadOnly.countries(0));
+
+			assertThat(writer.toString()).contains("""
+					"1","AD","Andorra","Andorra","376","Europe","Andorra la Vella","EUR","ca"
+					""");
+		}
+	}
+
+	@Test
+	void fromRecordBeanColumnMapping() throws Exception {
+		try (CharArrayWriter writer = new CharArrayWriter()) {
+
+			StatefulBeanToCsv<CountryRecord> beanToCsv = new StatefulBeanToCsvBuilder<CountryRecord>(writer)
+					.withMappingStrategy(mappingStrategy(CountryRecord.class, new ArrayListValuedHashMap<>()))
+					.build();
+			beanToCsv.write(CountryRecord.countries(0));
+
+			assertThat(writer.toString()).contains("""
+					"1","AD","Andorra","Andorra","376","Europe","Andorra la Vella","EUR","ca"
+					""");
+		}
+	}
+
+	@Test
+	void fromValueBeanColumnMapping() throws Exception {
+		try (CharArrayWriter writer = new CharArrayWriter()) {
+
+			StatefulBeanToCsv<CountryValue> beanToCsv = new StatefulBeanToCsvBuilder<CountryValue>(writer)
+					.withMappingStrategy(mappingStrategy(CountryValue.class, new ArrayListValuedHashMap<>()))
+					.build();
+			beanToCsv.write(CountryValue.countries(0));
 
 			assertThat(writer.toString()).contains("""
 					"1","AD","Andorra","Andorra","376","Europe","Andorra la Vella","EUR","ca"

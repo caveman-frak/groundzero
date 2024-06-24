@@ -9,6 +9,7 @@ import org.beanio.BeanWriter;
 import org.beanio.StreamFactory;
 import org.beanio.builder.CsvParserBuilder;
 import org.beanio.builder.RecordBuilder;
+import org.beanio.builder.StreamBuilder;
 import org.junit.jupiter.api.Test;
 import uk.co.bluegecko.csv.beanio.AbstractBeanIoCountryTest;
 import uk.co.bluegecko.csv.data.model.CountryData;
@@ -118,6 +119,9 @@ public class BeanIOCountryWriteTest extends AbstractBeanIoCountryTest {
 						""");
 	}
 
+	/**
+	 * Setting {@link StreamBuilder#writeOnly()} allows support for read-only bean.
+	 */
 	@Test
 	void fromReadOnlyWithBuilder() {
 		StreamFactory factory = StreamFactory.newInstance();
@@ -133,6 +137,9 @@ public class BeanIOCountryWriteTest extends AbstractBeanIoCountryTest {
 	}
 
 
+	/**
+	 * Setting {@link StreamBuilder#writeOnly()} allows support for java {@link Record}.
+	 */
 	@Test
 	void fromRecordWithBuilder() {
 		StreamFactory factory = StreamFactory.newInstance();
@@ -147,6 +154,9 @@ public class BeanIOCountryWriteTest extends AbstractBeanIoCountryTest {
 		assertThat(writer.toString()).contains("1,AD,Andorra,Andorra,376,Europe,Andorra la Vella,EUR,ca\n");
 	}
 
+	/**
+	 * Setting {@link StreamBuilder#writeOnly()} allows support for {@link lombok.Value}.
+	 */
 	@Test
 	void fromValueWithBuilder() {
 		StreamFactory factory = StreamFactory.newInstance();
