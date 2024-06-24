@@ -7,11 +7,11 @@ import org.beanio.builder.FieldBuilder;
 import org.beanio.builder.RecordBuilder;
 import org.beanio.builder.StreamBuilder;
 import org.beanio.types.TypeHandler;
-import uk.co.bluegecko.AbstractCountryTest;
+import uk.co.bluegecko.AbstractCsvCountryTest;
 import uk.co.bluegecko.csv.beanio.handler.ListOfIntTypeHandler;
 import uk.co.bluegecko.csv.beanio.handler.SetOfStringTypeHandler;
 
-public class AbstractBeanIoCountryTest extends AbstractCountryTest {
+public class AbstractBeanIoCountryTest extends AbstractCsvCountryTest {
 
 	protected static final String FORMAT_CSV = "csv";
 	protected static final String MAPPING_FILE = "mapping/country.xml";

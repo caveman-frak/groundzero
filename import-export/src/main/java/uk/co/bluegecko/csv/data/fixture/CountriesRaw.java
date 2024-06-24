@@ -10,6 +10,26 @@ import java.util.stream.Collectors;
 
 public class CountriesRaw {
 
+	public static int integer(String value) {
+		return hasText(value) ? Integer.parseInt(value) : 0;
+	}
+
+	public static Set<String> toSet(String value) {
+		return hasText(value) ? Arrays.stream(value.split(",")).collect(Collectors.toSet()) : Set.of();
+	}
+
+	public static List<Integer> toList(String value) {
+		return hasText(value) ? Arrays.stream(value.split(",")).map(Integer::valueOf).toList() : List.of();
+	}
+
+	public static <R> List<R> to(Function<String[], R> convert) {
+		return Arrays.stream(countries()).map(convert).toList();
+	}
+
+	public static <R> R to(Function<String[], R> convert, int index) {
+		return convert.apply(countries()[index]);
+	}
+
 	public static String[][] countries() {
 		return new String[][]{
 				new String[]{"1", "AD", "Andorra", "Andorra", "376", "Europe", "Andorra la Vella", "EUR", "ca"},
@@ -322,26 +342,6 @@ public class CountriesRaw {
 				new String[]{"249", "ZM", "Zambia", "Zambia", "260", "Africa", "Lusaka", "ZMW", "en"},
 				new String[]{"250", "ZW", "Zimbabwe", "Zimbabwe", "263", "Africa", "Harare",
 						"USD,ZAR,BWP,GBP,AUD,CNY,INR,JPY", "en,sn,nd"}};
-	}
-
-	public static int integer(String value) {
-		return hasText(value) ? Integer.parseInt(value) : 0;
-	}
-
-	public static Set<String> toSet(String value) {
-		return hasText(value) ? Arrays.stream(value.split(",")).collect(Collectors.toSet()) : Set.of();
-	}
-
-	public static List<Integer> toList(String value) {
-		return hasText(value) ? Arrays.stream(value.split(",")).map(Integer::valueOf).toList() : List.of();
-	}
-
-	public static <R> List<R> to(Function<String[], R> convert) {
-		return Arrays.stream(countries()).map(convert).toList();
-	}
-
-	public static <R> R to(Function<String[], R> convert, int index) {
-		return convert.apply(countries()[index]);
 	}
 
 }

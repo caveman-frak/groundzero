@@ -5,7 +5,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-public abstract class AbstractCountryTest {
+public abstract class AbstractCsvCountryTest {
 
 	protected static final String FILENAME = "countries.csv";
 	protected static final int HEADERS = 1;
