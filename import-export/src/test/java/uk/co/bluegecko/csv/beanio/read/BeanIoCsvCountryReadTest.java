@@ -132,8 +132,13 @@ public class BeanIoCsvCountryReadTest extends AbstractBeanIoCountryTest {
 						.build());
 	}
 
+	/**
+	 * Unparseable id field supplied. Examines the information available with the exception.
+	 *
+	 * @throws Exception from mocked error handler.
+	 */
 	@Test
-	void toDataWithErrors() throws Exception {
+	void toDataWithFieldError() throws Exception {
 		StreamFactory factory = StreamFactory.newInstance();
 		// create a stream builder to define the record and fields
 		factory.define(streamBuilder(new RecordBuilder(RECORD_NAME).type(CountryData.class), FIELDS, (f, e) -> f));
@@ -173,7 +178,7 @@ public class BeanIoCsvCountryReadTest extends AbstractBeanIoCountryTest {
 
 	private List<Country> readCountriesFromCsv(StreamFactory factory, String filename) {
 		try (InputStream in = getClass().getClassLoader().getResourceAsStream(filename)) {
-			assertThat(in).describedAs("Missing input stream for '%s'", filename).isNotNull();
+			assertThat(in).describedAs("Missing resource for '%s'", filename).isNotNull();
 			return readCountriesFromCsv(factory, new InputStreamReader(in), r -> {
 			});
 		} catch (IOException e) {
