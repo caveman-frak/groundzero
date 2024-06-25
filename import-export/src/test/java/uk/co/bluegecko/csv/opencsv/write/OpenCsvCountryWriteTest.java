@@ -2,8 +2,8 @@ package uk.co.bluegecko.csv.opencsv.write;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.opencsv.CSVWriter;
 import com.opencsv.CSVWriterBuilder;
+import com.opencsv.ICSVWriter;
 import com.opencsv.bean.HeaderColumnNameMappingStrategy;
 import com.opencsv.bean.HeaderColumnNameMappingStrategyBuilder;
 import com.opencsv.bean.MappingStrategy;
@@ -13,6 +13,7 @@ import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.io.Writer;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import uk.co.bluegecko.csv.data.fixture.CountriesRaw;
 import uk.co.bluegecko.csv.data.model.CountryData;
@@ -20,6 +21,7 @@ import uk.co.bluegecko.csv.data.model.CountryReadOnly;
 import uk.co.bluegecko.csv.data.model.CountryRecord;
 import uk.co.bluegecko.csv.data.model.CountryValue;
 import uk.co.bluegecko.csv.opencsv.AbstractOpenCsvCountryTest;
+import uk.co.bluegecko.csv.opencsv.model.CountryAnnotated;
 
 public class OpenCsvCountryWriteTest extends AbstractOpenCsvCountryTest {
 
@@ -27,7 +29,7 @@ public class OpenCsvCountryWriteTest extends AbstractOpenCsvCountryTest {
 	void fromCountryRawMapping() throws IOException {
 		CharArrayWriter writer = new CharArrayWriter();
 
-		try (CSVWriter csvWriter = (CSVWriter) new CSVWriterBuilder(writer).build()) {
+		try (ICSVWriter csvWriter = new CSVWriterBuilder(writer).build()) {
 			csvWriter.writeNext(CountriesRaw.countries()[0], false);
 		}
 		assertThat(writer.toString()).contains("1,AD,Andorra,Andorra,376,Europe,Andorra la Vella,EUR,ca\n");
@@ -37,7 +39,7 @@ public class OpenCsvCountryWriteTest extends AbstractOpenCsvCountryTest {
 	void fromCountryRawMappingQuoted() throws IOException {
 		Writer writer = new CharArrayWriter();
 
-		try (CSVWriter csvWriter = (CSVWriter) new CSVWriterBuilder(writer).build()) {
+		try (ICSVWriter csvWriter = new CSVWriterBuilder(writer).build()) {
 			csvWriter.writeNext(CountriesRaw.countries()[0], true);
 		}
 		assertThat(writer.toString()).contains("""
@@ -92,6 +94,28 @@ public class OpenCsvCountryWriteTest extends AbstractOpenCsvCountryTest {
 					"ID","CODE","NAME","NATIVENAME","PHONES","CONTINENT","CAPITAL","CURRENCIES","LANGUAGES"
 					"1","AD","Andorra","Andorra","376","Europe","Andorra la Vella","EUR","ca"
 					""");
+		}
+	}
+
+	@Test
+	@Disabled("Incorrect parsing of collection field input, only accepts first value")
+	void fromDataBeanHeaderMappingReorderedAll() throws Exception {
+		try (CharArrayWriter writer = new CharArrayWriter()) {
+
+			HeaderColumnNameMappingStrategy<CountryData> strategy = new HeaderColumnNameMappingStrategyBuilder<CountryData>().build();
+			strategy.setType(CountryData.class);
+			strategy.setColumnOrderOnWrite(columnOrderComparator(FIELDS));
+			StatefulBeanToCsv<CountryData> beanToCsv = new StatefulBeanToCsvBuilder<CountryData>(writer)
+					.withMappingStrategy(strategy).build();
+			beanToCsv.write(CountryData.countries());
+
+			assertThat(writer.toString()).startsWith("""
+							"ID","CODE","NAME","NATIVENAME","PHONES","CONTINENT","CAPITAL","CURRENCIES","LANGUAGES"
+							"1","AD","Andorra","Andorra","376","Europe","Andorra la Vella","EUR","ca"
+							""")
+					.endsWith("""
+							250,ZW,Zimbabwe,Zimbabwe,263,Africa,Harare,"AUD,JPY,GBP,USD,ZAR,BWP,INR,CNY","nd,en,sn"
+							""");
 		}
 	}
 
@@ -152,6 +176,37 @@ public class OpenCsvCountryWriteTest extends AbstractOpenCsvCountryTest {
 			assertThat(writer.toString()).contains("""
 					"1","AD","Andorra","Andorra","376","Europe","Andorra la Vella","EUR","ca"
 					""");
+		}
+	}
+
+	@Test
+	void fromAnnotatedBean() throws Exception {
+		try (CharArrayWriter writer = new CharArrayWriter()) {
+
+			StatefulBeanToCsv<CountryAnnotated> beanToCsv = new StatefulBeanToCsvBuilder<CountryAnnotated>(writer)
+					.build();
+			beanToCsv.write(CountryAnnotated.countries(0));
+
+			assertThat(writer.toString()).contains("""
+					"1","AD","Andorra","Andorra","376","Europe","Andorra la Vella","EUR","ca"
+					""");
+		}
+	}
+
+	@Test
+	void fromAnnotatedBeanAll() throws Exception {
+		try (CharArrayWriter writer = new CharArrayWriter()) {
+
+			StatefulBeanToCsv<CountryAnnotated> beanToCsv = new StatefulBeanToCsvBuilder<CountryAnnotated>(writer)
+					.build();
+			beanToCsv.write(CountryAnnotated.countries());
+
+			assertThat(writer.toString()).startsWith("""
+							"1","AD","Andorra","Andorra","376","Europe","Andorra la Vella","EUR","ca"
+							""")
+					.endsWith("""
+							"250","ZW","Zimbabwe","Zimbabwe","263","Africa","Harare","AUD,JPY,GBP,USD,ZAR,BWP,INR,CNY","nd,en,sn"
+							""");
 		}
 	}
 
