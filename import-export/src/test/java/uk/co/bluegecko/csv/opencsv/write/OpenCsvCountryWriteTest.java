@@ -128,6 +128,7 @@ public class OpenCsvCountryWriteTest extends AbstractOpenCsvCountryTest {
 					.build();
 			beanToCsv.write(CountryData.countries(0));
 
+			/* TODO Incorrect parsing of collection field input, only accepts first value */
 			assertThat(writer.toString()).contains("""
 					"1","AD","Andorra","Andorra","376","Europe","Andorra la Vella","EUR","ca"
 					""");
@@ -143,6 +144,7 @@ public class OpenCsvCountryWriteTest extends AbstractOpenCsvCountryTest {
 					.build();
 			beanToCsv.write(CountryReadOnly.countries(0));
 
+			/* TODO Incorrect parsing of collection field input, only accepts first value */
 			assertThat(writer.toString()).contains("""
 					"1","AD","Andorra","Andorra","376","Europe","Andorra la Vella","EUR","ca"
 					""");
@@ -158,6 +160,7 @@ public class OpenCsvCountryWriteTest extends AbstractOpenCsvCountryTest {
 					.build();
 			beanToCsv.write(CountryRecord.countries(0));
 
+			/* TODO Incorrect parsing of collection field input, only accepts first value */
 			assertThat(writer.toString()).contains("""
 					"1","AD","Andorra","Andorra","376","Europe","Andorra la Vella","EUR","ca"
 					""");
@@ -173,6 +176,7 @@ public class OpenCsvCountryWriteTest extends AbstractOpenCsvCountryTest {
 					.build();
 			beanToCsv.write(CountryValue.countries(0));
 
+			/* TODO Incorrect parsing of collection field input, only accepts first value */
 			assertThat(writer.toString()).contains("""
 					"1","AD","Andorra","Andorra","376","Europe","Andorra la Vella","EUR","ca"
 					""");
