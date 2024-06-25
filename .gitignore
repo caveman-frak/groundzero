@@ -41,3 +41,8 @@ bin/
 ### Mac OS ###
 .DS_Store
 /.idea/
+
+### Overridden library files
+**/src/main/java/org/*
+**/src/main/java/com/*
+**/src/main/java/net/*

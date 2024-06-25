@@ -34,18 +34,17 @@ public class AbstractBeanIoCountryTest extends AbstractCsvCountryTest {
 	}
 
 	protected void addFields(RecordBuilder recordBuilder, SortedMap<Integer, String> fields,
-			BiFunction<FieldBuilder, Entry<Integer, String>, FieldBuilder> fieldBuilder) {
-		TypeHandler setHandler = new SetOfStringTypeHandler();
+			BiFunction<FieldBuilder, Entry<Integer, String>, FieldBuilder> fieldCustomiser) {
 		TypeHandler listHandler = new ListOfIntTypeHandler();
+		TypeHandler setHandler = new SetOfStringTypeHandler();
 		fields.entrySet().forEach(e -> {
 			FieldBuilder builder = new FieldBuilder(e.getValue());
-			if (SET_FIELDS.contains(e.getValue())) {
-				builder.typeHandler(setHandler);
-			} else if (LIST_FIELDS.contains(e.getValue())) {
+			if (LIST_FIELDS.contains(e.getValue())) {
 				builder.typeHandler(listHandler);
+			} else if (SET_FIELDS.contains(e.getValue())) {
+				builder.typeHandler(setHandler);
 			}
-
-			recordBuilder.addField(fieldBuilder.apply(builder, e));
+			recordBuilder.addField(fieldCustomiser.apply(builder, e));
 		});
 	}
 }

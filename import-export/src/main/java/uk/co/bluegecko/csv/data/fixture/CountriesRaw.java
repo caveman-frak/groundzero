@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import uk.co.bluegecko.csv.data.model.Country;
 
 public class CountriesRaw {
 
@@ -22,11 +23,11 @@ public class CountriesRaw {
 		return hasText(value) ? Arrays.stream(value.split(",")).map(Integer::valueOf).toList() : List.of();
 	}
 
-	public static <R> List<R> to(Function<String[], R> convert) {
+	public static <R extends Country> List<R> to(Function<String[], R> convert) {
 		return Arrays.stream(countries()).map(convert).toList();
 	}
 
-	public static <R> R to(Function<String[], R> convert, int index) {
+	public static <R extends Country> R to(Function<String[], R> convert, int index) {
 		return convert.apply(countries()[index]);
 	}
 

@@ -25,10 +25,14 @@ import org.beanio.InvalidRecordException;
 import org.beanio.StreamFactory;
 import org.beanio.builder.CsvParserBuilder;
 import org.beanio.builder.RecordBuilder;
+import org.beanio.builder.StreamBuilder;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import uk.co.bluegecko.csv.beanio.AbstractBeanIoCountryTest;
+import uk.co.bluegecko.csv.beanio.handler.ListOfIntTypeHandler;
+import uk.co.bluegecko.csv.beanio.handler.SetOfStringTypeHandler;
+import uk.co.bluegecko.csv.beanio.model.CountryAnnotated;
 import uk.co.bluegecko.csv.data.model.Country;
 import uk.co.bluegecko.csv.data.model.CountryData;
 import uk.co.bluegecko.csv.data.model.CountryReadOnly;
@@ -97,12 +101,35 @@ public class BeanIoCsvCountryReadTest extends AbstractBeanIoCountryTest {
 	@Disabled("No current support for creating bean with lombok builder / factory method")
 	void toValueWithBuilder() {
 		StreamFactory factory = StreamFactory.newInstance();
-		factory.define(streamBuilder(new RecordBuilder(RECORD_NAME).type(CountryValue.class),
+		factory.define(streamBuilder(new RecordBuilder(RECORD_NAME).type(CountryAnnotated.class),
 				FIELDS, (f, e) -> f.setter("#" + e.getValue())));
 
 		assertThat(readCountriesFromCsv(factory, FILENAME))
 				.hasSize(250)
 				.containsAll(CountryValue.countries());
+	}
+
+	/**
+	 * Annotated fields incorrectly retrieve type of collections. Fix possible in
+	 * {@link org.beanio.internal.config.annotation.AnnotationParser}.
+	 * <p>
+	 * Update the #updateTypeInfo(TypeInfo, Class, Class) method to control evaluation into parameterized collection
+	 * fields.
+	 */
+	@Test
+	@Disabled("Annotation parser incorrectly types collection fields")
+	void toAnnotatedWithBuilder() {
+		StreamFactory factory = StreamFactory.newInstance();
+
+		factory.define(new StreamBuilder(STREAM_NAME).format(FORMAT_CSV)
+				.addRecord(CountryAnnotated.class)
+				.addTypeHandler("phoneHandler", new ListOfIntTypeHandler())
+				.addTypeHandler("currencyHandler", new SetOfStringTypeHandler())
+				.addTypeHandler("languageHandler", new SetOfStringTypeHandler()));
+
+		assertThat(readCountriesFromCsv(factory, FILENAME))
+				.hasSize(250)
+				.containsAll(CountryAnnotated.countries());
 	}
 
 	/**

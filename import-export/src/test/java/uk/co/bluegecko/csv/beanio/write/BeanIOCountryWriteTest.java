@@ -10,8 +10,12 @@ import org.beanio.StreamFactory;
 import org.beanio.builder.CsvParserBuilder;
 import org.beanio.builder.RecordBuilder;
 import org.beanio.builder.StreamBuilder;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import uk.co.bluegecko.csv.beanio.AbstractBeanIoCountryTest;
+import uk.co.bluegecko.csv.beanio.handler.ListOfIntTypeHandler;
+import uk.co.bluegecko.csv.beanio.handler.SetOfStringTypeHandler;
+import uk.co.bluegecko.csv.beanio.model.CountryAnnotated;
 import uk.co.bluegecko.csv.data.model.CountryData;
 import uk.co.bluegecko.csv.data.model.CountryReadOnly;
 import uk.co.bluegecko.csv.data.model.CountryRecord;
@@ -166,6 +170,24 @@ public class BeanIOCountryWriteTest extends AbstractBeanIoCountryTest {
 		CharArrayWriter writer = new CharArrayWriter();
 		try (BeanWriter out = factory.createWriter(STREAM_NAME, writer)) {
 			out.write(CountryValue.countries(0));
+			out.flush();
+		}
+		assertThat(writer.toString()).contains("1,AD,Andorra,Andorra,376,Europe,Andorra la Vella,EUR,ca\n");
+	}
+
+	@Test
+	@Disabled("Annotation parser incorrectly types collection fields")
+	void fromAnnotatedWithBuilder() {
+		StreamFactory factory = StreamFactory.newInstance();
+		factory.define(new StreamBuilder(STREAM_NAME).format(FORMAT_CSV)
+				.addRecord(CountryAnnotated.class)
+				.addTypeHandler("phoneHandler", new ListOfIntTypeHandler())
+				.addTypeHandler("currencyHandler", new SetOfStringTypeHandler())
+				.addTypeHandler("languageHandler", new SetOfStringTypeHandler()));
+
+		CharArrayWriter writer = new CharArrayWriter();
+		try (BeanWriter out = factory.createWriter(STREAM_NAME, writer)) {
+			out.write(CountryAnnotated.countries(0));
 			out.flush();
 		}
 		assertThat(writer.toString()).contains("1,AD,Andorra,Andorra,376,Europe,Andorra la Vella,EUR,ca\n");
