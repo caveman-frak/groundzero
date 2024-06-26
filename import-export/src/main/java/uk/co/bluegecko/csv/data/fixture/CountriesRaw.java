@@ -1,5 +1,6 @@
 package uk.co.bluegecko.csv.data.fixture;
 
+import static org.springframework.util.ObjectUtils.isEmpty;
 import static org.springframework.util.StringUtils.hasText;
 
 import java.util.Arrays;
@@ -19,8 +20,16 @@ public class CountriesRaw {
 		return hasText(value) ? Arrays.stream(value.split(",")).collect(Collectors.toSet()) : Set.of();
 	}
 
+	public static String fromSet(Set<String> values) {
+		return isEmpty(values) ? "" : String.join(",", values);
+	}
+
 	public static List<Integer> toList(String value) {
 		return hasText(value) ? Arrays.stream(value.split(",")).map(Integer::valueOf).toList() : List.of();
+	}
+
+	public static String fromList(List<Integer> values) {
+		return isEmpty(values) ? "" : values.stream().map(String::valueOf).collect(Collectors.joining(","));
 	}
 
 	public static <R extends Country> List<R> to(Function<String[], R> convert) {

@@ -14,7 +14,7 @@ import uk.co.bluegecko.AbstractCsvCountryTest;
 import uk.co.bluegecko.csv.data.model.CountryData;
 import uk.co.bluegecko.csv.data.model.CountryData.Fields;
 
-public class AbstractOpenCsvCountryTest extends AbstractCsvCountryTest {
+public abstract class AbstractOpenCsvCountryTest extends AbstractCsvCountryTest {
 
 	protected <T> ColumnPositionMappingStrategy<T> mappingStrategy(Class<T> clazz, CSVReader csvReader,
 			MultiValuedMap<Class<?>, Field> ignoredFields) throws IOException {

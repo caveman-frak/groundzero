@@ -11,7 +11,7 @@ import uk.co.bluegecko.AbstractCsvCountryTest;
 import uk.co.bluegecko.csv.beanio.handler.ListOfIntTypeHandler;
 import uk.co.bluegecko.csv.beanio.handler.SetOfStringTypeHandler;
 
-public class AbstractBeanIoCountryTest extends AbstractCsvCountryTest {
+public abstract class AbstractBeanIoCountryTest extends AbstractCsvCountryTest {
 
 	protected static final String FORMAT_CSV = "csv";
 	protected static final String MAPPING_FILE = "mapping/country.xml";

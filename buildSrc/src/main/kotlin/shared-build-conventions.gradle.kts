@@ -60,3 +60,7 @@ testing {
         val test by getting(JvmTestSuite::class)
     }
 }
+
+tasks.withType<Test> {
+    jvmArgs(setOf("-XX:+EnableDynamicAgentLoading"))
+}

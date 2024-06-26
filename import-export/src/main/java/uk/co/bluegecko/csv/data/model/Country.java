@@ -1,5 +1,8 @@
 package uk.co.bluegecko.csv.data.model;
 
+import static uk.co.bluegecko.csv.data.fixture.CountriesRaw.fromList;
+import static uk.co.bluegecko.csv.data.fixture.CountriesRaw.fromSet;
+
 import java.util.List;
 import java.util.Set;
 
@@ -22,6 +25,12 @@ public interface Country {
 	Set<String> currencies();
 
 	Set<String> languages();
+
+	default Object[] toRaw() {
+		return new Object[]{id(), code(), name(), nativeName(), fromList(phones()), continent(),
+				capital(), fromSet(currencies()), fromSet(languages())};
+	}
+
 
 	interface Bean extends Country {
 

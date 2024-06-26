@@ -26,7 +26,7 @@ import uk.co.bluegecko.csv.opencsv.model.CountryAnnotated;
 public class OpenCsvCountryReadTest extends AbstractOpenCsvCountryTest {
 
 	@Test
-	void toCountryRawMapping() throws IOException {
+	void toCountryRaw() throws IOException {
 		assertThat(readCountriesFromCsv(FILENAME, sneakyThrows((r, l) -> {
 			String[] line;
 			while ((line = r.readNext()) != null) {

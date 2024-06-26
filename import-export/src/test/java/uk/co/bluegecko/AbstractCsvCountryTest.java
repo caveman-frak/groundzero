@@ -8,6 +8,7 @@ import java.util.TreeMap;
 public abstract class AbstractCsvCountryTest {
 
 	protected static final String FILENAME = "countries.csv";
+	protected static final String FILENAME_NONSTANDARD = "countries-nonstandard.csv";
 	protected static final int HEADERS = 1;
 	protected static final SortedMap<Integer, String> FIELDS = new TreeMap<>(Map.of(
 			1, "id",

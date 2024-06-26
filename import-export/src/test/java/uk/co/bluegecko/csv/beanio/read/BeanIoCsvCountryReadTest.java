@@ -15,7 +15,9 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import org.beanio.BeanReader;
@@ -24,6 +26,7 @@ import org.beanio.BeanReaderException;
 import org.beanio.InvalidRecordException;
 import org.beanio.StreamFactory;
 import org.beanio.builder.CsvParserBuilder;
+import org.beanio.builder.FieldBuilder;
 import org.beanio.builder.RecordBuilder;
 import org.beanio.builder.StreamBuilder;
 import org.junit.jupiter.api.Disabled;
@@ -40,6 +43,27 @@ import uk.co.bluegecko.csv.data.model.CountryRecord;
 import uk.co.bluegecko.csv.data.model.CountryValue;
 
 public class BeanIoCsvCountryReadTest extends AbstractBeanIoCountryTest {
+
+	@Test
+	void toCountryRawToMap() throws IOException {
+		StreamFactory factory = StreamFactory.newInstance();
+
+		assertThat(readRawFromCsv(factory, HashMap.class))
+				.hasSize(250)
+				.contains(new HashMap<>(Map.of(
+						"capital", "Andorra la Vella", "code", "AD", "continent", "Europe",
+						"currencies", "EUR", "id", "1", "languages", "ca",
+						"name", "Andorra", "nativeName", "Andorra", "phones", "376")));
+	}
+
+	@Test
+	void toCountryRawToList() throws IOException {
+		StreamFactory factory = StreamFactory.newInstance();
+
+		assertThat(readRawFromCsv(factory, ArrayList.class))
+				.contains(new ArrayList<>(List.of(
+						"1", "AD", "Andorra", "Andorra", "376", "Europe", "Andorra la Vella", "EUR", "ca")));
+	}
 
 	@Test
 	void toDataWithMapping() {
@@ -144,7 +168,7 @@ public class BeanIoCsvCountryReadTest extends AbstractBeanIoCountryTest {
 				FIELDS, (f, e) -> f).parser(
 				new CsvParserBuilder().delimiter(';').quote('\'').allowUnquotedWhitespace().enableMultiline()));
 
-		assertThat(readCountriesFromCsv(factory, "countries-nonstandard.csv"))
+		assertThat(readCountriesFromCsv(factory, FILENAME_NONSTANDARD))
 				.hasSize(3)
 				.contains(CountryData.builder().id(1).code("AD").name("Andorra").nativeName("Andorra").phone(375)
 						.phone(376).continent("Europe").capital("Andorra la Vella").currency("EUR").language("ca")
@@ -203,6 +227,27 @@ public class BeanIoCsvCountryReadTest extends AbstractBeanIoCountryTest {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	private <T> List<T> readRawFromCsv(StreamFactory factory, Class<? extends T> clazz) throws IOException {
+		RecordBuilder recordBuilder = new RecordBuilder(RECORD_NAME).type(clazz);
+		FIELDS.forEach((k, v) -> recordBuilder.addField(new FieldBuilder(v)));
+		factory.define(new StreamBuilder(STREAM_NAME).format(FORMAT_CSV).addRecord(recordBuilder));
+
+		List<T> countries = new ArrayList<>();
+		try (InputStream in = getClass().getClassLoader().getResourceAsStream(FILENAME)) {
+			assertThat(in).describedAs("Missing resource for '%s'", FILENAME).isNotNull();
+			try (BeanReader beanReader = factory.createReader(STREAM_NAME, new InputStreamReader(in))) {
+				beanReader.skip(HEADERS);
+
+				T country;
+				while ((country = (T) beanReader.read()) != null) {
+					countries.add(country);
+				}
+			}
+		}
+		return countries;
+	}
+
 	private List<Country> readCountriesFromCsv(StreamFactory factory, String filename) {
 		try (InputStream in = getClass().getClassLoader().getResourceAsStream(filename)) {
 			assertThat(in).describedAs("Missing resource for '%s'", filename).isNotNull();
@@ -214,7 +259,7 @@ public class BeanIoCsvCountryReadTest extends AbstractBeanIoCountryTest {
 		}
 	}
 
-	private static List<Country> readCountriesFromCsv(StreamFactory factory, Reader reader,
+	private List<Country> readCountriesFromCsv(StreamFactory factory, Reader reader,
 			Consumer<BeanReader> augmentReader) {
 		List<Country> countries = new ArrayList<>();
 		try (BeanReader beanReader = factory.createReader(STREAM_NAME, reader)) {

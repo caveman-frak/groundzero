@@ -38,6 +38,10 @@ public class CountryData implements Country.Bean {
 	@Singular
 	Set<String> languages;
 
+	public static CountryData from(String[] args) {
+		return converter().apply(args);
+	}
+
 	public static List<CountryData> countries() {
 		return CountriesRaw.to(converter());
 	}
