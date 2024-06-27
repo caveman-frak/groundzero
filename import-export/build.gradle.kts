@@ -10,3 +10,7 @@ dependencies {
     implementation("net.sf.flatpack:flatpack:4.0.18")
     implementation("org.csveed:csveed:0.8.1")
 }
+
+springBoot {
+    mainClass.set("uk.co.bluegecko.csv.Main")
+}
