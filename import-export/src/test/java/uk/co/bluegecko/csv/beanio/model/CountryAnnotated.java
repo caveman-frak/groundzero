@@ -1,8 +1,8 @@
 package uk.co.bluegecko.csv.beanio.model;
 
-import static uk.co.bluegecko.csv.data.fixture.CountriesRaw.integer;
-import static uk.co.bluegecko.csv.data.fixture.CountriesRaw.toList;
-import static uk.co.bluegecko.csv.data.fixture.CountriesRaw.toSet;
+import static uk.co.bluegecko.common.model.country.Country.integer;
+import static uk.co.bluegecko.common.model.country.Country.toList;
+import static uk.co.bluegecko.common.model.country.Country.toSet;
 
 import java.util.List;
 import java.util.Set;
@@ -14,8 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.beanio.annotation.Field;
 import org.beanio.annotation.Record;
-import uk.co.bluegecko.csv.data.fixture.CountriesRaw;
-import uk.co.bluegecko.csv.data.model.Country;
+import uk.co.bluegecko.common.model.country.Country;
 
 @Data
 @NoArgsConstructor
@@ -43,15 +42,11 @@ public class CountryAnnotated implements Country.Bean {
 	@Field(at = 8, handlerName = "languageHandler", type = Set.class)
 	Set<String> languages;
 
-	public static List<CountryAnnotated> countries() {
-		return CountriesRaw.to(converter());
+	public static CountryAnnotated from(String[] args) {
+		return to().apply(args);
 	}
 
-	public static CountryAnnotated countries(int index) {
-		return CountriesRaw.to(converter(), index);
-	}
-
-	public static Function<String[], CountryAnnotated> converter() {
+	public static Function<String[], CountryAnnotated> to() {
 		return s -> new CountryAnnotated(integer(s[0]), s[1], s[2], s[3], toList(s[4]), s[5], s[6],
 				toSet(s[7]), toSet(s[8]));
 	}

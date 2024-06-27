@@ -32,15 +32,16 @@ import org.beanio.builder.StreamBuilder;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import uk.co.bluegecko.common.model.country.Country;
+import uk.co.bluegecko.common.model.country.CountryData;
+import uk.co.bluegecko.common.model.country.CountryReadOnly;
+import uk.co.bluegecko.common.model.country.CountryRecord;
+import uk.co.bluegecko.common.model.country.CountryValue;
 import uk.co.bluegecko.csv.beanio.AbstractBeanIoCountryTest;
 import uk.co.bluegecko.csv.beanio.handler.ListOfIntTypeHandler;
 import uk.co.bluegecko.csv.beanio.handler.SetOfStringTypeHandler;
 import uk.co.bluegecko.csv.beanio.model.CountryAnnotated;
-import uk.co.bluegecko.csv.data.model.Country;
-import uk.co.bluegecko.csv.data.model.CountryData;
-import uk.co.bluegecko.csv.data.model.CountryReadOnly;
-import uk.co.bluegecko.csv.data.model.CountryRecord;
-import uk.co.bluegecko.csv.data.model.CountryValue;
+import uk.co.bluegecko.csv.data.fixture.CountriesRaw;
 
 public class BeanIoCsvCountryReadTest extends AbstractBeanIoCountryTest {
 
@@ -73,7 +74,7 @@ public class BeanIoCsvCountryReadTest extends AbstractBeanIoCountryTest {
 
 		assertThat(readCountriesFromCsv(factory, FILENAME))
 				.hasSize(250)
-				.containsAll(CountryData.countries());
+				.containsAll(CountriesRaw.from(CountryData.to()));
 	}
 
 	@Test
@@ -85,7 +86,7 @@ public class BeanIoCsvCountryReadTest extends AbstractBeanIoCountryTest {
 
 		assertThat(readCountriesFromCsv(factory, FILENAME))
 				.hasSize(250)
-				.containsAll(CountryData.countries());
+				.containsAll(CountriesRaw.from(CountryData.to()));
 	}
 
 	/**
@@ -100,7 +101,7 @@ public class BeanIoCsvCountryReadTest extends AbstractBeanIoCountryTest {
 
 		assertThat(readCountriesFromCsv(factory, FILENAME))
 				.hasSize(250)
-				.containsAll(CountryReadOnly.countries());
+				.containsAll(CountriesRaw.from(CountryReadOnly.to()));
 	}
 
 	/**
@@ -115,7 +116,7 @@ public class BeanIoCsvCountryReadTest extends AbstractBeanIoCountryTest {
 
 		assertThat(readCountriesFromCsv(factory, FILENAME))
 				.hasSize(250)
-				.containsAll(CountryRecord.countries());
+				.containsAll(CountriesRaw.from(CountryRecord.to()));
 	}
 
 	/**
@@ -130,7 +131,7 @@ public class BeanIoCsvCountryReadTest extends AbstractBeanIoCountryTest {
 
 		assertThat(readCountriesFromCsv(factory, FILENAME))
 				.hasSize(250)
-				.containsAll(CountryValue.countries());
+				.containsAll(CountriesRaw.from(CountryValue.to()));
 	}
 
 	/**
@@ -153,7 +154,7 @@ public class BeanIoCsvCountryReadTest extends AbstractBeanIoCountryTest {
 
 		assertThat(readCountriesFromCsv(factory, FILENAME))
 				.hasSize(250)
-				.containsAll(CountryAnnotated.countries());
+				.containsAll(CountriesRaw.from(CountryAnnotated.to()));
 	}
 
 	/**

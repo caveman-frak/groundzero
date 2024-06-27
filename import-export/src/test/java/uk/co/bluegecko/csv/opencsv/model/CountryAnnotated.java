@@ -1,8 +1,8 @@
 package uk.co.bluegecko.csv.opencsv.model;
 
-import static uk.co.bluegecko.csv.data.fixture.CountriesRaw.integer;
-import static uk.co.bluegecko.csv.data.fixture.CountriesRaw.toList;
-import static uk.co.bluegecko.csv.data.fixture.CountriesRaw.toSet;
+import static uk.co.bluegecko.common.model.country.Country.integer;
+import static uk.co.bluegecko.common.model.country.Country.toList;
+import static uk.co.bluegecko.common.model.country.Country.toSet;
 
 import com.opencsv.bean.CsvBindAndSplitByPosition;
 import com.opencsv.bean.CsvBindByPosition;
@@ -16,8 +16,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.FieldNameConstants;
+import uk.co.bluegecko.common.model.country.Country;
 import uk.co.bluegecko.csv.data.fixture.CountriesRaw;
-import uk.co.bluegecko.csv.data.model.Country;
 
 @Data
 @Builder
@@ -47,11 +47,11 @@ public class CountryAnnotated implements Country.Bean {
 	Set<String> languages;
 
 	public static List<CountryAnnotated> countries() {
-		return CountriesRaw.to(converter());
+		return CountriesRaw.from(converter());
 	}
 
 	public static CountryAnnotated countries(int index) {
-		return CountriesRaw.to(converter(), index);
+		return CountriesRaw.from(converter(), index);
 	}
 
 	public static Function<String[], CountryAnnotated> converter() {

@@ -11,8 +11,8 @@ import java.util.Map;
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import uk.co.bluegecko.AbstractCsvCountryTest;
-import uk.co.bluegecko.csv.data.model.CountryData;
-import uk.co.bluegecko.csv.data.model.CountryData.Fields;
+import uk.co.bluegecko.common.model.country.CountryData;
+import uk.co.bluegecko.common.model.country.CountryData.Fields;
 
 public abstract class AbstractOpenCsvCountryTest extends AbstractCsvCountryTest {
 

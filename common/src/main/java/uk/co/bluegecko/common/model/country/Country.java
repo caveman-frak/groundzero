@@ -1,10 +1,14 @@
-package uk.co.bluegecko.csv.data.model;
+package uk.co.bluegecko.common.model.country;
 
-import static uk.co.bluegecko.csv.data.fixture.CountriesRaw.fromList;
-import static uk.co.bluegecko.csv.data.fixture.CountriesRaw.fromSet;
+import static org.springframework.util.ObjectUtils.isEmpty;
+import static org.springframework.util.StringUtils.hasText;
+import static uk.co.bluegecko.common.model.country.Country.fromList;
+import static uk.co.bluegecko.common.model.country.Country.fromSet;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public interface Country {
 
@@ -31,6 +35,25 @@ public interface Country {
 				capital(), fromSet(currencies()), fromSet(languages())};
 	}
 
+	static int integer(String value) {
+		return hasText(value) ? Integer.parseInt(value) : 0;
+	}
+
+	static Set<String> toSet(String value) {
+		return hasText(value) ? Arrays.stream(value.split(",")).collect(Collectors.toSet()) : Set.of();
+	}
+
+	static String fromSet(Set<String> values) {
+		return isEmpty(values) ? "" : String.join(",", values);
+	}
+
+	static List<Integer> toList(String value) {
+		return hasText(value) ? Arrays.stream(value.split(",")).map(Integer::valueOf).toList() : List.of();
+	}
+
+	static String fromList(List<Integer> values) {
+		return isEmpty(values) ? "" : values.stream().map(String::valueOf).collect(Collectors.joining(","));
+	}
 
 	interface Bean extends Country {
 

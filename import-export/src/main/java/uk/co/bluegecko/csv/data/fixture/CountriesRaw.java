@@ -1,42 +1,17 @@
 package uk.co.bluegecko.csv.data.fixture;
 
-import static org.springframework.util.ObjectUtils.isEmpty;
-import static org.springframework.util.StringUtils.hasText;
-
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-import uk.co.bluegecko.csv.data.model.Country;
+import uk.co.bluegecko.common.model.country.Country;
 
 public class CountriesRaw {
 
-	public static int integer(String value) {
-		return hasText(value) ? Integer.parseInt(value) : 0;
-	}
-
-	public static Set<String> toSet(String value) {
-		return hasText(value) ? Arrays.stream(value.split(",")).collect(Collectors.toSet()) : Set.of();
-	}
-
-	public static String fromSet(Set<String> values) {
-		return isEmpty(values) ? "" : String.join(",", values);
-	}
-
-	public static List<Integer> toList(String value) {
-		return hasText(value) ? Arrays.stream(value.split(",")).map(Integer::valueOf).toList() : List.of();
-	}
-
-	public static String fromList(List<Integer> values) {
-		return isEmpty(values) ? "" : values.stream().map(String::valueOf).collect(Collectors.joining(","));
-	}
-
-	public static <R extends Country> List<R> to(Function<String[], R> convert) {
+	public static <R extends Country> List<R> from(Function<String[], R> convert) {
 		return Arrays.stream(countries()).map(convert).toList();
 	}
 
-	public static <R extends Country> R to(Function<String[], R> convert, int index) {
+	public static <R extends Country> R from(Function<String[], R> convert, int index) {
 		return convert.apply(countries()[index]);
 	}
 

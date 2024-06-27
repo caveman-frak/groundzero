@@ -6,7 +6,7 @@
     <typeHandler name="phoneHandler" class="uk.co.bluegecko.csv.beanio.handler.ListOfIntTypeHandler"/>
     <typeHandler name="currencyHandler" class="uk.co.bluegecko.csv.beanio.handler.SetOfStringTypeHandler"/>
     <typeHandler name="languageHandler" class="uk.co.bluegecko.csv.beanio.handler.SetOfStringTypeHandler"/>
-    <record name="country" class="uk.co.bluegecko.csv.data.model.CountryData">
+    <record name="country" class="uk.co.bluegecko.common.model.country.CountryData">
       <field name="id"/>
       <field name="code"/>
       <field name="name"/>

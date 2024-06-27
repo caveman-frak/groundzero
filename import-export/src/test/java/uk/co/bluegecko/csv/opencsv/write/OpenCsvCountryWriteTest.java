@@ -15,11 +15,11 @@ import java.io.Writer;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import uk.co.bluegecko.common.model.country.CountryData;
+import uk.co.bluegecko.common.model.country.CountryReadOnly;
+import uk.co.bluegecko.common.model.country.CountryRecord;
+import uk.co.bluegecko.common.model.country.CountryValue;
 import uk.co.bluegecko.csv.data.fixture.CountriesRaw;
-import uk.co.bluegecko.csv.data.model.CountryData;
-import uk.co.bluegecko.csv.data.model.CountryReadOnly;
-import uk.co.bluegecko.csv.data.model.CountryRecord;
-import uk.co.bluegecko.csv.data.model.CountryValue;
 import uk.co.bluegecko.csv.opencsv.AbstractOpenCsvCountryTest;
 import uk.co.bluegecko.csv.opencsv.model.CountryAnnotated;
 
@@ -52,7 +52,7 @@ public class OpenCsvCountryWriteTest extends AbstractOpenCsvCountryTest {
 		try (CharArrayWriter writer = new CharArrayWriter()) {
 
 			StatefulBeanToCsv<CountryData> beanToCsv = new StatefulBeanToCsvBuilder<CountryData>(writer).build();
-			beanToCsv.write(CountryData.countries(0));
+			beanToCsv.write(CountriesRaw.from(CountryData.to(), 0));
 
 			assertThat(writer.toString()).contains("""
 					"CAPITAL","CODE","CONTINENT","CURRENCIES","ID","LANGUAGES","NAME","NATIVENAME","PHONES"
@@ -70,7 +70,7 @@ public class OpenCsvCountryWriteTest extends AbstractOpenCsvCountryTest {
 			strategy.ignoreFields(ignoredFields());
 			StatefulBeanToCsv<CountryData> beanToCsv = new StatefulBeanToCsvBuilder<CountryData>(writer)
 					.withMappingStrategy(strategy).build();
-			beanToCsv.write(CountryData.countries(0));
+			beanToCsv.write(CountriesRaw.from(CountryData.to(), 0));
 
 			assertThat(writer.toString()).contains("""
 					"CAPITAL","CODE","CONTINENT","ID","NAME","NATIVENAME"
@@ -88,7 +88,7 @@ public class OpenCsvCountryWriteTest extends AbstractOpenCsvCountryTest {
 			strategy.setColumnOrderOnWrite(columnOrderComparator(FIELDS));
 			StatefulBeanToCsv<CountryData> beanToCsv = new StatefulBeanToCsvBuilder<CountryData>(writer)
 					.withMappingStrategy(strategy).build();
-			beanToCsv.write(CountryData.countries(0));
+			beanToCsv.write(CountriesRaw.from(CountryData.to(), 0));
 
 			assertThat(writer.toString()).contains("""
 					"ID","CODE","NAME","NATIVENAME","PHONES","CONTINENT","CAPITAL","CURRENCIES","LANGUAGES"
@@ -107,7 +107,7 @@ public class OpenCsvCountryWriteTest extends AbstractOpenCsvCountryTest {
 			strategy.setColumnOrderOnWrite(columnOrderComparator(FIELDS));
 			StatefulBeanToCsv<CountryData> beanToCsv = new StatefulBeanToCsvBuilder<CountryData>(writer)
 					.withMappingStrategy(strategy).build();
-			beanToCsv.write(CountryData.countries());
+			beanToCsv.write(CountriesRaw.from(CountryData.to()));
 
 			assertThat(writer.toString()).startsWith("""
 							"ID","CODE","NAME","NATIVENAME","PHONES","CONTINENT","CAPITAL","CURRENCIES","LANGUAGES"
@@ -126,7 +126,7 @@ public class OpenCsvCountryWriteTest extends AbstractOpenCsvCountryTest {
 			StatefulBeanToCsv<CountryData> beanToCsv = new StatefulBeanToCsvBuilder<CountryData>(writer)
 					.withMappingStrategy(mappingStrategy(CountryData.class, new ArrayListValuedHashMap<>()))
 					.build();
-			beanToCsv.write(CountryData.countries(0));
+			beanToCsv.write(CountriesRaw.from(CountryData.to(), 0));
 
 			/* TODO Incorrect parsing of collection field input, only accepts first value */
 			assertThat(writer.toString()).contains("""
@@ -142,7 +142,7 @@ public class OpenCsvCountryWriteTest extends AbstractOpenCsvCountryTest {
 			StatefulBeanToCsv<CountryReadOnly> beanToCsv = new StatefulBeanToCsvBuilder<CountryReadOnly>(writer)
 					.withMappingStrategy(mappingStrategy(CountryReadOnly.class, new ArrayListValuedHashMap<>()))
 					.build();
-			beanToCsv.write(CountryReadOnly.countries(0));
+			beanToCsv.write(CountriesRaw.from(CountryReadOnly.to(), 0));
 
 			/* TODO Incorrect parsing of collection field input, only accepts first value */
 			assertThat(writer.toString()).contains("""
@@ -158,7 +158,7 @@ public class OpenCsvCountryWriteTest extends AbstractOpenCsvCountryTest {
 			StatefulBeanToCsv<CountryRecord> beanToCsv = new StatefulBeanToCsvBuilder<CountryRecord>(writer)
 					.withMappingStrategy(mappingStrategy(CountryRecord.class, new ArrayListValuedHashMap<>()))
 					.build();
-			beanToCsv.write(CountryRecord.countries(0));
+			beanToCsv.write(CountriesRaw.from(CountryRecord.to(), 0));
 
 			/* TODO Incorrect parsing of collection field input, only accepts first value */
 			assertThat(writer.toString()).contains("""
@@ -174,7 +174,7 @@ public class OpenCsvCountryWriteTest extends AbstractOpenCsvCountryTest {
 			StatefulBeanToCsv<CountryValue> beanToCsv = new StatefulBeanToCsvBuilder<CountryValue>(writer)
 					.withMappingStrategy(mappingStrategy(CountryValue.class, new ArrayListValuedHashMap<>()))
 					.build();
-			beanToCsv.write(CountryValue.countries(0));
+			beanToCsv.write(CountriesRaw.from(CountryValue.to(), 0));
 
 			/* TODO Incorrect parsing of collection field input, only accepts first value */
 			assertThat(writer.toString()).contains("""

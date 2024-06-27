@@ -15,11 +15,12 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import uk.co.bluegecko.csv.data.model.Country;
-import uk.co.bluegecko.csv.data.model.CountryData;
-import uk.co.bluegecko.csv.data.model.CountryReadOnly;
-import uk.co.bluegecko.csv.data.model.CountryRecord;
-import uk.co.bluegecko.csv.data.model.CountryValue;
+import uk.co.bluegecko.common.model.country.Country;
+import uk.co.bluegecko.common.model.country.CountryData;
+import uk.co.bluegecko.common.model.country.CountryReadOnly;
+import uk.co.bluegecko.common.model.country.CountryRecord;
+import uk.co.bluegecko.common.model.country.CountryValue;
+import uk.co.bluegecko.csv.data.fixture.CountriesRaw;
 import uk.co.bluegecko.csv.opencsv.AbstractOpenCsvCountryTest;
 import uk.co.bluegecko.csv.opencsv.model.CountryAnnotated;
 
@@ -30,11 +31,11 @@ public class OpenCsvCountryReadTest extends AbstractOpenCsvCountryTest {
 		assertThat(readCountriesFromCsv(FILENAME, sneakyThrows((r, l) -> {
 			String[] line;
 			while ((line = r.readNext()) != null) {
-				l.add(CountryData.converter().apply(line));
+				l.add(CountryData.to().apply(line));
 			}
 		})))
 				.hasSize(250)
-				.containsAll(CountryData.countries());
+				.containsAll(CountriesRaw.from(CountryData.to()));
 	}
 
 	@Test
@@ -46,7 +47,7 @@ public class OpenCsvCountryReadTest extends AbstractOpenCsvCountryTest {
 		})))
 				.hasSize(250)
 				/* TODO need to strip out phones, currency and language fields as the processor can't handle them! */
-				.containsAll(CountryData.countries().stream()
+				.containsAll(CountriesRaw.from(CountryData.to()).stream()
 						.peek(c -> c.setPhones(null))
 						.peek(c -> c.setCurrencies(null))
 						.peek(c -> c.setLanguages(null))
@@ -63,7 +64,7 @@ public class OpenCsvCountryReadTest extends AbstractOpenCsvCountryTest {
 		})))
 				.hasSize(250)
 				/* TODO need to strip out phones, currency and language fields as the processor can't handle them! */
-				.containsAll(CountryReadOnly.countries());
+				.containsAll(CountriesRaw.from(CountryReadOnly.to()));
 	}
 
 	@Test
@@ -76,7 +77,7 @@ public class OpenCsvCountryReadTest extends AbstractOpenCsvCountryTest {
 		})))
 				.hasSize(250)
 				/* TODO need to strip out phones, currency and language fields as the processor can't handle them! */
-				.containsAll(CountryRecord.countries());
+				.containsAll(CountriesRaw.from(CountryRecord.to()));
 	}
 
 	@Test
@@ -89,7 +90,7 @@ public class OpenCsvCountryReadTest extends AbstractOpenCsvCountryTest {
 		})))
 				.hasSize(250)
 				/* TODO need to strip out phones, currency and language fields as the processor can't handle them! */
-				.containsAll(CountryValue.countries());
+				.containsAll(CountriesRaw.from(CountryValue.to()));
 	}
 
 	@Test

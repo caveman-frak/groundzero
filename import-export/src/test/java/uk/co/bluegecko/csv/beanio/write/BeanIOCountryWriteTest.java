@@ -12,14 +12,15 @@ import org.beanio.builder.RecordBuilder;
 import org.beanio.builder.StreamBuilder;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import uk.co.bluegecko.common.model.country.CountryData;
+import uk.co.bluegecko.common.model.country.CountryReadOnly;
+import uk.co.bluegecko.common.model.country.CountryRecord;
+import uk.co.bluegecko.common.model.country.CountryValue;
 import uk.co.bluegecko.csv.beanio.AbstractBeanIoCountryTest;
 import uk.co.bluegecko.csv.beanio.handler.ListOfIntTypeHandler;
 import uk.co.bluegecko.csv.beanio.handler.SetOfStringTypeHandler;
 import uk.co.bluegecko.csv.beanio.model.CountryAnnotated;
-import uk.co.bluegecko.csv.data.model.CountryData;
-import uk.co.bluegecko.csv.data.model.CountryReadOnly;
-import uk.co.bluegecko.csv.data.model.CountryRecord;
-import uk.co.bluegecko.csv.data.model.CountryValue;
+import uk.co.bluegecko.csv.data.fixture.CountriesRaw;
 
 public class BeanIOCountryWriteTest extends AbstractBeanIoCountryTest {
 
@@ -31,7 +32,7 @@ public class BeanIOCountryWriteTest extends AbstractBeanIoCountryTest {
 
 		CharArrayWriter writer = new CharArrayWriter();
 		try (BeanWriter out = factory.createWriter(STREAM_NAME, writer)) {
-			out.write(CountryData.countries(0));
+			out.write(CountriesRaw.from(CountryData.to(), 0));
 			out.flush();
 		}
 		assertThat(writer.toString()).contains("1,AD,Andorra,Andorra,376,Europe,Andorra la Vella,EUR,ca");
@@ -44,7 +45,7 @@ public class BeanIOCountryWriteTest extends AbstractBeanIoCountryTest {
 
 		CharArrayWriter writer = new CharArrayWriter();
 		try (BeanWriter out = factory.createWriter(STREAM_NAME, writer)) {
-			out.write(CountryData.countries(0));
+			out.write(CountriesRaw.from(CountryData.to(), 0));
 			out.flush();
 		}
 		assertThat(writer.toString()).contains("1,AD,Andorra,Andorra,376,Europe,Andorra la Vella,EUR,ca\n");
@@ -58,7 +59,7 @@ public class BeanIOCountryWriteTest extends AbstractBeanIoCountryTest {
 		CharArrayWriter writer = new CharArrayWriter();
 		try (BeanWriter out = factory.createWriter(STREAM_NAME, writer)) {
 			out.write(RECORD_HEADER, null);
-			out.write(CountryData.countries(0));
+			out.write(CountriesRaw.from(CountryData.to(), 0));
 			out.flush();
 		}
 		assertThat(writer.toString()).contains("""
@@ -75,7 +76,7 @@ public class BeanIOCountryWriteTest extends AbstractBeanIoCountryTest {
 
 		CharArrayWriter writer = new CharArrayWriter();
 		try (BeanWriter out = factory.createWriter(STREAM_NAME, writer)) {
-			out.write(CountryData.countries(0));
+			out.write(CountriesRaw.from(CountryData.to(), 0));
 			out.flush();
 		}
 		assertThat(writer.toString()).contains(
@@ -95,7 +96,7 @@ public class BeanIOCountryWriteTest extends AbstractBeanIoCountryTest {
 
 		CharArrayWriter writer = new CharArrayWriter();
 		try (BeanWriter out = factory.createWriter(STREAM_NAME, writer)) {
-			out.write(CountryData.countries(0));
+			out.write(CountriesRaw.from(CountryData.to(), 0));
 			out.flush();
 		}
 		assertThat(writer.toString()).contains("AD,Andorra,Andorra,Europe,ca\n");
@@ -109,7 +110,7 @@ public class BeanIOCountryWriteTest extends AbstractBeanIoCountryTest {
 		CharArrayWriter writer = new CharArrayWriter();
 		try (BeanWriter out = factory.createWriter(STREAM_NAME, writer)) {
 			out.write(RECORD_HEADER, null);
-			CountryData.countries().forEach(out::write);
+			CountriesRaw.from(CountryData.to()).forEach(out::write);
 			out.flush();
 		}
 		assertThat(writer.toString())
@@ -134,7 +135,7 @@ public class BeanIOCountryWriteTest extends AbstractBeanIoCountryTest {
 
 		CharArrayWriter writer = new CharArrayWriter();
 		try (BeanWriter out = factory.createWriter(STREAM_NAME, writer)) {
-			out.write(CountryReadOnly.countries(0));
+			out.write(CountriesRaw.from(CountryReadOnly.to(), 0));
 			out.flush();
 		}
 		assertThat(writer.toString()).contains("1,AD,Andorra,Andorra,376,Europe,Andorra la Vella,EUR,ca\n");
@@ -152,7 +153,7 @@ public class BeanIOCountryWriteTest extends AbstractBeanIoCountryTest {
 
 		CharArrayWriter writer = new CharArrayWriter();
 		try (BeanWriter out = factory.createWriter(STREAM_NAME, writer)) {
-			out.write(CountryRecord.countries(0));
+			out.write(CountriesRaw.from(CountryRecord.to(), 0));
 			out.flush();
 		}
 		assertThat(writer.toString()).contains("1,AD,Andorra,Andorra,376,Europe,Andorra la Vella,EUR,ca\n");
@@ -169,7 +170,7 @@ public class BeanIOCountryWriteTest extends AbstractBeanIoCountryTest {
 
 		CharArrayWriter writer = new CharArrayWriter();
 		try (BeanWriter out = factory.createWriter(STREAM_NAME, writer)) {
-			out.write(CountryValue.countries(0));
+			out.write(CountriesRaw.from(CountryValue.to(), 0));
 			out.flush();
 		}
 		assertThat(writer.toString()).contains("1,AD,Andorra,Andorra,376,Europe,Andorra la Vella,EUR,ca\n");
@@ -187,7 +188,7 @@ public class BeanIOCountryWriteTest extends AbstractBeanIoCountryTest {
 
 		CharArrayWriter writer = new CharArrayWriter();
 		try (BeanWriter out = factory.createWriter(STREAM_NAME, writer)) {
-			out.write(CountryAnnotated.countries(0));
+			out.write(CountriesRaw.from(CountryAnnotated.to(), 0));
 			out.flush();
 		}
 		assertThat(writer.toString()).contains("1,AD,Andorra,Andorra,376,Europe,Andorra la Vella,EUR,ca\n");
