@@ -1,5 +1,5 @@
 plugins {
-    id("shared-build-conventions")
+    id("application-conventions")
 }
 
 dependencies {

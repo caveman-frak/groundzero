@@ -16,7 +16,7 @@ import org.apache.commons.beanutils.FluentPropertyBeanIntrospector;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import uk.co.bluegecko.utility.bean.model.Address;
+import uk.co.bluegecko.common.model.invoice.Address;
 
 public class AddressBeanTest {
 

@@ -14,7 +14,7 @@ import java.util.UUID;
 import org.javamoney.moneta.Money;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import uk.co.bluegecko.utility.bean.model.Item;
+import uk.co.bluegecko.common.model.invoice.Item;
 
 public class ItemBeanTest {
 

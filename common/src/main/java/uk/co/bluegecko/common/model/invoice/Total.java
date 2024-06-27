@@ -1,4 +1,4 @@
-package uk.co.bluegecko.utility.bean.model;
+package uk.co.bluegecko.common.model.invoice;
 
 import java.math.BigDecimal;
 import lombok.AccessLevel;

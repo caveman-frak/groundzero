@@ -2,7 +2,6 @@
 
 plugins {
     id("java")
-    id("application")
     id("idea")
     id("jvm-test-suite")
     id("java-test-fixtures")
@@ -11,9 +10,9 @@ plugins {
     id("com.adarshr.test-logger")
 }
 
-group = "co.uk.bluegecko.marine"
+group = "co.uk.bluegecko.groundzero"
 version = "1.0"
-description = "Marine Tracking System"
+description = "Ground Zero Testing Area"
 
 java {
     toolchain {
@@ -35,13 +34,12 @@ idea {
     }
 }
 
-application.applicationDefaultJvmArgs = setOf("-XX:+EnableDynamicAgentLoading")
-
 dependencies {
     implementation(platform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES))
     implementation("org.springframework.boot:spring-boot-starter-json")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-aop")
+    implementation("com.github.spotbugs:spotbugs-annotations:4.8.6")
 }
 
 testing {
