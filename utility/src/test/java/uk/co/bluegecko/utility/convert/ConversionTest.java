@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import org.assertj.core.data.Percentage;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
@@ -24,6 +25,12 @@ public class ConversionTest {
 	private ConversionService conversionService;
 	@Autowired
 	private ConverterRegistry converterRegistry;
+
+	@AfterEach
+	void tearDown() {
+		converterRegistry.removeConvertible(Point.class, String.class);
+		converterRegistry.removeConvertible(String.class, Point.class);
+	}
 
 	@Test
 	void hasConversionService() {
