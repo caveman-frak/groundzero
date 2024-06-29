@@ -14,7 +14,7 @@ import org.springframework.web.reactive.config.EnableWebFlux;
 
 @SpringJUnitConfig
 @EnableWebFlux
-class SimpleHandlerTest {
+class ConversionHandlerTest {
 
 	@Autowired
 	private ConversionService conversionService;
@@ -29,7 +29,7 @@ class SimpleHandlerTest {
 
 	@Test
 	void convertInteger() {
-		SimpleHandler<Integer> handler = new SimpleHandler<>(conversionService, Integer.class);
+		ConversionHandler<Integer> handler = new ConversionHandler<>(conversionService, Integer.class);
 
 		assertThat(handler.supports(Long.class)).isTrue();
 		assertThat(handler.parse("101")).isEqualTo(101);
@@ -39,7 +39,8 @@ class SimpleHandlerTest {
 	@Test
 	@SuppressWarnings("unchecked")
 	void convertListOfInteger() {
-		SimpleHandler<List<Integer>> handler = new SimpleHandler<>(conversionService, List.class, Integer.class);
+		ConversionHandler<List<Integer>> handler = new ConversionHandler<>(conversionService, List.class,
+				Integer.class);
 
 		assertThat(handler.supports(Long.class)).isTrue();
 		assertThat(handler.parse("101,102")).contains(101, 102);

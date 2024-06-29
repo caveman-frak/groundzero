@@ -1,31 +1,28 @@
 package uk.co.bluegecko.utility.convert;
 
 import java.util.Collection;
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.TypeDescriptor;
 
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class SimpleHandler<T> implements Handler<T> {
+public class ConversionHandler<T> implements Handler<T> {
 
-	ConversionService conversionService;
-	TypeDescriptor typeDescriptor;
+	private final ConversionService conversionService;
+	private final TypeDescriptor typeDescriptor;
 
-	public SimpleHandler(ConversionService conversionService, TypeDescriptor typeDescriptor) {
+	public ConversionHandler(ConversionService conversionService, TypeDescriptor typeDescriptor) {
 		this.conversionService = conversionService;
 		this.typeDescriptor = typeDescriptor;
 	}
 
-	public SimpleHandler(ConversionService conversionService, Class<T> clazz) {
+	public ConversionHandler(ConversionService conversionService, Class<T> clazz) {
 		this.conversionService = conversionService;
 		this.typeDescriptor = TypeDescriptor.valueOf(clazz);
 	}
 
-	public <C extends Collection<E>, E> SimpleHandler(ConversionService conversionService,
-			Class<C> classCollection, Class<E> classElement) {
+	public <C extends Collection<E>, E> ConversionHandler(ConversionService conversionService,
+			Class<C> collectionClass, Class<E> elementClass) {
 		this.conversionService = conversionService;
-		this.typeDescriptor = TypeDescriptor.collection(classCollection, TypeDescriptor.valueOf(classElement));
+		this.typeDescriptor = TypeDescriptor.collection(collectionClass, TypeDescriptor.valueOf(elementClass));
 	}
 
 	@Override
