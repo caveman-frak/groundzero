@@ -1,4 +1,4 @@
-package uk.co.bluegecko.utility;
+package uk.co.bluegecko.common.utility;
 
 import java.util.function.BiConsumer;
 
@@ -11,8 +11,10 @@ public interface ThrowingBiConsumer<T, U, E extends Exception> {
 		return (t, u) -> {
 			try {
 				consumer.accept(t, u);
+			} catch (RuntimeException e) {
+				throw e;
 			} catch (Exception e) {
-				throw new RuntimeException(e);
+				throw new RuntimeException(e.getMessage(), e);
 			}
 		};
 	}
