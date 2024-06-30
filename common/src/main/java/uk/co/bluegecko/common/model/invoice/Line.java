@@ -19,7 +19,7 @@ public class Line {
 	BigDecimal discount = BigDecimal.ZERO;
 
 	public Money price() {
-		return item.price().multiply(BigDecimal.ONE.min(discount));
+		return item.price().multiply(BigDecimal.ONE.subtract(discount));
 	}
 
 	public Money total() {

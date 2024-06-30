@@ -4,8 +4,10 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.util.List;
 import javax.money.CurrencyUnit;
+import javax.money.Monetary;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.Data;
 import lombok.Singular;
 import lombok.experimental.FieldDefaults;
@@ -16,7 +18,7 @@ import org.springframework.lang.Nullable;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Invoice {
 
-	Integer number;
+	Long number;
 	LocalDate date;
 
 	Address customer;
@@ -26,8 +28,10 @@ public class Invoice {
 	@Singular
 	List<Line> lines;
 
-	CurrencyUnit currency;
-	Total total;
+	@Default
+	CurrencyUnit currency = Monetary.getCurrency("GBP");
+
+	final Total total = new Total(this, TaxRate.STANDARD);
 
 	public static class InvoiceBuilder {
 

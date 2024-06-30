@@ -41,7 +41,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-json")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-aop")
-    implementation("com.github.spotbugs:spotbugs-annotations:4.8.6")
+    runtimeOnly("com.github.spotbugs:spotbugs-annotations:4.8.6")
+    testFixturesImplementation("org.instancio:instancio-junit:4.6.0")
+    testFixturesImplementation("net.datafaker:datafaker:2.2.2")
 }
 
 testing {

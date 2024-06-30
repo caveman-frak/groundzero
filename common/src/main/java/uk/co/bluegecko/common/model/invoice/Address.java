@@ -28,6 +28,7 @@ public class Address {
 	@Nullable
 	String state;
 	String postcode;
+	@Nullable
 	String country;
 
 }
