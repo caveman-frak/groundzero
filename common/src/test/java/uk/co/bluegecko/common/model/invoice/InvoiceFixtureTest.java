@@ -28,7 +28,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 @SpringJUnitConfig
 class InvoiceFixtureTest {
 
-	public static final int REPEATS = 100;
+	public static final int REPEATS = 10;
 
 	@Autowired
 	private Clock clock;

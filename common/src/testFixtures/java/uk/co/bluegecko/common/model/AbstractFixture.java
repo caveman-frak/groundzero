@@ -6,11 +6,13 @@ import net.datafaker.service.FakeValuesService;
 import net.datafaker.service.FakerContext;
 import net.datafaker.service.RandomService;
 
-public class AbstractFixture {
+public abstract class AbstractFixture {
 
-	protected static final FakeValuesService valuesService = new FakeValuesService();
-	protected static final RandomService randomService = new RandomService();
-	protected static final FakerContext context = new FakerContext(Locale.UK, randomService);
-	protected static final Faker faker = new Faker(valuesService, context);
+	private static final Faker faker = new Faker(new FakeValuesService(),
+			new FakerContext(Locale.UK, new RandomService()));
+
+	public static Faker faker() {
+		return faker;
+	}
 
 }

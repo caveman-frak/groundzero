@@ -12,8 +12,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
 import javax.money.Monetary;
+import lombok.NonNull;
 import lombok.experimental.UtilityClass;
-import org.jetbrains.annotations.NotNull;
 import uk.co.bluegecko.common.model.AbstractFixture;
 import uk.co.bluegecko.common.model.invoice.Address.AddressBuilder;
 import uk.co.bluegecko.common.model.invoice.Invoice.InvoiceBuilder;
@@ -49,11 +49,11 @@ public class InvoiceFixture extends AbstractFixture {
 	@SafeVarargs
 	public AddressBuilder address(Consumer<AddressBuilder>... adjusters) {
 		AddressBuilder builder = Address.builder()
-				.name(faker.name().name())
-				.building(faker.address().buildingNumber())
-				.street(faker.address().streetAddress())
-				.town(faker.address().cityName())
-				.postcode(faker.address().postcode());
+				.name(faker().name().name())
+				.building(faker().address().buildingNumber())
+				.street(faker().address().streetAddress())
+				.town(faker().address().cityName())
+				.postcode(faker().address().postcode());
 
 		Arrays.stream(adjusters).forEach(a -> a.accept(builder));
 
@@ -62,18 +62,18 @@ public class InvoiceFixture extends AbstractFixture {
 
 	@SafeVarargs
 	public ItemBuilder item(int i, BiConsumer<Integer, ItemBuilder>... adjusters) {
-		String equipment = faker.appliance().equipment();
+		String equipment = faker().appliance().equipment();
 		ItemBuilder builder = Item.builder().identifier(new UUID(i, itemId.getAndIncrement()))
 				.shortName(equipment)
-				.description(faker.appliance().brand() + " " + equipment)
-				.price(new BigDecimal(faker.commerce().price()));
+				.description(faker().appliance().brand() + " " + equipment)
+				.price(new BigDecimal(faker().commerce().price()));
 
-		switch (randomService.nextInt(10)) {
-			case 0, 1 -> builder.customisation("Size", faker.size().adjective());
-			case 2 -> builder.customisation("Material", faker.commerce().material());
-			case 3 -> builder.customisation("Measure", faker.food().measurement());
-			case 4, 5 -> builder.customisation("Size", faker.garmentSize().size());
-			case 6 -> builder.customisation("Colour", faker.color().name());
+		switch (faker().random().nextInt(10)) {
+			case 0, 1 -> builder.customisation("Size", faker().size().adjective());
+			case 2 -> builder.customisation("Material", faker().commerce().material());
+			case 3 -> builder.customisation("Measure", faker().food().measurement());
+			case 4, 5 -> builder.customisation("Size", faker().garmentSize().size());
+			case 6 -> builder.customisation("Colour", faker().color().name());
 		}
 
 		Arrays.stream(adjusters).forEach(a -> a.accept(i, builder));
@@ -88,15 +88,15 @@ public class InvoiceFixture extends AbstractFixture {
 
 	@SafeVarargs
 	public List<ItemBuilder> items(int min, int max, BiConsumer<Integer, ItemBuilder>... adjusters) {
-		return items(randomService.nextInt(min, max), adjusters);
+		return items(faker().number().numberBetween(min, max), adjusters);
 	}
 
 	@SafeVarargs
 	public Line.LineBuilder line(ItemBuilder item, int i, BiConsumer<Integer, LineBuilder>... adjusters) {
 		LineBuilder builder = Line.builder()
 				.item(item.build())
-				.quantity(faker.number().numberBetween(1, 10))
-				.discount(BigDecimal.valueOf(faker.number().numberBetween(0, 50) / 100.0));
+				.quantity(faker().number().numberBetween(1, 10))
+				.discount(BigDecimal.valueOf(faker().number().numberBetween(0, 50) / 100.0));
 
 		Arrays.stream(adjusters).forEach(a -> a.accept(i, builder));
 
@@ -108,7 +108,7 @@ public class InvoiceFixture extends AbstractFixture {
 		return IntStream.range(0, items.size()).boxed().map(i -> line(items.get(i), i, adjusters)).toList();
 	}
 
-	@NotNull
+	@NonNull
 	public Consumer<InvoiceBuilder> currencyUSD() {
 		return i -> i.currency(Monetary.getCurrency("USD"));
 	}
