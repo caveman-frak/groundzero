@@ -92,7 +92,7 @@ public class InvoiceFixture extends AbstractFixture {
 	}
 
 	@SafeVarargs
-	public Line.LineBuilder line(ItemBuilder item, int i, BiConsumer<Integer, LineBuilder>... adjusters) {
+	public Line.LineBuilder line(int i, ItemBuilder item, BiConsumer<Integer, LineBuilder>... adjusters) {
 		LineBuilder builder = Line.builder()
 				.item(item.build())
 				.quantity(faker().number().numberBetween(1, 10))
@@ -105,7 +105,7 @@ public class InvoiceFixture extends AbstractFixture {
 
 	@SafeVarargs
 	public List<LineBuilder> lines(List<ItemBuilder> items, BiConsumer<Integer, LineBuilder>... adjusters) {
-		return IntStream.range(0, items.size()).boxed().map(i -> line(items.get(i), i, adjusters)).toList();
+		return IntStream.range(0, items.size()).boxed().map(i -> line(i, items.get(i), adjusters)).toList();
 	}
 
 	@NonNull

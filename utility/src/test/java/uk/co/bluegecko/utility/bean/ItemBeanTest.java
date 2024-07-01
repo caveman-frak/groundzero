@@ -8,10 +8,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
-import org.javamoney.moneta.Money;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import uk.co.bluegecko.common.model.invoice.Item;
@@ -23,7 +23,7 @@ public class ItemBeanTest {
 			new Object[]{"shortName", "Device", String.class},
 			new Object[]{"description", "A device, it does things!", String.class},
 			new Object[]{"customisations", Map.of(), Map.class},
-			new Object[]{"price", Money.of(9.95, "GBP"), Money.class}
+			new Object[]{"price", BigDecimal.valueOf(9.95), BigDecimal.class}
 	};
 
 	private Item item;
@@ -34,7 +34,7 @@ public class ItemBeanTest {
 				.identifier(new UUID(10, 1))
 				.shortName("Device")
 				.description("A device, it does things!")
-				.price(Money.of(9.95, "GBP"))
+				.price(BigDecimal.valueOf(9.95))
 				.build();
 	}
 
@@ -47,7 +47,7 @@ public class ItemBeanTest {
 				.containsExactly("identifier", "shortName", "description", "customisations", "price");
 		assertThat(Arrays.stream(fields).map(Field::getType).toArray())
 				.hasSize(5)
-				.containsExactly(UUID.class, String.class, String.class, Map.class, Money.class);
+				.containsExactly(UUID.class, String.class, String.class, Map.class, BigDecimal.class);
 	}
 
 	@Test
@@ -63,7 +63,7 @@ public class ItemBeanTest {
 				.hasSize(9)
 				.contains(
 						boolean.class, String.class, int.class, Item.ItemBuilder.class,
-						String.class, String.class, UUID.class, Money.class, Map.class);
+						String.class, String.class, UUID.class, BigDecimal.class, Map.class);
 		for (Object[] arg : ARGS) {
 			assertThat(Item.class.getDeclaredMethod((String) arg[0]).invoke(item)).isEqualTo(arg[1]);
 		}
@@ -77,7 +77,7 @@ public class ItemBeanTest {
 		assertThat(constructors[0].accessFlags()).contains(AccessFlag.PUBLIC);
 		assertThat(constructors[0].getParameterTypes())
 				.hasSize(5)
-				.containsExactly(UUID.class, String.class, String.class, Map.class, Money.class);
+				.containsExactly(UUID.class, String.class, String.class, Map.class, BigDecimal.class);
 	}
 
 	@Test

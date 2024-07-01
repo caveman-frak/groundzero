@@ -1,9 +1,12 @@
 package uk.co.bluegecko.utility.validation;
 
+import static uk.co.bluegecko.common.model.invoice.InvoiceFixture.address;
+import static uk.co.bluegecko.common.model.invoice.InvoiceFixture.item;
+import static uk.co.bluegecko.common.model.invoice.InvoiceFixture.line;
+
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
-import javax.money.Monetary;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -24,7 +27,9 @@ class InvoiceValidatorTest {
 	void invoiceNegativeNumber() {
 		Invoice invoice = Invoice.builder()
 				.number(-1L)
-				.date(clock).currency(Monetary.getCurrency("GBP"))
+				.date(clock)
+				.customer(address().build())
+				.line(line(1, item(1)).build())
 				.build();
 	}
 

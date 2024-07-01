@@ -40,6 +40,10 @@ public class Invoice {
 			return this;
 		}
 
+		public InvoiceBuilder ccyCode(String ccyCode) {
+			return currency(Monetary.getCurrency(ccyCode));
+		}
+
 	}
 
 }

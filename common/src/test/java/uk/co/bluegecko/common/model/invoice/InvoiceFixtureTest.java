@@ -58,7 +58,7 @@ class InvoiceFixtureTest {
 
 	@RepeatedTest(REPEATS)
 	void fakeLine() {
-		Line line = line(item(0), 0).build();
+		Line line = line(0, item(0)).build();
 
 		assertThat(line.getItem()).isNotNull();
 		assertThat(line.getDiscount()).isNotNull().isNotNegative().isBetween(BigDecimal.ZERO, BigDecimal.valueOf(0.50));
