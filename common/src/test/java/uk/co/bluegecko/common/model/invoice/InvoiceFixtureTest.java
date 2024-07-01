@@ -1,6 +1,13 @@
 package uk.co.bluegecko.common.model.invoice;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static uk.co.bluegecko.common.model.invoice.InvoiceFixture.address;
+import static uk.co.bluegecko.common.model.invoice.InvoiceFixture.currencyUSD;
+import static uk.co.bluegecko.common.model.invoice.InvoiceFixture.invoice;
+import static uk.co.bluegecko.common.model.invoice.InvoiceFixture.item;
+import static uk.co.bluegecko.common.model.invoice.InvoiceFixture.items;
+import static uk.co.bluegecko.common.model.invoice.InvoiceFixture.line;
+import static uk.co.bluegecko.common.model.invoice.InvoiceFixture.lines;
 
 import java.math.BigDecimal;
 import java.time.Clock;
@@ -9,27 +16,26 @@ import java.time.Month;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Consumer;
 import javax.money.Monetary;
 import org.javamoney.moneta.Money;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import uk.co.bluegecko.common.model.invoice.Invoice.InvoiceBuilder;
 
 @SpringJUnitConfig
 class InvoiceFixtureTest {
 
+	public static final int REPEATS = 100;
+
 	@Autowired
 	private Clock clock;
 
-	@RepeatedTest(10)
+	@RepeatedTest(REPEATS)
 	void fakedAddress() {
-		Address address = InvoiceFixture.address().build();
+		Address address = address().build();
 
 		assertThat(address.getName()).isNotBlank();
 		assertThat(address.getBuilding()).isNotBlank();
@@ -38,11 +44,10 @@ class InvoiceFixtureTest {
 		assertThat(address.getPostcode()).isNotBlank();
 	}
 
-	@RepeatedTest(10)
+	@RepeatedTest(REPEATS)
 	void fakeItem() {
-		Item item = InvoiceFixture.item(1).build();
+		Item item = item(1).build();
 
-		System.out.println(item);
 		assertThat(item.identifier()).isNotNull().extracting(UUID::getMostSignificantBits).isEqualTo(1L);
 		assertThat(item.shortName()).isNotBlank();
 		assertThat(item.description()).isNotBlank().contains(item.shortName());
@@ -51,14 +56,13 @@ class InvoiceFixtureTest {
 				.isLessThan(BigDecimal.valueOf(100));
 	}
 
-	@RepeatedTest(10)
+	@RepeatedTest(REPEATS)
 	void fakeLine() {
-		Line line = InvoiceFixture.line(InvoiceFixture.item(0), 0).build();
+		Line line = line(item(0), 0).build();
 
-		System.out.println(line);
 		assertThat(line.getItem()).isNotNull();
 		assertThat(line.getDiscount()).isNotNull().isNotNegative().isBetween(BigDecimal.ZERO, BigDecimal.valueOf(0.50));
-		assertThat(line.getQuantity()).isPositive().isBetween(1, 10);
+		assertThat(line.getQuantity()).isPositive().isBetween(1, REPEATS);
 		assertThat(line.price()).describedAs("price").isEqualTo(
 				line.getItem().price()
 						.multiply(BigDecimal.ONE
@@ -67,12 +71,11 @@ class InvoiceFixtureTest {
 				line.price().multiply(BigDecimal.valueOf(line.getQuantity())));
 	}
 
-	@RepeatedTest(10)
+	@RepeatedTest(REPEATS)
 	void fakeInvoice() {
-		Invoice invoice = InvoiceFixture.invoice(clock, InvoiceFixture.address(),
-				InvoiceFixture.lines(InvoiceFixture.items(0))).build();
+		Invoice invoice = invoice(clock, address(),
+				lines(items(0))).build();
 
-		System.out.println(invoice);
 		assertThat(invoice.getCurrency()).isEqualTo(Monetary.getCurrency("GBP"));
 		assertThat(invoice.getDate()).hasDayOfMonth(15).hasMonth(Month.JUNE).hasYear(2000);
 		assertThat(invoice.getCustomer()).isNotNull();
@@ -84,25 +87,23 @@ class InvoiceFixtureTest {
 
 	@Test
 	void fakeTotal() {
-		Invoice invoice = InvoiceFixture.invoice(clock, InvoiceFixture.address(), List.of()).build();
+		Invoice invoice = invoice(clock, address(), List.of()).build();
 		Total total = invoice.getTotal();
 
-		System.out.println(total);
 		assertThat(total).isNotNull().extracting(Total::getParent).isEqualTo(invoice);
 		assertThat(total).extracting(Total::getTaxRate).isEqualTo(TaxRate.STANDARD);
 		assertThat(total).extracting(Total::total).isEqualTo(Money.of(0, "GBP"));
 		assertThat(total).extracting(Total::tax).isEqualTo(Money.of(0, "GBP"));
 	}
 
-	@RepeatedTest(10)
+	@RepeatedTest(REPEATS)
 	void fakeInvoiceWithLines() {
-		Invoice invoice = InvoiceFixture.invoice(clock, InvoiceFixture.address(),
-				InvoiceFixture.lines(InvoiceFixture.items(1, 10))).build();
+		Invoice invoice = invoice(clock, address(),
+				lines(items(1, REPEATS))).build();
 		Total total = invoice.getTotal();
 
-		System.out.println(invoice);
 		assertThat(invoice.getLines()).isNotNull().isNotEmpty()
-				.hasSizeBetween(1, 10);
+				.hasSizeBetween(1, REPEATS);
 		BigDecimal calculated = BigDecimal.ZERO;
 		for (Line line : invoice.getLines()) {
 			calculated = calculated.add(line.total());
@@ -115,20 +116,15 @@ class InvoiceFixtureTest {
 				.isEqualTo(total.total().add(total.tax()));
 	}
 
-	@RepeatedTest(10)
+	@RepeatedTest(REPEATS)
 	void fakeInvoiceInUsdWithLines() {
-		Invoice invoice = InvoiceFixture.invoice(clock, InvoiceFixture.address(),
-				InvoiceFixture.lines(InvoiceFixture.items(1, 10)),
-				asUSD()).build();
+		Invoice invoice = invoice(clock, address(), lines(items(1, REPEATS)), currencyUSD()).build();
 		Total total = invoice.getTotal();
 
 		assertThat(invoice.getCurrency()).isEqualTo(Monetary.getCurrency("USD"));
 		assertThat(total.total().getCurrency()).isEqualTo(Monetary.getCurrency("USD"));
-	}
-
-	@NotNull
-	private Consumer<InvoiceBuilder> asUSD() {
-		return i -> i.currency(Monetary.getCurrency("USD"));
+		assertThat(total.tax().getCurrency()).isEqualTo(Monetary.getCurrency("USD"));
+		assertThat(total.gross().getCurrency()).isEqualTo(Monetary.getCurrency("USD"));
 	}
 
 	@TestConfiguration
@@ -138,6 +134,7 @@ class InvoiceFixtureTest {
 		public Clock clock() {
 			return Clock.fixed(Instant.ofEpochSecond(961072210), ZoneOffset.UTC);
 		}
+
 	}
 
 }

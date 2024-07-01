@@ -11,7 +11,9 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
+import javax.money.Monetary;
 import lombok.experimental.UtilityClass;
+import org.jetbrains.annotations.NotNull;
 import uk.co.bluegecko.common.model.AbstractFixture;
 import uk.co.bluegecko.common.model.invoice.Address.AddressBuilder;
 import uk.co.bluegecko.common.model.invoice.Invoice.InvoiceBuilder;
@@ -104,6 +106,11 @@ public class InvoiceFixture extends AbstractFixture {
 	@SafeVarargs
 	public List<LineBuilder> lines(List<ItemBuilder> items, BiConsumer<Integer, LineBuilder>... adjusters) {
 		return IntStream.range(0, items.size()).boxed().map(i -> line(items.get(i), i, adjusters)).toList();
+	}
+
+	@NotNull
+	public Consumer<InvoiceBuilder> currencyUSD() {
+		return i -> i.currency(Monetary.getCurrency("USD"));
 	}
 
 }
