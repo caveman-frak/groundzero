@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
-import org.javamoney.moneta.Money;
 
 @Builder
 @Data
@@ -18,12 +17,12 @@ public class Line {
 	@Default
 	BigDecimal discount = BigDecimal.ZERO;
 
-	public Money price() {
+	public BigDecimal price() {
 		return item.price().multiply(BigDecimal.ONE.subtract(discount));
 	}
 
-	public Money total() {
-		return price().multiply(quantity);
+	public BigDecimal total() {
+		return price().multiply(BigDecimal.valueOf(quantity));
 	}
 
 }

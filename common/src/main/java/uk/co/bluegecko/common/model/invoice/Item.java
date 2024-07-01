@@ -1,10 +1,10 @@
 package uk.co.bluegecko.common.model.invoice;
 
+import java.math.BigDecimal;
 import java.util.Map;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.Singular;
-import org.javamoney.moneta.Money;
 
 @Builder
 public record Item(
@@ -14,6 +14,6 @@ public record Item(
 		String description,
 		@Singular
 		Map<String, String> customisations,
-		Money price) {
+		BigDecimal price) {
 
 }

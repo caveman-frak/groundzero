@@ -1,5 +1,6 @@
 package uk.co.bluegecko.common.model.invoice;
 
+import java.math.BigDecimal;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
@@ -20,7 +21,9 @@ public class Total {
 	TaxRate taxRate;
 
 	public Money total() {
-		return parent.getLines().stream().map(Line::total).reduce(Money.zero(parent.getCurrency()), Money::add);
+		return Money.of(parent.getLines().stream().map(Line::total)
+						.reduce(BigDecimal.ZERO, BigDecimal::add),
+				parent.getCurrency());
 	}
 
 	public Money tax() {

@@ -11,9 +11,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
-import javax.money.Monetary;
 import lombok.experimental.UtilityClass;
-import org.javamoney.moneta.Money;
 import uk.co.bluegecko.common.model.AbstractFixture;
 import uk.co.bluegecko.common.model.invoice.Address.AddressBuilder;
 import uk.co.bluegecko.common.model.invoice.Invoice.InvoiceBuilder;
@@ -27,13 +25,12 @@ public class InvoiceFixture extends AbstractFixture {
 	AtomicInteger itemId = new AtomicInteger(1);
 
 	@SafeVarargs
-	public InvoiceBuilder invoice(Clock clock, AddressBuilder customer, AddressBuilder delivery, String currency,
+	public InvoiceBuilder invoice(Clock clock, AddressBuilder customer, AddressBuilder delivery,
 			Collection<LineBuilder> lines, Consumer<InvoiceBuilder>... adjusters) {
 		InvoiceBuilder builder = Invoice.builder().number(invoiceId.getAndIncrement())
 				.date(clock)
 				.customer(customer.build())
-				.delivery(delivery == null ? null : delivery.build())
-				.currency(Monetary.getCurrency(currency));
+				.delivery(delivery == null ? null : delivery.build());
 
 		lines.forEach(l -> builder.line(l.build()));
 		Arrays.stream(adjusters).forEach(a -> a.accept(builder));
@@ -42,9 +39,9 @@ public class InvoiceFixture extends AbstractFixture {
 	}
 
 	@SafeVarargs
-	public InvoiceBuilder invoice(Clock clock, AddressBuilder customer, String currency, Collection<LineBuilder> lines,
+	public InvoiceBuilder invoice(Clock clock, AddressBuilder customer, Collection<LineBuilder> lines,
 			Consumer<InvoiceBuilder>... adjusters) {
-		return invoice(clock, customer, null, currency, lines, adjusters);
+		return invoice(clock, customer, null, lines, adjusters);
 	}
 
 	@SafeVarargs
@@ -62,12 +59,12 @@ public class InvoiceFixture extends AbstractFixture {
 	}
 
 	@SafeVarargs
-	public ItemBuilder item(int i, String currency, BiConsumer<Integer, ItemBuilder>... adjusters) {
+	public ItemBuilder item(int i, BiConsumer<Integer, ItemBuilder>... adjusters) {
 		String equipment = faker.appliance().equipment();
 		ItemBuilder builder = Item.builder().identifier(new UUID(i, itemId.getAndIncrement()))
 				.shortName(equipment)
 				.description(faker.appliance().brand() + " " + equipment)
-				.price(Money.of(new BigDecimal(faker.commerce().price()), currency));
+				.price(new BigDecimal(faker.commerce().price()));
 
 		switch (randomService.nextInt(10)) {
 			case 0, 1 -> builder.customisation("Size", faker.size().adjective());
@@ -83,13 +80,13 @@ public class InvoiceFixture extends AbstractFixture {
 	}
 
 	@SafeVarargs
-	public List<ItemBuilder> items(int times, String currency, BiConsumer<Integer, ItemBuilder>... adjusters) {
-		return IntStream.range(0, times).boxed().map(i -> item(i, currency, adjusters)).toList();
+	public List<ItemBuilder> items(int times, BiConsumer<Integer, ItemBuilder>... adjusters) {
+		return IntStream.range(0, times).boxed().map(i -> item(i, adjusters)).toList();
 	}
 
 	@SafeVarargs
-	public List<ItemBuilder> items(int min, int max, String currency, BiConsumer<Integer, ItemBuilder>... adjusters) {
-		return items(randomService.nextInt(min, max), currency, adjusters);
+	public List<ItemBuilder> items(int min, int max, BiConsumer<Integer, ItemBuilder>... adjusters) {
+		return items(randomService.nextInt(min, max), adjusters);
 	}
 
 	@SafeVarargs
