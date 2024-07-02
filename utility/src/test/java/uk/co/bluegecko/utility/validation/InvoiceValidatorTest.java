@@ -6,35 +6,27 @@ import static uk.co.bluegecko.common.model.invoice.InvoiceFixture.invoice;
 import static uk.co.bluegecko.common.model.invoice.InvoiceFixture.items;
 import static uk.co.bluegecko.common.model.invoice.InvoiceFixture.lines;
 
-import java.time.Clock;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Month;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Locale;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.validation.BeanPropertyBindingResult;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import uk.co.bluegecko.common.model.invoice.Invoice;
 import uk.co.bluegecko.common.model.invoice.Invoice.InvoiceBuilder;
 
-@SpringJUnitConfig
-class InvoiceValidatorTest {
+class InvoiceValidatorTest extends AbstractValidatorTest {
 
-	@Autowired
-	Clock clock;
-	@Autowired
-	MessageSource messageSource;
+	@Test
+	void invoiceValid() {
+		Errors errors = validate(
+				invoice(clock, address(), lines(items(1))).build());
+
+		assertThat(errors.getFieldErrorCount()).isEqualTo(0);
+	}
 
 	@Test
 	void invoiceNegativeNumber() {
@@ -48,6 +40,21 @@ class InvoiceValidatorTest {
 		assertThat(error.getRejectedValue()).isEqualTo(-1L);
 		assertThat(messageSource.getMessage(error, Locale.UK))
 				.isEqualTo("Invoice number must be positive.");
+	}
+
+	@ParameterizedTest
+	@CsvSource({
+			"en, Invoice number must be positive.",
+			"de, Rechnungsnummer muss positiv sein.",
+			"fr, Le numéro de facture doit être positif."
+	})
+	void invoiceNegativeNumberTranslated(Locale locale, String message) {
+		Errors errors = validate(
+				invoice(clock, address(), lines(items(1)),
+						i -> i.number(-1L)).build());
+
+		assertThat(messageSource.getMessage(errors.getFieldError("number"), locale))
+				.isEqualTo(message);
 	}
 
 	@Test
@@ -106,38 +113,8 @@ class InvoiceValidatorTest {
 				.isEqualTo("Currency is required.");
 	}
 
-	@TestConfiguration
-	static class Configuration {
-
-		@Bean
-		Clock clock() {
-			return Clock.fixed(Instant.ofEpochSecond(961072210), ZoneOffset.UTC);
-		}
-
-		@Bean
-		public MessageSource messageSource() {
-			ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-			messageSource.setBasename("classpath:messages/validation-invoice");
-			messageSource.setDefaultEncoding("UTF-8");
-			return messageSource;
-		}
-
-		@Bean
-		public LocalValidatorFactoryBean getValidator() {
-			LocalValidatorFactoryBean bean = new LocalValidatorFactoryBean();
-			bean.setValidationMessageSource(messageSource());
-			return bean;
-		}
-
-	}
-
-	@NotNull
 	private Errors validate(Invoice invoice) {
-		Errors errors = new BeanPropertyBindingResult(invoice, "invoice");
-		AddressValidator addressValidator = new AddressValidator();
-		InvoiceValidator invoiceValidator = new InvoiceValidator(clock, addressValidator);
-		invoiceValidator.validate(invoice, errors);
-		return errors;
+		return validate(invoice, "invoice", new InvoiceValidator(clock, new AddressValidator()));
 	}
 
 }
