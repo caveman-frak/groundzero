@@ -2,12 +2,12 @@ package uk.co.bluegecko.common.model.invoice;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static uk.co.bluegecko.common.model.invoice.InvoiceFixture.address;
-import static uk.co.bluegecko.common.model.invoice.InvoiceFixture.currencyUSD;
 import static uk.co.bluegecko.common.model.invoice.InvoiceFixture.invoice;
 import static uk.co.bluegecko.common.model.invoice.InvoiceFixture.item;
 import static uk.co.bluegecko.common.model.invoice.InvoiceFixture.items;
 import static uk.co.bluegecko.common.model.invoice.InvoiceFixture.line;
 import static uk.co.bluegecko.common.model.invoice.InvoiceFixture.lines;
+import static uk.co.bluegecko.common.model.invoice.InvoiceFixture.withUSD;
 
 import java.math.BigDecimal;
 import java.time.Clock;
@@ -118,7 +118,7 @@ class InvoiceFixtureTest {
 
 	@RepeatedTest(REPEATS)
 	void fakeInvoiceInUsdWithLines() {
-		Invoice invoice = invoice(clock, address(), lines(items(1, REPEATS)), currencyUSD()).build();
+		Invoice invoice = invoice(clock, address(), lines(items(1, REPEATS)), withUSD()).build();
 		Total total = invoice.getTotal();
 
 		assertThat(invoice.getCurrency()).isEqualTo(Monetary.getCurrency("USD"));

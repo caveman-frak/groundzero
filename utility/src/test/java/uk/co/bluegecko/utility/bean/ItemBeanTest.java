@@ -93,9 +93,10 @@ public class ItemBeanTest {
 	}
 
 	@Test
-	void newItemFromAllArgCtor() throws InvocationTargetException, InstantiationException, IllegalAccessException {
-		Constructor<?> allArgCtor = Item.class.getDeclaredConstructors()[0];
-		Object obj = allArgCtor.newInstance(ARGS[0][1], ARGS[1][1], ARGS[2][1], ARGS[3][1], ARGS[4][1]);
+	void newItemFromAllArgConstructor()
+			throws InvocationTargetException, InstantiationException, IllegalAccessException {
+		Constructor<?> allArgConstructor = Item.class.getDeclaredConstructors()[0];
+		Object obj = allArgConstructor.newInstance(ARGS[0][1], ARGS[1][1], ARGS[2][1], ARGS[3][1], ARGS[4][1]);
 		if (obj instanceof Item it) {
 			assertThat(it).isEqualTo(item);
 		} else {

@@ -35,9 +35,8 @@ public class Invoice {
 
 	public static class InvoiceBuilder {
 
-		public InvoiceBuilder date(Clock clock) {
-			this.date = LocalDate.now(clock);
-			return this;
+		public InvoiceBuilder clock(Clock clock) {
+			return date(LocalDate.now(clock));
 		}
 
 		public InvoiceBuilder ccyCode(String ccyCode) {

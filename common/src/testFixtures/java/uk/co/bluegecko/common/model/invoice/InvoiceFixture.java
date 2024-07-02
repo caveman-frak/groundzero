@@ -30,7 +30,7 @@ public class InvoiceFixture extends AbstractFixture {
 	public InvoiceBuilder invoice(Clock clock, AddressBuilder customer, AddressBuilder delivery,
 			Collection<LineBuilder> lines, Consumer<InvoiceBuilder>... adjusters) {
 		InvoiceBuilder builder = Invoice.builder().number(invoiceId.getAndIncrement())
-				.date(clock)
+				.clock(clock)
 				.customer(customer.build())
 				.delivery(delivery == null ? null : delivery.build());
 
@@ -109,7 +109,12 @@ public class InvoiceFixture extends AbstractFixture {
 	}
 
 	@NonNull
-	public Consumer<InvoiceBuilder> currencyUSD() {
+	public Consumer<InvoiceBuilder> withDelivery(Consumer<AddressBuilder>... adjusters) {
+		return i -> i.delivery(address(adjusters).build());
+	}
+
+	@NonNull
+	public Consumer<InvoiceBuilder> withUSD() {
 		return i -> i.currency(Monetary.getCurrency("USD"));
 	}
 
