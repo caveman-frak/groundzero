@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -53,7 +54,8 @@ class InvoiceValidatorTest extends AbstractValidatorTest {
 				invoice(clock, address(), lines(items(1)),
 						i -> i.number(-1L)).build());
 
-		assertThat(messageSource.getMessage(errors.getFieldError("number"), locale))
+		assertThat(messageSource.getMessage(
+				Objects.requireNonNull(errors.getFieldError("number")), locale))
 				.isEqualTo(message);
 	}
 

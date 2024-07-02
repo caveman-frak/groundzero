@@ -1,5 +1,7 @@
 package uk.co.bluegecko.utility.validation;
 
+import static org.springframework.util.StringUtils.hasText;
+
 import lombok.NonNull;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
@@ -20,17 +22,16 @@ public class AddressValidator implements Validator {
 			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "building", "empty");
 			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "street", "empty");
 			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "town", "empty");
-
+			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "postcode", "empty");
+			
 			validatePostCode(errors, address.getPostcode(), address.getCountry());
 		}
 	}
 
 	private void validatePostCode(@NonNull Errors errors, String postcode, String country) {
-		try {
-			errors.pushNestedPath("postcode");
-			if (postcode == null) {
-				ValidationUtils.rejectIfEmptyOrWhitespace(errors, null, "empty");
-			} else {
+		if (hasText(postcode)) {
+			try {
+				errors.pushNestedPath("postcode");
 				if (country == null) {
 					if (postcode.length() < 6 || postcode.length() > 8) {
 						errors.rejectValue(null, "length");
@@ -45,9 +46,9 @@ public class AddressValidator implements Validator {
 				} else if (postcode.length() < 3 || postcode.length() > 10) {
 					errors.rejectValue(null, "length");
 				}
+			} finally {
+				errors.popNestedPath();
 			}
-		} finally {
-			errors.popNestedPath();
 		}
 	}
 
