@@ -47,7 +47,7 @@ public class AbstractValidatorTest {
 		public MessageSource messageSource() {
 			ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
 			messageSource.setBasename("classpath:messages/validation-invoice");
-			messageSource.setDefaultEncoding(StandardCharsets.ISO_8859_1.name());
+			messageSource.setDefaultEncoding(StandardCharsets.UTF_8.name());
 			return messageSource;
 		}
 

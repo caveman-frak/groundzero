@@ -47,7 +47,9 @@ class InvoiceValidatorTest extends AbstractValidatorTest {
 	@CsvSource({
 			"en, Invoice number must be positive.",
 			"de, Rechnungsnummer muss positiv sein.",
-			"fr, Le numéro de facture doit être positif."
+			"fr, Le numéro de facture doit être positif.",
+			"ar, يجب أن يكون رقم الفاتورة موجباً.",
+			"zh, 发票号码必须为正数。"
 	})
 	void invoiceNegativeNumberTranslated(Locale locale, String message) {
 		Errors errors = validate(
