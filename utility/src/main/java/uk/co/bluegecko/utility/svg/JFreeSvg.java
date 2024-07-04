@@ -47,14 +47,18 @@ public class JFreeSvg {
 	private static void drawVessel(SVGGraphics2D g, Point p, double rotation, int count) {
 		String identifier = "vessel-" + count;
 		Path2D vessel = vesselPath();
-		vessel.transform(AffineTransform.getRotateInstance(rotation, 19, 5));
+		Point centre = new Point(10, 5);
+		vessel.transform(AffineTransform.getRotateInstance(rotation, centre.x, centre.y));
 		vessel.transform(AffineTransform.getTranslateInstance(p.x, p.y));
+		centre.translate(p.x, p.y);
 
 		g.setRenderingHint(SVGHints.KEY_BEGIN_GROUP, identifier);
 		g.setPaint(Color.WHITE);
 		g.fill(vessel);
 		g.setPaint(Color.BLACK);
 		g.draw(vessel);
+		g.setPaint(Color.GREEN);
+		g.drawString(String.valueOf(count), p.x + 20, p.y);
 		g.setRenderingHint(SVGHints.KEY_END_GROUP, identifier);
 	}
 
