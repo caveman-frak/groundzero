@@ -12,7 +12,6 @@ import java.awt.geom.Path2D;
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
-import org.jetbrains.annotations.NotNull;
 import org.jfree.svg.SVGGraphics2D;
 import org.jfree.svg.SVGHints;
 import org.jfree.svg.SVGUtils;
@@ -80,7 +79,6 @@ public class JFreeSvg {
 		return shape;
 	}
 
-	@NotNull
 	private static Rectangle drawBackground(SVGGraphics2D g) {
 		Rectangle bounds = new Rectangle((int) g.getWidth(), (int) g.getHeight());
 		g.setPaint(BACKGROUND_COLOR);
@@ -112,7 +110,6 @@ public class JFreeSvg {
 		}
 	}
 
-	@NotNull
 	private static BasicStroke dottedLine() {
 		return new BasicStroke(0.5f,
 				BasicStroke.CAP_BUTT,
