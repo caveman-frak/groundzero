@@ -10,59 +10,81 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
-import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.Random;
-import org.jfree.svg.SVGGraphics2D;
-import org.jfree.svg.SVGHints;
-import org.jfree.svg.SVGUtils;
+import org.apache.batik.dom.GenericDOMImplementation;
+import org.apache.batik.svggen.SVGGeneratorContext;
+import org.apache.batik.svggen.SVGGraphics2D;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
+import org.w3c.dom.Element;
 
-public class JFreeSvg {
+public class Batik {
 
 	public static final Color BACKGROUND_COLOR = new Color(0x293021);
 	public static final Color RADAR_COLOR = new Color(0x216e1f);
 
 	public static void main(String[] args) throws IOException {
-		SVGGraphics2D g = new SVGGraphics2D(600, 600);
-		g.setClip(0, 0, 600, 600);
+		SVGGraphics2D graphics2D = createGraphics2D();
+		graphics2D.setClip(0, 0, 600, 600);
 
-		Rectangle bounds = drawBackground(g);
+		Rectangle bounds = drawBackground(graphics2D);
 		bounds.grow(-20, -20);
-		Shape radar = drawRadar(g, bounds);
+		Shape radar = drawRadar(graphics2D, bounds);
 
 		Random random = new Random();
 		for (int i = 0; i < random.nextInt(10); i++) {
-			drawRandomVessel(g, random, i, radar);
+			drawRandomVessel(graphics2D, random, i, radar);
 		}
 
-		SVGUtils.writeToSVG(new File("output/radar-jfree.svg"), g.getSVGElement());
+		Writer out = new FileWriter("output/radar-batik.svg", StandardCharsets.UTF_8);
+		graphics2D.stream(out, true);
+	}
+
+	private static SVGGraphics2D createGraphics2D() {
+		DOMImplementation dom = GenericDOMImplementation.getDOMImplementation();
+		String ns = "http://www.w3.org/2000/svg";
+		DocumentType docType = dom.createDocumentType("svg", "-//W3C//DTD SVG 1.1//EN",
+				"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd");
+		Document document = dom.createDocument(ns, "svg", docType);
+
+		Element root = document.getDocumentElement();
+		root.setAttributeNS(null, "width", "600");
+		root.setAttributeNS(null, "height", "600");
+
+		SVGGeneratorContext ctx = SVGGeneratorContext.createDefault(document);
+		ctx.setEmbeddedFontsOn(true);
+		ctx.setComment("Created by Caveman Frak at Blue Gecko 2024");
+
+		return new SVGGraphics2D(ctx, true);
 	}
 
 	private static void drawRandomVessel(Graphics2D g, Random random, int count, Shape radar) {
-		Rectangle b = g.getClipBounds();
-		Point p = new Point(random.nextInt(20, (int) b.getWidth() - 40), random.nextInt(20,
-				(int) b.getWidth() - 40));
+		Rectangle r = g.getClipBounds();
+		Point p = new Point(random.nextInt(20, (int) r.getWidth() - 40), random.nextInt(20,
+				(int) r.getWidth() - 40));
 		if (radar.contains(p.x, p.y)) {
 			drawVessel(g, p, random.nextDouble(Math.PI * 2), count);
 		}
 	}
 
 	private static void drawVessel(Graphics2D g, Point p, double rotation, int count) {
-		String identifier = "vessel-" + count;
 		Path2D vessel = vesselPath();
 		Point centre = new Point(10, 5);
 		vessel.transform(AffineTransform.getRotateInstance(rotation, centre.x, centre.y));
 		vessel.transform(AffineTransform.getTranslateInstance(p.x, p.y));
 		centre.translate(p.x, p.y);
 
-		g.setRenderingHint(SVGHints.KEY_BEGIN_GROUP, identifier);
 		g.setPaint(Color.WHITE);
 		g.fill(vessel);
 		g.setPaint(Color.BLACK);
 		g.draw(vessel);
 		g.setPaint(Color.GREEN);
 		g.drawString(String.valueOf(count), p.x + 20, p.y);
-		g.setRenderingHint(SVGHints.KEY_END_GROUP, identifier);
 	}
 
 	private static Path2D vesselPath() {
@@ -77,24 +99,24 @@ public class JFreeSvg {
 		return vessel;
 	}
 
-	private static Shape drawRadar(Graphics2D g, Rectangle bounds) {
-		g.setRenderingHint(SVGHints.KEY_BEGIN_GROUP, "radar");
+	private static Shape drawRadar(SVGGraphics2D g, Rectangle bounds) {
+//		g.setRenderingHint(SVGHints.KEY_BEGIN_GROUP, "radar");
 		Shape shape = drawOuterCircle(g, bounds);
 		drawInnerRings(g, bounds);
 		drawRadials(g, bounds);
-		g.setRenderingHint(SVGHints.KEY_END_GROUP, "radar");
+//		g.setRenderingHint(SVGHints.KEY_END_GROUP, "radar");
 		return shape;
 	}
 
 	private static Rectangle drawBackground(Graphics2D g) {
-		Rectangle b = g.getClipBounds();
-		Rectangle bounds = new Rectangle((int) b.getWidth(), (int) b.getHeight());
+		Rectangle r = g.getClipBounds();
+		Rectangle bounds = new Rectangle((int) r.getWidth(), (int) r.getHeight());
 		g.setPaint(BACKGROUND_COLOR);
 		g.fill(bounds);
 		return bounds;
 	}
 
-	private static Shape drawOuterCircle(Graphics2D g, Rectangle bounds) {
+	private static Shape drawOuterCircle(SVGGraphics2D g, Rectangle bounds) {
 		Ellipse2D circle = new Ellipse2D.Double();
 		circle.setFrame(bounds);
 
@@ -107,7 +129,7 @@ public class JFreeSvg {
 		return circle;
 	}
 
-	private static void drawInnerRings(Graphics2D g, Rectangle bounds) {
+	private static void drawInnerRings(SVGGraphics2D g, Rectangle bounds) {
 		g.setStroke(dottedLine());
 		Rectangle b = new Rectangle(bounds);
 		for (int x = 20; x < Math.min(bounds.width, bounds.height) / 2; x += 40) {
@@ -127,7 +149,7 @@ public class JFreeSvg {
 				0.0f);
 	}
 
-	private static void drawRadials(Graphics2D g, Rectangle b) {
+	private static void drawRadials(SVGGraphics2D g, Rectangle b) {
 		g.setStroke(new BasicStroke(0.5f));
 		g.draw(new Line2D.Double(b.getMinX(), b.getCenterY(), b.getMaxX(), b.getCenterY()));
 		g.draw(new Line2D.Double(b.getCenterX(), b.getMinY(), b.getCenterX(), b.getMaxY()));
