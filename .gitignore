@@ -46,3 +46,4 @@ bin/
 **/src/main/java/org/*
 **/src/main/java/com/*
 **/src/main/java/net/*
+/output/
