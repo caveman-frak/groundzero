@@ -140,6 +140,12 @@ public class Batik {
 		}
 	}
 
+	private static void drawRadials(SVGGraphics2D g, Rectangle b) {
+		g.setStroke(new BasicStroke(0.5f));
+		g.draw(new Line2D.Double(b.getMinX(), b.getCenterY(), b.getMaxX(), b.getCenterY()));
+		g.draw(new Line2D.Double(b.getCenterX(), b.getMinY(), b.getCenterX(), b.getMaxY()));
+	}
+
 	private static BasicStroke dottedLine() {
 		return new BasicStroke(0.5f,
 				BasicStroke.CAP_BUTT,
@@ -147,12 +153,6 @@ public class Batik {
 				1.0f,
 				new float[]{2.0f},
 				0.0f);
-	}
-
-	private static void drawRadials(SVGGraphics2D g, Rectangle b) {
-		g.setStroke(new BasicStroke(0.5f));
-		g.draw(new Line2D.Double(b.getMinX(), b.getCenterY(), b.getMaxX(), b.getCenterY()));
-		g.draw(new Line2D.Double(b.getCenterX(), b.getMinY(), b.getCenterX(), b.getMaxY()));
 	}
 
 }
