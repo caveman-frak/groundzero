@@ -81,9 +81,8 @@
         <animateTransform
           attributeName="transform"
           type="rotate"
-          from="0 0 0"
-          by="50 10 50 0"
-          to="360 0 0"
+          keyTimes="0.0; 0.10; 0.20; 0.25; 0.30; 0.40; 0.5; 0.60; 0.70; 0.75; 0.80; 0.90; 1.00"
+          values="    0;   30;   60;   90;  120;  150; 180;  210;  240;  270;  300;  330;  360"
           dur="30s"
           repeatCount="indefinite"/>
       </path>
