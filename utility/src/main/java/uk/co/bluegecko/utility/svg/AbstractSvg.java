@@ -115,7 +115,6 @@ public abstract class AbstractSvg<T extends Graphics2D> {
 		vessel.moveTo(0, 0);
 		vessel.lineTo(0, 10);
 		vessel.lineTo(15, 10);
-		vessel.lineTo(15, 10);
 		vessel.lineTo(20, 5);
 		vessel.lineTo(15, 0);
 		vessel.closePath();

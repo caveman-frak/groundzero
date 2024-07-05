@@ -1,5 +1,6 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg xmlns='http://www.w3.org/2000/svg' width='600' height='600'>
+  <!-- Created by Caveman Frak at Blue Gecko Ⓒ 2024 -->
   <defs>
     <linearGradient id="sweep-fade" x1="100%" y1="-100%" x2="0%" y2="50%">
       <stop offset="0%" stop-color="#0f0" stop-opacity="100%"/>
@@ -10,15 +11,15 @@
   <style type="text/css">
     <![CDATA[
       .background {
-        fill:rgb(41,48,33)
+        fill:#333333;
       }
       .radar {
-        stroke:rgb(0,255,0);
+        stroke:#00ff00;
         fill:none;
       }
       .outer {
         stroke-width:2;
-        fill:rgb(33,110,31)
+        fill:#336633;
       }
       .inner {
         stroke-width:0.5;
@@ -34,6 +35,16 @@
       }
       .axis {
         stroke-width:0.5;
+      }
+      .vessel {
+        stroke:black;
+        fill:white;
+      }
+      .vessel text {
+        stroke-width:0.5;
+        stroke:#00ff00;
+        fill:#00ff00;
+        font:12px SansSerif;
       }
     ]]>
   </style>
@@ -64,8 +75,11 @@
         dur="10s"
         repeatCount="indefinite"
       />
-      <path d="M0 0 L0 -280 A280 280 0 0 0 -140 -242 Z"
-        fill="url(#sweep-fade)"/>
+      <path d="M0 0 L0 -280 A280 280 0 0 0 -140 -242 Z" fill="url(#sweep-fade)"/>
+    </g>
+    <g id="vessel-0" class="vessel" transform="translate(100, 70)">
+      <path d="M-10 -5 L5 -5 L10 0 L5 5 L-10 5 Z" transform="rotate(60,0,0)"/>
+      <text x="15" y="-5">0</text>
     </g>
   </g>
 </svg>
