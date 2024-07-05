@@ -1,9 +1,11 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg xmlns='http://www.w3.org/2000/svg' width='500' height='600'>
+<svg xmlns='http://www.w3.org/2000/svg' width='600' height='600'>
   <defs>
-    <clipPath id='_clip-path-0'>
-      <path d='M0,0L600,0L600,600L0,600L0,0Z'/>
-    </clipPath>
+    <linearGradient id="sweep-fade" x1="100%" y1="-100%" x2="0%" y2="50%">
+      <stop offset="0%" stop-color="#0f0" stop-opacity="100%"/>
+      <stop offset="50%" stop-color="#0f0" stop-opacity="50%"/>
+      <stop offset="100%" stop-color="0f0" stop-opacity="0%"/>
+    </linearGradient>
   </defs>
   <style type="text/css">
     <![CDATA[
@@ -36,29 +38,34 @@
     ]]>
   </style>
   <rect class="background" x='0' y='0' width='600' height='600'/>
-  <g id="radar">
-    <circle class="radar outer" cx='300' cy='300' r='280'/>
-    <circle class="radar ticks small" cx='300' cy='300' r='276'/>
-    <circle class="radar ticks large" cx='300' cy='300' r='274'/>
-    <circle class="radar inner" cx='300' cy='300' r='240'/>
-    <circle class="radar inner" cx='300' cy='300' r='200'/>
-    <circle class="radar inner" cx='300' cy='300' r='160'/>
-    <circle class="radar inner" cx='300' cy='300' r='120'/>
-    <circle class="radar inner" cx='300' cy='300' r='80'/>
-    <circle class="radar inner" cx='300' cy='300' r='40'/>
-    <line class="radar axis" x1='20' y1='300' x2='580' y2='300'/>
-    <line class="radar axis" x1='300' y1='20' x2='300' y2='580'/>
-  </g>
-  <g id="sweep">
-    <line id="sweep" class="radar sweep" x1='300' y1='300' x2='300' y2='20'/>
-    <animateTransform
-      attributeName="transform"
-      attributeType="XML"
-      type="rotate"
-      from="0 300 300"
-      to="360 300 300"
-      dur="10s"
-      repeatCount="indefinite"
-    />
+  <g transform="translate(300,300)">
+    <g id="radar">
+      <circle class="radar outer" cx='0' cy='0' r='280'/>
+      <circle class="radar ticks small" cx='0' cy='0' r='276'/>
+      <circle class="radar ticks large" cx='0' cy='0' r='274'/>
+      <circle class="radar inner" cx='0' cy='0' r='240'/>
+      <circle class="radar inner" cx='0' cy='0' r='200'/>
+      <circle class="radar inner" cx='0' cy='0' r='160'/>
+      <circle class="radar inner" cx='0' cy='0' r='120'/>
+      <circle class="radar inner" cx='0' cy='0' r='80'/>
+      <circle class="radar inner" cx='0' cy='0' r='40'/>
+      <line class="radar axis" x1='-280' y1='0' x2='280' y2='0'/>
+      <line class="radar axis" x1='0' y1='-280' x2='0' y2='280'/>
+    </g>
+    <g id="sweep">
+      <line id="sweep" class="radar sweep"
+        x1='0' y1='0' x2='0' y2='-280'/>
+      <animateTransform
+        attributeName="transform"
+        attributeType="XML"
+        type="rotate"
+        from="0 0 0"
+        to="360 0 0"
+        dur="10s"
+        repeatCount="indefinite"
+      />
+      <path d="M0 0 L0 -280 A280 280 0 0 0 -140 -242 Z"
+        fill="url(#sweep-fade)"/>
+    </g>
   </g>
 </svg>
