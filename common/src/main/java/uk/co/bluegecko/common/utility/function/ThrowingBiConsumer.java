@@ -1,4 +1,4 @@
-package uk.co.bluegecko.common.utility;
+package uk.co.bluegecko.common.utility.function;
 
 import java.util.function.BiConsumer;
 

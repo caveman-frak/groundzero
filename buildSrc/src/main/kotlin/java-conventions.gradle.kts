@@ -25,6 +25,8 @@ java {
 
 repositories {
     mavenCentral()
+    maven("https://packages.atlassian.com/maven-3rdparty/")
+    maven("https://repo.osgeo.org/repository/release/")
 }
 
 idea {
@@ -52,6 +54,8 @@ testing {
         val applySpringTest = { suite: JvmTestSuite ->
             suite.dependencies {
                 implementation("org.springframework.boot:spring-boot-starter-test")
+                implementation("org.junit-pioneer:junit-pioneer:2.2.0")
+                implementation("net.jqwik:jqwik:1.9.0")
             }
         }
 

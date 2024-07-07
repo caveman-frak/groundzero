@@ -1,7 +1,7 @@
-package uk.co.bluegecko.common.utility;
+package uk.co.bluegecko.common.utility.function;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static uk.co.bluegecko.common.utility.ThrowingBiConsumer.sneakyThrows;
+import static uk.co.bluegecko.common.utility.function.ThrowingBiConsumer.sneakyThrows;
 
 import java.io.IOException;
 import java.text.ParseException;

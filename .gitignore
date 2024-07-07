@@ -47,3 +47,4 @@ bin/
 **/src/main/java/com/*
 **/src/main/java/net/*
 /output/
+**/.jqwik-database

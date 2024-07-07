@@ -1,7 +1,7 @@
 package uk.co.bluegecko.csv.opencsv.read;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static uk.co.bluegecko.common.utility.ThrowingBiConsumer.sneakyThrows;
+import static uk.co.bluegecko.common.utility.function.ThrowingBiConsumer.sneakyThrows;
 
 import com.opencsv.CSVReader;
 import com.opencsv.bean.CsvToBean;
