@@ -78,28 +78,28 @@ class AngleFormatterTest {
 	}
 
 	@Test
-	void invalidDecimal() throws ParseException {
+	void invalidDecimal() {
 		assertThatException().isThrownBy(() -> formatter.parse("1A°20'30.05\"N", Locale.UK))
 				.isInstanceOf(ParseException.class)
 				.withMessage("Cannot parse '1A°20'30.05\"N', error at index 0.");
 	}
 
 	@Test
-	void invalidMinute() throws ParseException {
+	void invalidMinute() {
 		assertThatException().isThrownBy(() -> formatter.parse("10°2A'30.05\"N", Locale.UK))
 				.isInstanceOf(ParseException.class)
 				.withMessage("Cannot parse '10°2A'30.05\"N', error at index 3.");
 	}
 
 	@Test
-	void invalidSecond() throws ParseException {
+	void invalidSecond() {
 		assertThatException().isThrownBy(() -> formatter.parse("10°20'3A.05\"N", Locale.UK))
 				.isInstanceOf(ParseException.class)
 				.withMessage("Cannot parse '10°20'3A.05\"N', error at index 7.");
 	}
 
 	@Test
-	void invalidHemisphere() throws ParseException {
+	void invalidHemisphere() {
 		assertThatException().isThrownBy(() -> formatter.parse("10°20'30.05\"B", Locale.UK))
 				.isInstanceOf(IllegalArgumentException.class)
 				.withMessage("No enum constant uk.co.bluegecko.utility.geo.Compass.B");
