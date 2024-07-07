@@ -12,14 +12,14 @@ class CompassTest {
 	@Test
 	void cardinalPoints() {
 		assertThat(Compass.cardinal())
-				.containsExactly(Compass.NORTH, Compass.EAST, Compass.SOUTH, Compass.WEST);
+				.containsExactly(Compass.N, Compass.E, Compass.S, Compass.W);
 	}
 
 	@Test
 	void cardinalEightWinds() {
 		assertThat(Compass.eightWinds())
-				.containsExactly(Compass.NORTH, Compass.NE, Compass.EAST, Compass.SE,
-						Compass.SOUTH, Compass.SW, Compass.WEST, Compass.NW);
+				.containsExactly(Compass.N, Compass.NE, Compass.E, Compass.SE,
+						Compass.S, Compass.SW, Compass.W, Compass.NW);
 	}
 
 	@Test
@@ -30,13 +30,25 @@ class CompassTest {
 	}
 
 	@Test
+	void latitudePoints() {
+		assertThat(Compass.latitude())
+				.containsExactly(Compass.N, Compass.S);
+	}
+
+	@Test
+	void longitudePoints() {
+		assertThat(Compass.longitude())
+				.containsExactly(Compass.E, Compass.W);
+	}
+
+	@Test
 	void nearestPointTo180() {
-		assertThat(Compass.nearestPoint(180.0)).isEqualTo(Compass.SOUTH);
+		assertThat(Compass.nearestPoint(180.0)).isEqualTo(Compass.S);
 	}
 
 	@Test
 	void nearestPointTo190() {
-		assertThat(Compass.nearestPoint(190.0)).isEqualTo(Compass.SOUTH);
+		assertThat(Compass.nearestPoint(190.0)).isEqualTo(Compass.S);
 	}
 
 	@Test

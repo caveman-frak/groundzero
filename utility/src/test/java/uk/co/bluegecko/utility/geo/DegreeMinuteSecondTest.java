@@ -14,7 +14,7 @@ class DegreeMinuteSecondTest {
 
 	@BeforeEach
 	void setUp() {
-		dms = new TestableDMS(0, 0, 0);
+		dms = new TestableDMS(180, 0, 0);
 	}
 
 	@Test
@@ -26,19 +26,34 @@ class DegreeMinuteSecondTest {
 	}
 
 	@Test
-	void toDecimal() {
+	void decimal() {
 		TestableDMS dms = new TestableDMS(100, 20, 10.05);
-		assertThat(dms.toDecimal()).describedAs("decimal").isEqualTo(100.33612500, within(0.0000001));
+		assertThat(dms.decimal()).describedAs("decimal").isEqualTo(100.33612500, within(0.0000001));
 	}
 
 	@Test
-	void fromDegreesDecimal() {
+	void radians() {
+		TestableDMS dms = new TestableDMS(100, 20, 10.05);
+		assertThat(dms.radians()).describedAs("radians").isEqualTo(1.7511957, within(0.0000001));
+	}
+
+	@Test
+	void fromDecimalParts() {
 		Number[] args = DegreeMinuteSecond.partsFromDecimal(100.33612500);
 		TestableDMS dms = new TestableDMS((int) args[0], (int) args[1], (double) args[2]);
 		assertThat(dms.getDegrees()).describedAs("degrees").isEqualTo(100);
 		assertThat(dms.getMinutes()).describedAs("minutes").isEqualTo(20);
 		assertThat(dms.getSeconds()).describedAs("seconds").isEqualTo(10.05, within(0.0001));
-		assertThat(dms.toDecimal()).describedAs("decimal").isEqualTo(100.33612500, within(0.0000001));
+		assertThat(dms.decimal()).describedAs("decimal").isEqualTo(100.33612500, within(0.0000001));
+	}
+
+	@Test
+	void fromDecimal() {
+		TestableDMS dms = TestableDMS.fromDecimal(100.33612500);
+		assertThat(dms.getDegrees()).describedAs("degrees").isEqualTo(100);
+		assertThat(dms.getMinutes()).describedAs("minutes").isEqualTo(20);
+		assertThat(dms.getSeconds()).describedAs("seconds").isEqualTo(10.05, within(0.0001));
+		assertThat(dms.decimal()).describedAs("decimal").isEqualTo(100.33612500, within(0.0000001));
 	}
 
 	@Test
@@ -54,7 +69,7 @@ class DegreeMinuteSecondTest {
 	@Test
 	void compassPoint() {
 		assertThat(new TestableDMS(90, 0, 0).compassPoint())
-				.describedAs("90 0 0").isPresent().get().isEqualTo(Compass.EAST);
+				.describedAs("90 0 0").isPresent().get().isEqualTo(Compass.E);
 		assertThat(new TestableDMS(135, 0, 0).compassPoint())
 				.describedAs("135 0 0").isPresent().get().isEqualTo(Compass.SE);
 		assertThat(new TestableDMS(90, 0, 0.05).compassPoint())
@@ -64,7 +79,7 @@ class DegreeMinuteSecondTest {
 	@Test
 	void cardinalCompassPoint() {
 		assertThat(new TestableDMS(90, 0, 0).compassPoint(Compass.cardinal()))
-				.describedAs("90 0 0").isPresent().get().isEqualTo(Compass.EAST);
+				.describedAs("90 0 0").isPresent().get().isEqualTo(Compass.E);
 		assertThat(new TestableDMS(135, 0, 0).compassPoint(Compass.cardinal()))
 				.describedAs("135 0 0").isNotPresent();
 		assertThat(new TestableDMS(90, 0, 0.05).compassPoint(Compass.cardinal()))
@@ -113,13 +128,37 @@ class DegreeMinuteSecondTest {
 	}
 
 	@Test
+	void addDMS() {
+		assertThat(dms.add(new TestableDMS(10, 20, 30)))
+				.isEqualTo(new TestableDMS(190, 20, 30));
+	}
+
+	@Test
+	void addDecimal() {
+		assertThat(dms.add(10.341666667))
+				.isEqualTo(new TestableDMS(190, 20, 30));
+	}
+
+	@Test
+	void subtractDMS() {
+		assertThat(dms.subtract(new TestableDMS(10, 20, 30)))
+				.isEqualTo(new TestableDMS(169, 39, 30));
+	}
+
+	@Test
+	void subtractDecimal() {
+		assertThat(dms.subtract(10.341666667))
+				.isEqualTo(new TestableDMS(169, 39, 30));
+	}
+
+	@Test
 	void wrapOverflowException() {
 		assertThatException().isThrownBy(() -> dms.wrap(0, 360, 370, false))
 				.isInstanceOf(ArgumentOverflowException.class)
 				.withMessage("Decimal overflow beyond 360 with value 370.0");
 	}
 
-	static class TestableDMS extends DegreeMinuteSecond<TestableDMS> {
+	private static final class TestableDMS extends DegreeMinuteSecond<TestableDMS> {
 
 		public TestableDMS(int degrees, int minutes, double seconds) {
 			super(0, 360, degrees, minutes, seconds);
@@ -129,6 +168,12 @@ class DegreeMinuteSecondTest {
 		protected TestableDMS create(int degrees, int minutes, double seconds) {
 			return new TestableDMS(degrees, minutes, seconds);
 		}
+
+		public static TestableDMS fromDecimal(double decimal) {
+			Number[] args = DegreeMinuteSecond.partsFromDecimal(decimal);
+			return new TestableDMS((int) args[0], (int) args[1], (double) args[2]);
+		}
+
 	}
 
 }

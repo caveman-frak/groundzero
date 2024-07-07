@@ -20,7 +20,7 @@ public class Bearing extends DegreeMinuteSecond<Bearing> {
 	}
 
 	public static Bearing fromDecimal(double decimal) {
-		Number[] args = DegreeMinuteSecond.partsFromDecimal(decimal);
+		Number[] args = Bearing.partsFromDecimal(decimal);
 		return new Bearing((int) args[0], (int) args[1], (double) args[2]);
 	}
 
