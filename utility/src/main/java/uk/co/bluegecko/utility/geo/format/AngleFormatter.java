@@ -21,34 +21,28 @@ public class AngleFormatter implements Formatter<Angle> {
 	public Angle parse(@NonNull String text, @NonNull Locale locale) throws ParseException {
 		DecimalFormat numberFormat = new DecimalFormat("#0", new DecimalFormatSymbols(locale));
 		final ParsePosition pos = new ParsePosition(0);
-		Number degrees = orDefault(forDegrees(numberFormat).parse(text, pos), 0L);
-		Number minutes = orDefault(forMinutes(numberFormat).parse(text, pos), 0L);
-		Number seconds = orDefault(forSeconds(numberFormat).parse(text, pos), 0.0);
-		if (pos.getErrorIndex() > -1) {
+		int degrees = (int) (long) orDefault(forDegrees(numberFormat).parse(text, pos), 0L);
+		int minutes = (int) (long) orDefault(forMinutes(numberFormat).parse(text, pos), 0L);
+		double seconds = (double) orDefault(forSeconds(numberFormat).parse(text, pos), 0.0);
+		if (pos.getErrorIndex() > pos.getIndex()) {
 			throw new ParseException(
-					String.format("Cannot parse '%s', error at index %d.", text, pos.getErrorIndex()),
+					String.format("Cannot parse '%s', error at %d:%d.",
+							text, pos.getIndex(), pos.getErrorIndex()),
 					pos.getErrorIndex());
 		}
 		if (text.length() > pos.getIndex()) {
-			String hemisphere = text.substring(pos.getIndex(), pos.getIndex() + 1);
-			Compass compass = Compass.valueOf(hemisphere);
-			if (Compass.latitude().contains(compass)) {
-				return new Latitude((int) (long) degrees, (int) (long) minutes, (double) seconds, compass);
-			} else if (Compass.longitude().contains(compass)) {
-				return new Longitude((int) (long) degrees, (int) (long) minutes, (double) seconds, compass);
+			String hemisphere = text.substring(pos.getIndex());
+			if (Compass.latitude().stream().map(Compass::name).anyMatch(n -> n.equals(hemisphere))) {
+				return new Latitude(degrees, minutes, seconds, Compass.valueOf(hemisphere));
+			} else if (Compass.longitude().stream().map(Compass::name).anyMatch(n -> n.equals(hemisphere))) {
+				return new Longitude(degrees, minutes, seconds, Compass.valueOf(hemisphere));
+			} else {
+				throw new ParseException(
+						String.format("Invalid compass direction '%s' at %d", hemisphere, pos.getIndex()),
+						pos.getIndex());
 			}
 		}
-//		final int length = text.length();
-//		final int origin = pos.getIndex();
-//		for (int index = origin; index < length; index++) {
-//			if (!Character.isWhitespace(text.charAt(index))) {
-//				index = Math.max(origin, pos.getErrorIndex());
-//				throw new ParseException(
-//						"Cannot parse '" + text + "', error at index " + index + ".", index);
-//			}
-//		}
-
-		return new Bearing((int) (long) degrees, (int) (long) minutes, (double) seconds);
+		return new Bearing(degrees, minutes, seconds);
 	}
 
 	@NonNull

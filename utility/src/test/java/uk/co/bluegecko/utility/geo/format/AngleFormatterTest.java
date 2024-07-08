@@ -81,28 +81,35 @@ class AngleFormatterTest {
 	void invalidDecimal() {
 		assertThatException().isThrownBy(() -> formatter.parse("1A°20'30.05\"N", Locale.UK))
 				.isInstanceOf(ParseException.class)
-				.withMessage("Cannot parse '1A°20'30.05\"N', error at index 0.");
+				.withMessage("Cannot parse '1A°20'30.05\"N', error at 0:1.");
 	}
 
 	@Test
 	void invalidMinute() {
 		assertThatException().isThrownBy(() -> formatter.parse("10°2A'30.05\"N", Locale.UK))
 				.isInstanceOf(ParseException.class)
-				.withMessage("Cannot parse '10°2A'30.05\"N', error at index 3.");
+				.withMessage("Cannot parse '10°2A'30.05\"N', error at 3:4.");
 	}
 
 	@Test
 	void invalidSecond() {
 		assertThatException().isThrownBy(() -> formatter.parse("10°20'3A.05\"N", Locale.UK))
 				.isInstanceOf(ParseException.class)
-				.withMessage("Cannot parse '10°20'3A.05\"N', error at index 7.");
+				.withMessage("Cannot parse '10°20'3A.05\"N', error at 6:7.");
 	}
 
 	@Test
 	void invalidHemisphere() {
 		assertThatException().isThrownBy(() -> formatter.parse("10°20'30.05\"B", Locale.UK))
-				.isInstanceOf(IllegalArgumentException.class)
-				.withMessage("No enum constant uk.co.bluegecko.utility.geo.Compass.B");
+				.isInstanceOf(ParseException.class)
+				.withMessage("Invalid compass direction 'B' at 12");
+	}
+
+	@Test
+	void nonCardinalHemisphere() {
+		assertThatException().isThrownBy(() -> formatter.parse("10°20'30.05\"NE", Locale.UK))
+				.isInstanceOf(ParseException.class)
+				.withMessage("Invalid compass direction 'NE' at 12");
 	}
 
 }
