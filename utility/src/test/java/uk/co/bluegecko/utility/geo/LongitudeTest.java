@@ -57,7 +57,7 @@ class LongitudeTest {
 	@Test
 	void stringify() {
 		assertThat(Longitude.fromDecimal(10.341666667).toString())
-				.isEqualTo("Longitude(degrees=10,minutes=20,seconds=30.0,direction=E)");
+				.isEqualTo("Longitude(degrees=10,minutes=20,seconds=30.0,hemisphere=E)");
 	}
 
 }

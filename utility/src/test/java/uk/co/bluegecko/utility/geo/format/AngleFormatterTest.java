@@ -11,6 +11,7 @@ import org.springframework.format.Formatter;
 import uk.co.bluegecko.utility.geo.Angle;
 import uk.co.bluegecko.utility.geo.Bearing;
 import uk.co.bluegecko.utility.geo.Compass;
+import uk.co.bluegecko.utility.geo.DegreeDecimal;
 import uk.co.bluegecko.utility.geo.Latitude;
 import uk.co.bluegecko.utility.geo.Longitude;
 
@@ -39,6 +40,12 @@ class AngleFormatterTest {
 	void printLongitude() {
 		assertThat(formatter.print(new Longitude(10, 20, 30.05, Compass.W), Locale.UK))
 				.isEqualTo("10°20'30.05\"W");
+	}
+
+	@Test
+	void printDecimal() {
+		assertThat(formatter.print(DegreeDecimal.builder().decimal(10.341666667).build(), Locale.UK))
+				.isEqualTo("10.341667°");
 	}
 
 	@Test
@@ -78,7 +85,14 @@ class AngleFormatterTest {
 	}
 
 	@Test
-	void invalidDecimal() {
+	void parseBearingDecimal() throws ParseException {
+		assertThat(formatter.parse("10.5°", Locale.UK))
+				.isEqualTo(new Bearing(10, 30, 0));
+	}
+
+
+	@Test
+	void invalidDegree() {
 		assertThatException().isThrownBy(() -> formatter.parse("1A°20'30.05\"N", Locale.UK))
 				.isInstanceOf(ParseException.class)
 				.withMessage("Cannot parse '1A°20'30.05\"N', error at 0:1.");

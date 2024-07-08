@@ -10,6 +10,7 @@ import org.springframework.format.Formatter;
 import uk.co.bluegecko.utility.geo.Angle;
 import uk.co.bluegecko.utility.geo.Bearing;
 import uk.co.bluegecko.utility.geo.Compass;
+import uk.co.bluegecko.utility.geo.DMS;
 import uk.co.bluegecko.utility.geo.Hemisphere;
 import uk.co.bluegecko.utility.geo.Latitude;
 import uk.co.bluegecko.utility.geo.Longitude;
@@ -21,16 +22,18 @@ public class AngleFormatter implements Formatter<Angle> {
 	public Angle parse(@NonNull String text, @NonNull Locale locale) throws ParseException {
 		DecimalFormat numberFormat = new DecimalFormat("#0", new DecimalFormatSymbols(locale));
 		final ParsePosition pos = new ParsePosition(0);
-		int degrees = (int) (long) orDefault(forDegrees(numberFormat).parse(text, pos), 0L);
-		int minutes = (int) (long) orDefault(forMinutes(numberFormat).parse(text, pos), 0L);
-		double seconds = (double) orDefault(forSeconds(numberFormat).parse(text, pos), 0.0);
+		int degrees = orDefault(forDegrees(numberFormat).parse(text, pos), 0L).intValue();
+		int minutes = orDefault(forMinutes(numberFormat).parse(text, pos), 0L).intValue();
+		double seconds = orDefault(forSeconds(numberFormat).parse(text, pos), 0.0).doubleValue();
+		Double decimal = (Double) forDecimal(numberFormat).parse(text, pos);
 		if (pos.getErrorIndex() > pos.getIndex()) {
 			throw new ParseException(
 					String.format("Cannot parse '%s', error at %d:%d.",
 							text, pos.getIndex(), pos.getErrorIndex()),
 					pos.getErrorIndex());
-		}
-		if (text.length() > pos.getIndex()) {
+		} else if (decimal != null) {
+			return Bearing.fromDecimal(decimal);
+		} else if (text.length() > pos.getIndex()) {
 			String hemisphere = text.substring(pos.getIndex());
 			if (Compass.latitude().stream().map(Compass::name).anyMatch(n -> n.equals(hemisphere))) {
 				return new Latitude(degrees, minutes, seconds, Compass.valueOf(hemisphere));
@@ -47,13 +50,16 @@ public class AngleFormatter implements Formatter<Angle> {
 
 	@NonNull
 	@Override
-	public String print(Angle a, @NonNull Locale locale) {
+	public String print(@NonNull Angle angle, @NonNull Locale locale) {
 		DecimalFormat format = new DecimalFormat("#0", new DecimalFormatSymbols(locale));
-		return String.format("%s%s%s%s",
-				forDegrees(format).format(Math.abs(a.getDegrees())),
-				forMinutes(format).format(a.getMinutes()),
-				forSeconds(format).format(a.getSeconds()),
-				withHemisphere(a));
+		if (angle instanceof DMS dms) {
+			return String.format("%s%s%s%s",
+					forDegrees(format).format(Math.abs(dms.getDegrees())),
+					forMinutes(format).format(dms.getMinutes()),
+					forSeconds(format).format(dms.getSeconds()),
+					withHemisphere(angle));
+		}
+		return forDecimal(format).format(angle.decimal());
 	}
 
 	private Number orDefault(Number value, Number def) {
@@ -62,16 +68,25 @@ public class AngleFormatter implements Formatter<Angle> {
 
 	private DecimalFormat forDegrees(DecimalFormat format) {
 		format.applyLocalizedPattern("##0°");
+		format.setParseIntegerOnly(true);
 		return format;
 	}
 
 	private DecimalFormat forMinutes(DecimalFormat format) {
 		format.applyLocalizedPattern("#0''");
+		format.setParseIntegerOnly(true);
 		return format;
 	}
 
 	private DecimalFormat forSeconds(DecimalFormat format) {
 		format.applyLocalizedPattern("#0.######\"");
+		format.setParseIntegerOnly(false);
+		return format;
+	}
+
+	private DecimalFormat forDecimal(DecimalFormat format) {
+		format.applyLocalizedPattern("##0.######°");
+		format.setParseIntegerOnly(false);
 		return format;
 	}
 
@@ -82,4 +97,5 @@ public class AngleFormatter implements Formatter<Angle> {
 			return "";
 		}
 	}
+
 }

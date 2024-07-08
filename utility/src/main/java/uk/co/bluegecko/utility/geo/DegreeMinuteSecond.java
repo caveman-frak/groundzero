@@ -16,7 +16,7 @@ import uk.co.bluegecko.utility.geo.ex.Field;
 @Getter
 @EqualsAndHashCode
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public abstract class DegreeMinuteSecond<T extends DegreeMinuteSecond<?>> implements Angle {
+public abstract class DegreeMinuteSecond<T extends DegreeMinuteSecond<?>> implements DMS {
 
 	int lower;
 	int upper;

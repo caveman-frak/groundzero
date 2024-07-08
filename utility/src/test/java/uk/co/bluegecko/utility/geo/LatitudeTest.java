@@ -57,7 +57,7 @@ class LatitudeTest {
 	@Test
 	void stringify() {
 		assertThat(Latitude.fromDecimal(10.341666667).toString())
-				.isEqualTo("Latitude(degrees=10,minutes=20,seconds=30.0,direction=N)");
+				.isEqualTo("Latitude(degrees=10,minutes=20,seconds=30.0,hemisphere=N)");
 	}
 
 }

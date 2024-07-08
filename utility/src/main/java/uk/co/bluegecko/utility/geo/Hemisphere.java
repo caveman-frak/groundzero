@@ -2,14 +2,13 @@ package uk.co.bluegecko.utility.geo;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public interface Hemisphere extends Angle {
+public interface Hemisphere extends DMS {
 
 	Compass getHemisphere();
 
 	@Override
 	default ToStringBuilder getToStringBuilder() {
-		return Angle.super.getToStringBuilder().append("direction", getHemisphere());
+		return DMS.super.getToStringBuilder().append("hemisphere", getHemisphere());
 	}
-
 
 }
