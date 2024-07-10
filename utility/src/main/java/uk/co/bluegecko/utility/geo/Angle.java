@@ -1,19 +1,15 @@
 package uk.co.bluegecko.utility.geo;
 
+import static systems.uom.ucum.UCUM.RADIAN;
+
+import tech.units.indriya.ComparableQuantity;
+
 public interface Angle {
 
-	double decimal();
+	ComparableQuantity<javax.measure.quantity.Angle> decimal();
 
-	default double radians() {
-		return radians(decimal());
-	}
-
-	static double radians(double degrees) {
-		return Math.toRadians(degrees);
-	}
-
-	static double degrees(double radians) {
-		return Math.toDegrees(radians);
+	default ComparableQuantity<javax.measure.quantity.Angle> radians() {
+		return decimal().to(RADIAN);
 	}
 
 }

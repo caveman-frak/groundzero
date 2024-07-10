@@ -1,14 +1,20 @@
 package uk.co.bluegecko.utility.geo;
 
+import static systems.uom.ucum.UCUM.DEGREE;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Optional;
 import java.util.Set;
+import javax.measure.Quantity;
+import javax.measure.quantity.Angle;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.validator.constraints.Range;
+import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.quantity.Quantities;
 import uk.co.bluegecko.utility.geo.ex.ArgumentOverflowException;
 import uk.co.bluegecko.utility.geo.ex.Direction;
 import uk.co.bluegecko.utility.geo.ex.Field;
@@ -18,8 +24,8 @@ import uk.co.bluegecko.utility.geo.ex.Field;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public abstract class DegreeMinuteSecond<T extends DegreeMinuteSecond<?>> implements DMS {
 
-	int lower;
-	int upper;
+	ComparableQuantity<Angle> lower;
+	ComparableQuantity<Angle> upper;
 
 	int degrees;
 	@Range(max = 60)
@@ -29,8 +35,8 @@ public abstract class DegreeMinuteSecond<T extends DegreeMinuteSecond<?>> implem
 
 	protected DegreeMinuteSecond(int lower, int upper,
 			int degrees, int minutes, double seconds) {
-		this.lower = lower;
-		this.upper = upper;
+		this.lower = Quantities.getQuantity(lower, DEGREE);
+		this.upper = Quantities.getQuantity(upper, DEGREE);
 		this.degrees = Math.abs(degrees);
 		this.minutes = Math.abs(minutes);
 		this.seconds = truncate(Math.abs(seconds));
@@ -41,14 +47,17 @@ public abstract class DegreeMinuteSecond<T extends DegreeMinuteSecond<?>> implem
 	}
 
 	@Override
-	public double decimal() {
-		double decimal = (double) degrees + ((double) minutes / 60) + seconds / 3600;
-		return isReversed() ? -decimal : decimal;
+	public ComparableQuantity<Angle> decimal() {
+		double d = (double) degrees + ((double) minutes / 60) + seconds / 3600;
+		ComparableQuantity<Angle> decimal = Quantities.getQuantity(d, DEGREE);
+
+		return isReversed() ? (ComparableQuantity<Angle>) decimal.negate() : decimal;
 	}
 
-	protected static Number[] partsFromDecimal(double degrees) {
-		double minutes = (degrees - (int) degrees) * 60;
-		return new Number[]{(int) degrees, (int) minutes, (minutes - (int) minutes) * 60};
+	protected static Number[] partsFromAngle(Quantity<Angle> decimal) {
+		Number degrees = decimal.to(DEGREE).getValue();
+		Number minutes = (degrees.doubleValue() - degrees.intValue()) * 60;
+		return new Number[]{degrees, minutes.intValue(), (minutes.doubleValue() - minutes.intValue()) * 60};
 	}
 
 	private static double truncate(double seconds) {
@@ -70,13 +79,13 @@ public abstract class DegreeMinuteSecond<T extends DegreeMinuteSecond<?>> implem
 		return compassPoint(Compass.sixteenWinds());
 	}
 
-	public T add(double term, boolean wrap) {
-		double decimal = wrap(lower, upper, decimal() + term, wrap);
-		Number[] args = partsFromDecimal(decimal);
-		return create((int) args[0], (int) args[1], (double) args[2]);
+	public T add(ComparableQuantity<Angle> term, boolean wrap) {
+		Quantity<Angle> decimal = wrap(lower, upper, decimal().add(term), wrap);
+		Number[] args = partsFromAngle(decimal);
+		return create(args[0].intValue(), args[1].intValue(), args[2].doubleValue());
 	}
 
-	public T add(double term) {
+	public T add(ComparableQuantity<Angle> term) {
 		return add(term, true);
 	}
 
@@ -88,13 +97,13 @@ public abstract class DegreeMinuteSecond<T extends DegreeMinuteSecond<?>> implem
 		return add(term, true);
 	}
 
-	public T subtract(double term, boolean wrap) {
-		double decimal = wrap(lower, upper, decimal() - term, wrap);
-		Number[] args = partsFromDecimal(decimal);
-		return create((int) args[0], (int) args[1], (double) args[2]);
+	public T subtract(ComparableQuantity<Angle> term, boolean wrap) {
+		Quantity<Angle> decimal = wrap(lower, upper, decimal().subtract(term), wrap);
+		Number[] args = partsFromAngle(decimal);
+		return create(args[0].intValue(), args[1].intValue(), args[2].doubleValue());
 	}
 
-	public T subtract(double term) {
+	public T subtract(ComparableQuantity<Angle> term) {
 		return subtract(term, true);
 	}
 
@@ -106,15 +115,16 @@ public abstract class DegreeMinuteSecond<T extends DegreeMinuteSecond<?>> implem
 		return subtract(term, true);
 	}
 
-	protected double wrap(int lower, int upper, double decimal, boolean wrap) {
-		if (decimal < lower) {
+	protected Quantity<Angle> wrap(ComparableQuantity<Angle> lower, ComparableQuantity<Angle> upper,
+			ComparableQuantity<Angle> decimal, boolean wrap) {
+		if (decimal.isLessThan(lower)) {
 			if (wrap) {
-				return upper - (lower - decimal);
+				return upper.subtract(lower.subtract(decimal));
 			}
 			throw new ArgumentOverflowException(Field.DECIMAL, Direction.UNDERFLOW, lower, decimal);
-		} else if (decimal > upper) {
+		} else if (decimal.isGreaterThan(upper)) {
 			if (wrap) {
-				return lower + (decimal - upper);
+				return lower.add(decimal.subtract(upper));
 			}
 			throw new ArgumentOverflowException(Field.DECIMAL, Direction.OVERFLOW, upper, decimal);
 		} else {

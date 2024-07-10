@@ -32,8 +32,8 @@ public class Context {
 	}
 
 	public Quantity<Length> geocentricRadius(Latitude latitude) {
-		BigDecimal cosA = BigDecimal.valueOf(Math.cos(latitude.radians()));
-		BigDecimal sinB = BigDecimal.valueOf(Math.sin(latitude.radians()));
+		BigDecimal cosA = BigDecimal.valueOf(Math.cos(latitude.radians().getValue().doubleValue()));
+		BigDecimal sinB = BigDecimal.valueOf(Math.sin(latitude.radians().getValue().doubleValue()));
 
 		BigDecimal equatorial = (BigDecimal) equatorialRadius().getValue();
 		BigDecimal polar = (BigDecimal) polarRadius().getValue();

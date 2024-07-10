@@ -2,10 +2,12 @@ package uk.co.bluegecko.utility.geo;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.offset;
+import static systems.uom.ucum.UCUM.DEGREE;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junitpioneer.jupiter.params.IntRangeSource;
+import tech.units.indriya.quantity.Quantities;
 
 class CompassTest {
 
@@ -43,28 +45,29 @@ class CompassTest {
 
 	@Test
 	void nearestPointTo180() {
-		assertThat(Compass.nearestPoint(180.0)).isEqualTo(Compass.S);
+		assertThat(Compass.nearestPoint(Quantities.getQuantity(180.0, DEGREE))).isEqualTo(Compass.S);
 	}
 
 	@Test
 	void nearestPointTo190() {
-		assertThat(Compass.nearestPoint(190.0)).isEqualTo(Compass.S);
+		assertThat(Compass.nearestPoint(Quantities.getQuantity(190.0, DEGREE))).isEqualTo(Compass.S);
 	}
 
 	@Test
 	void nearestPointTo210() {
-		assertThat(Compass.nearestPoint(210.0)).isEqualTo(Compass.SSW);
+		assertThat(Compass.nearestPoint(Quantities.getQuantity(210.0, DEGREE))).isEqualTo(Compass.SSW);
 	}
 
 	@Test
 	void nearestEightPointTo200() {
-		assertThat(Compass.nearestPoint(210.0, Compass.eightWinds())).isEqualTo(Compass.SW);
+		assertThat(Compass.nearestPoint(Quantities.getQuantity(210.0, DEGREE), Compass.eightWinds())).isEqualTo(
+				Compass.SW);
 	}
 
 	@ParameterizedTest
 	@IntRangeSource(from = 0, to = 16)
 	void pointBearing(int index) {
-		assertThat(Compass.values()[index].decimal())
+		assertThat(Compass.values()[index].decimal().getValue().doubleValue())
 				.describedAs("point %s should have bearing of %1.2f", Compass.values()[index], 22.5 * index)
 				.isEqualTo(22.5 * index, offset(0.00001));
 	}

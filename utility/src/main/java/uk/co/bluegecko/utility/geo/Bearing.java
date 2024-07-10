@@ -1,5 +1,7 @@
 package uk.co.bluegecko.utility.geo;
 
+import javax.measure.Quantity;
+import javax.measure.quantity.Angle;
 import org.hibernate.validator.constraints.Range;
 
 public class Bearing extends DegreeMinuteSecond<Bearing> {
@@ -19,9 +21,9 @@ public class Bearing extends DegreeMinuteSecond<Bearing> {
 		this(degrees, 0, 0);
 	}
 
-	public static Bearing fromDecimal(double decimal) {
-		Number[] args = Bearing.partsFromDecimal(decimal);
-		return new Bearing((int) args[0], (int) args[1], (double) args[2]);
+	public static Bearing fromAngle(Quantity<Angle> decimal) {
+		Number[] args = Bearing.partsFromAngle(decimal);
+		return new Bearing(args[0].intValue(), args[1].intValue(), args[2].doubleValue());
 	}
 
 	@Override

@@ -5,9 +5,9 @@ import lombok.Value;
 
 @Builder
 @Value
-public class Position {
+public class Coordinate {
 
 	Latitude latitude;
 	Longitude longitude;
-	
+
 }

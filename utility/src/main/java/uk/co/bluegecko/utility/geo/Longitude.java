@@ -1,5 +1,7 @@
 package uk.co.bluegecko.utility.geo;
 
+import javax.measure.Quantity;
+import javax.measure.quantity.Angle;
 import lombok.Getter;
 import org.hibernate.validator.constraints.Range;
 import uk.co.bluegecko.utility.geo.validate.AllowedCompassPoint;
@@ -36,9 +38,9 @@ public class Longitude extends DegreeMinuteSecond<Longitude> implements Hemisphe
 		return new Longitude(degrees, minutes, seconds);
 	}
 
-	public static Longitude fromDecimal(double decimal) {
-		Number[] args = Longitude.partsFromDecimal(decimal);
-		return new Longitude((int) args[0], (int) args[1], (double) args[2]);
+	public static Longitude fromAngle(Quantity<Angle> decimal) {
+		Number[] args = Longitude.partsFromAngle(decimal);
+		return new Longitude(args[0].intValue(), args[1].intValue(), args[2].doubleValue());
 	}
 
 }

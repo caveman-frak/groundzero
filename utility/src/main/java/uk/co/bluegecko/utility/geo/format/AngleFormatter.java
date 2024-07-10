@@ -1,5 +1,7 @@
 package uk.co.bluegecko.utility.geo.format;
 
+import static systems.uom.ucum.UCUM.DEGREE;
+
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
@@ -7,6 +9,7 @@ import java.text.ParsePosition;
 import java.util.Locale;
 import lombok.NonNull;
 import org.springframework.format.Formatter;
+import tech.units.indriya.quantity.Quantities;
 import uk.co.bluegecko.utility.geo.Angle;
 import uk.co.bluegecko.utility.geo.Bearing;
 import uk.co.bluegecko.utility.geo.Compass;
@@ -32,7 +35,7 @@ public class AngleFormatter implements Formatter<Angle> {
 							text, pos.getIndex(), pos.getErrorIndex()),
 					pos.getErrorIndex());
 		} else if (decimal != null) {
-			return Bearing.fromDecimal(decimal);
+			return Bearing.fromAngle(Quantities.getQuantity(decimal, DEGREE));
 		} else if (text.length() > pos.getIndex()) {
 			String hemisphere = text.substring(pos.getIndex());
 			if (Compass.latitude().stream().map(Compass::name).anyMatch(n -> n.equals(hemisphere))) {
@@ -59,7 +62,7 @@ public class AngleFormatter implements Formatter<Angle> {
 					forSeconds(format).format(dms.getSeconds()),
 					withHemisphere(angle));
 		}
-		return forDecimal(format).format(angle.decimal());
+		return forDecimal(format).format(angle.decimal().getValue().doubleValue());
 	}
 
 	private Number orDefault(Number value, Number def) {

@@ -11,14 +11,6 @@ public interface DMS extends Angle {
 
 	double getSeconds();
 
-	@Override
-	double decimal();
-
-	@Override
-	default double radians() {
-		return Math.toRadians(decimal());
-	}
-
 	default ToStringBuilder getToStringBuilder() {
 		return new ToStringBuilder(this, new LombokStyle())
 				.append("degrees", getDegrees())

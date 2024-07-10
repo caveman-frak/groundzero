@@ -2,10 +2,12 @@ package uk.co.bluegecko.utility.geo;
 
 import java.util.EnumSet;
 import java.util.Set;
+import javax.measure.quantity.Angle;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import tech.units.indriya.ComparableQuantity;
 
 @RequiredArgsConstructor
 @Getter
@@ -32,7 +34,7 @@ public enum Compass {
 	Bearing bearing;
 	String name;
 
-	public double decimal() {
+	public ComparableQuantity<Angle> decimal() {
 		return bearing.decimal();
 	}
 
@@ -57,28 +59,28 @@ public enum Compass {
 	}
 
 
-	public static Compass nearestPoint(double decimal, Set<Compass> points) {
+	public static Compass nearestPoint(ComparableQuantity<Angle> decimal, Set<Compass> points) {
 		Compass before = null;
 		Compass after = null;
 		for (Compass compass : points) {
-			if (compass.decimal() <= decimal) {
+			if (compass.decimal().isLessThanOrEqualTo(decimal)) {
 				before = compass;
 			}
-			if (compass.decimal() > decimal) {
+			if (compass.decimal().isGreaterThan(decimal)) {
 				after = compass;
 				break;
 			}
 		}
 		if (before == null || after == null) {
 			return null;
-		} else if (decimal - before.decimal() <= after.decimal() - decimal) {
+		} else if (decimal.subtract(before.decimal()).isLessThanOrEqualTo(after.decimal().subtract(decimal))) {
 			return before;
 		} else {
 			return after;
 		}
 	}
 
-	public static Compass nearestPoint(double degrees) {
+	public static Compass nearestPoint(ComparableQuantity<Angle> degrees) {
 		return nearestPoint(degrees, sixteenWinds());
 	}
 

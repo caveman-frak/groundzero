@@ -2,12 +2,14 @@ package uk.co.bluegecko.utility.geo.format;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatException;
+import static systems.uom.ucum.UCUM.DEGREE;
 
 import java.text.ParseException;
 import java.util.Locale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.format.Formatter;
+import tech.units.indriya.quantity.Quantities;
 import uk.co.bluegecko.utility.geo.Angle;
 import uk.co.bluegecko.utility.geo.Bearing;
 import uk.co.bluegecko.utility.geo.Compass;
@@ -44,7 +46,8 @@ class AngleFormatterTest {
 
 	@Test
 	void printDecimal() {
-		assertThat(formatter.print(DegreeDecimal.builder().decimal(10.341666667).build(), Locale.UK))
+		assertThat(formatter.print(DegreeDecimal.builder()
+				.decimal(Quantities.getQuantity(10.341666667, DEGREE)).build(), Locale.UK))
 				.isEqualTo("10.341667°");
 	}
 

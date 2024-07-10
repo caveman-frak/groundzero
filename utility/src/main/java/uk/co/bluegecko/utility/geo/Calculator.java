@@ -17,14 +17,14 @@ public class Calculator {
 	 * @param unit  the unit of measure in which to receive the result.
 	 * @return the distance in the chosen unit of measure.
 	 */
-	public Quantity<Length> distance(Position start, Position end, Unit<Length> unit) {
+	public Quantity<Length> distance(Coordinate start, Coordinate end, Unit<Length> unit) {
 		return null;
 	}
 
 	/**
 	 * <p>
 	 * This "distance" function is mostly for internal use. Most users will simply rely upon
-	 * {@link #distance(Position, Position, Unit)}
+	 * {@link #distance(Coordinate, Coordinate, Unit)}
 	 * </p>
 	 * <p>
 	 * Yields the internal angle for an arc between two points on the surface of a sphere in radians. This angle is in
@@ -36,7 +36,7 @@ public class Calculator {
 	 * @param end   the second point.
 	 * @return the internal angle for the arc connecting the two points in radians.
 	 */
-	public BigDecimal distanceInRadians(Position start, Position end) {
+	public BigDecimal distanceInRadians(Coordinate start, Coordinate end) {
 		return null;
 	}
 
@@ -53,7 +53,7 @@ public class Calculator {
 	 * @param end   the ending point.
 	 * @return the initial bearing in degrees, normalized to the 0 to +360 range.
 	 */
-	public Bearing initialBearing(Position start, Position end) {
+	public Bearing initialBearing(Coordinate start, Coordinate end) {
 		return null;
 	}
 
@@ -68,7 +68,7 @@ public class Calculator {
 	 * @param distance       the distance to travel.
 	 * @return the end point.
 	 */
-	public static Position travel(Position start, Bearing initialBearing, Quantity<Length> distance) {
+	public static Coordinate travel(Coordinate start, Bearing initialBearing, Quantity<Length> distance) {
 		return null;
 	}
 
