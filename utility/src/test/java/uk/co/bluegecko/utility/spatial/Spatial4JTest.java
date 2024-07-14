@@ -2,6 +2,7 @@ package uk.co.bluegecko.utility.spatial;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.withinPercentage;
+import static si.uom.NonSI.KNOT;
 
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.locationtech.spatial4j.context.SpatialContext;
 import org.locationtech.spatial4j.context.SpatialContextFactory;
 import org.locationtech.spatial4j.shape.Point;
+import tech.units.indriya.quantity.Quantities;
+import uk.co.bluegecko.utility.spatial.Vessel.VesselBuilder;
 
 public class Spatial4JTest {
 
@@ -20,9 +23,9 @@ public class Spatial4JTest {
 	void setUp() {
 		ctx = SpatialContextFactory.makeSpatialContext(Map.of("geo", "true"), null);
 		Point location = ctx.getShapeFactory().pointLatLon(0.0, 0.0);
-		vessel = Vessel.<Point>builder()
-				.position(location)
-				.speed(1.0)
+		VesselBuilder<Point> pointVesselBuilder = Vessel.<Point>builder()
+				.position(location);
+		vessel = pointVesselBuilder.knots(Quantities.getQuantity(1.0, KNOT))
 				.bearing(0.0)
 				.rateOfTurn(0.0)
 				.build();

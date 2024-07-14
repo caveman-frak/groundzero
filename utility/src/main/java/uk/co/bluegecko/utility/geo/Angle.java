@@ -1,6 +1,6 @@
 package uk.co.bluegecko.utility.geo;
 
-import static systems.uom.ucum.UCUM.RADIAN;
+import static tech.units.indriya.unit.Units.RADIAN;
 
 import tech.units.indriya.ComparableQuantity;
 

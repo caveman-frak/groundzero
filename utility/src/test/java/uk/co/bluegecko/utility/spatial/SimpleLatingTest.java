@@ -5,12 +5,14 @@ import static com.javadocmd.simplelatlng.LatLngTool.initialBearing;
 import static com.javadocmd.simplelatlng.LatLngTool.travel;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.withinPercentage;
+import static si.uom.NonSI.KNOT;
 
 import com.javadocmd.simplelatlng.LatLng;
 import com.javadocmd.simplelatlng.util.LengthUnit;
 import java.time.Duration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import tech.units.indriya.quantity.Quantities;
 
 public class SimpleLatingTest {
 
@@ -20,7 +22,7 @@ public class SimpleLatingTest {
 	void setUp() {
 		vessel = Vessel.<LatLng>builder()
 				.position(new LatLng(0.0, 0.0))
-				.speed(10.0)
+				.knots(Quantities.getQuantity(10.0, KNOT))
 				.bearing(0.0)
 				.rateOfTurn(0.0)
 				.build();
@@ -28,7 +30,8 @@ public class SimpleLatingTest {
 
 	@Test
 	void calcDestination() {
-		assertThat(travel(vessel.getPosition(), vessel.getBearing(), vessel.distance(Duration.ofHours(1)),
+		assertThat(travel(vessel.getPosition(), vessel.getBearing(),
+				vessel.distance(Duration.ofHours(1)).getValue().doubleValue(),
 				LengthUnit.NAUTICAL_MILE))
 				.isEqualTo(new LatLng(0.166554, 0.0));
 	}

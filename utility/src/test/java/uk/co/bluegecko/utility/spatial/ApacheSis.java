@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import tech.units.indriya.quantity.Quantities;
 import uk.co.bluegecko.utility.spatial.Vessel.VesselBuilder;
 
-public class GeoApiTest {
+public class ApacheSis {
 
 	private Vessel<Point2D> vessel;
 
