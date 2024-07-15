@@ -9,7 +9,6 @@ dependencies {
     implementation("org.apache.xmlgraphics:batik-dom:1.17")
     implementation("org.locationtech.spatial4j:spatial4j:0.8")
     implementation("org.locationtech.jts:jts-core:1.19.0")
-    implementation("org.noggit:noggit:0.8")
     implementation("javax.media:jai-core:1.1.3")
     implementation("org.geotools:gt-shapefile:31.2") {
         exclude("javax.media", "jai_core")
