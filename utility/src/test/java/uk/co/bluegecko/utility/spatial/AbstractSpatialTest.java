@@ -12,6 +12,14 @@ public abstract class AbstractSpatialTest<T> {
 
 	@BeforeEach
 	void setUp() {
+		setUpContext();
+		setUpVessel();
+	}
+
+	protected void setUpContext() {
+	}
+
+	protected void setUpVessel() {
 		vessel = Vessel.<T>builder()
 				.position(position(0, 0))
 				.knots(Quantities.getQuantity(10.0, KNOT))

@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.withinPercentage;
 
 import java.util.Map;
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.locationtech.spatial4j.context.SpatialContext;
 import org.locationtech.spatial4j.context.SpatialContextFactory;
@@ -15,8 +14,8 @@ public class Spatial4JTest extends AbstractSpatialTest<Point> {
 
 	SpatialContext ctx;
 
-	@BeforeEach
-	void setUpContext() {
+	@Override
+	protected void setUpContext() {
 		ctx = SpatialContextFactory.makeSpatialContext(Map.of("geo", "true"), null);
 	}
 

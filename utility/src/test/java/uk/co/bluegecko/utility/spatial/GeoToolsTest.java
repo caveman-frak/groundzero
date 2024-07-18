@@ -10,7 +10,6 @@ import java.awt.geom.Point2D.Double;
 import net.sf.geographiclib.Geodesic;
 import org.geotools.referencing.datum.DefaultEllipsoid;
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class GeoToolsTest extends AbstractSpatialTest<Point2D> {
@@ -18,8 +17,8 @@ public class GeoToolsTest extends AbstractSpatialTest<Point2D> {
 
 	DefaultEllipsoid ellipsoid;
 
-	@BeforeEach
-	void setUpContext() {
+	@Override
+	protected void setUpContext() {
 		ellipsoid = DefaultEllipsoid.WGS84;
 
 //		CRSAuthorityFactory factory = CRS.getAuthorityFactory(true);
