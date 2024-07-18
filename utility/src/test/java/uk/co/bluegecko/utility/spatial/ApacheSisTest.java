@@ -4,7 +4,8 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Point2D.Double;
 import org.jetbrains.annotations.NotNull;
 
-public class GeoApiTest extends AbstractSpatialTest<Point2D> {
+public class ApacheSisTest extends AbstractSpatialTest<Point2D> {
+
 
 	@NotNull
 	@Override
@@ -14,7 +15,7 @@ public class GeoApiTest extends AbstractSpatialTest<Point2D> {
 
 	@Override
 	void calcDestinationFromPointWithBearingAndDistance() {
-		
+
 	}
 
 	@Override
@@ -26,5 +27,4 @@ public class GeoApiTest extends AbstractSpatialTest<Point2D> {
 	void calcBearingFromPointToPoint() {
 
 	}
-
 }

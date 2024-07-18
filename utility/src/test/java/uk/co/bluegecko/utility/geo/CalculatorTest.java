@@ -9,6 +9,10 @@ import static systems.uom.ucum.UCUM.DEGREE;
 import static systems.uom.ucum.UCUM.METER;
 
 import java.awt.geom.Point2D;
+import java.text.DecimalFormat;
+import org.assertj.core.presentation.StandardRepresentation;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -32,6 +36,17 @@ class CalculatorTest {
 
 	Calculator calculator;
 
+	@BeforeAll
+	static void setUpFormatters() {
+		StandardRepresentation.registerFormatterForType(Double.class,
+				n -> new DecimalFormat("0.0###############").format(n));
+	}
+
+	@AfterAll
+	static void tearDownFormatters() {
+		StandardRepresentation.removeAllRegisteredFormatters();
+	}
+
 	@BeforeEach
 	void setUp() {
 		calculator = new Calculator(new Context());
@@ -40,8 +55,8 @@ class CalculatorTest {
 	@ParameterizedTest
 	@InputOutputSource(
 			inputs = @CsvSource(textBlock = POSITION_ARGUMENTS),
-			outputs = @ValueSource(doubles = {0.017453, 0.017453, 0.017453, 0.017453, 0.785398, 0.785398, 1.047197,
-					0.548028, 1.047197}))
+			outputs = @ValueSource(doubles =
+					{0.017453, 0.017453, 0.017453, 0.017453, 0.785398, 0.785398, 1.047197, 0.548028, 1.047197}))
 	void haversine(int startLat, int startLng, int endLat, int endLng, double radians) {
 		assertThat(calculator.haversine(
 				Math.toRadians(startLat), Math.toRadians(startLng),
@@ -52,8 +67,8 @@ class CalculatorTest {
 	@ParameterizedTest
 	@InputOutputSource(
 			inputs = @CsvSource(textBlock = POSITION_ARGUMENTS),
-			outputs = @ValueSource(doubles = {0.017453, 0.017453, 0.017453, 0.017453, 0.785398, 0.785398, 1.047197,
-					0.548028, 1.047197}))
+			outputs = @ValueSource(doubles =
+					{0.017453, 0.017453, 0.017453, 0.017453, 0.785398, 0.785398, 1.047197, 0.548028, 1.047197}))
 	void sphericalLawOfCosines(int startLat, int startLng, int endLat, int endLng, double radians) {
 		assertThat(calculator.sphericalLawOfCosines(
 				Math.toRadians(startLat), Math.toRadians(startLng),
@@ -89,8 +104,8 @@ class CalculatorTest {
 	@ParameterizedTest
 	@InputOutputSource(
 			inputs = @CsvSource(textBlock = POSITION_ARGUMENTS),
-			outputs = @ValueSource(doubles = {0, 1.570796, 3.141592, 1.570796, 1.570796, 0, 0.615479, 1.285872,
-					2.186276}))
+			outputs = @ValueSource(doubles =
+					{0, 1.570796, 3.141592, 1.570796, 1.570796, 0, 0.615479, 1.285872, 2.186276}))
 	void bearing(int startLat, int startLng, int endLat, int endLng, double radians) {
 		assertThat(calculator.bearing(
 				Math.toRadians(startLat), Math.toRadians(startLng),
@@ -144,9 +159,9 @@ class CalculatorTest {
 				new Bearing(degrees, 0, 0),
 				Quantities.getQuantity(distance, NAUTICAL_MILE));
 		assertThat(Math.round(coordinate.getLatitude().decimal().getValue().doubleValue()))
-				.describedAs("latitude").isEqualTo(endLat);
+				.as("latitude").isEqualTo(endLat);
 		assertThat(Math.round(coordinate.getLongitude().decimal().getValue().doubleValue()))
-				.describedAs("longitude").isEqualTo(endLng);
+				.as("longitude").isEqualTo(endLng);
 	}
 
 	@ParameterizedTest
@@ -160,9 +175,9 @@ class CalculatorTest {
 				new Bearing(degrees, 0, 0),
 				Quantities.getQuantity(distance, KILO(METER)));
 		assertThat(Math.round(coordinate.getLatitude().decimal().getValue().doubleValue()))
-				.describedAs("latitude").isEqualTo(endLat);
+				.as("latitude").isEqualTo(endLat);
 		assertThat(Math.round(coordinate.getLongitude().decimal().getValue().doubleValue()))
-				.describedAs("longitude").isEqualTo(endLng);
+				.as("longitude").isEqualTo(endLng);
 	}
 
 	@ParameterizedTest
@@ -210,6 +225,22 @@ class CalculatorTest {
 			""")
 	void normaliseLatitude(double radians, double normalised) {
 		assertThat(calculator.normaliseLatitude(radians))
+				.isCloseTo(normalised, within(0.001));
+	}
+
+	@ParameterizedTest
+	@CsvSource(textBlock = """
+			 0.0,    0.0
+			 3.141,  3.141
+			 6.242,  6.242
+			 7.0,    0.716
+			-1.570,  1.570
+			-3.141,  3.142
+			-4.712,  4.712
+			-7.0,    0.716
+			""")
+	void normaliseBearing(double radians, double normalised) {
+		assertThat(calculator.normaliseBearing(radians))
 				.isCloseTo(normalised, within(0.001));
 	}
 

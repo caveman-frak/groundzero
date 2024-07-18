@@ -5,46 +5,41 @@ import static com.javadocmd.simplelatlng.LatLngTool.initialBearing;
 import static com.javadocmd.simplelatlng.LatLngTool.travel;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.withinPercentage;
-import static si.uom.NonSI.KNOT;
 
 import com.javadocmd.simplelatlng.LatLng;
 import com.javadocmd.simplelatlng.util.LengthUnit;
 import java.time.Duration;
-import org.junit.jupiter.api.BeforeEach;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
-import tech.units.indriya.quantity.Quantities;
 
-public class SimpleLatingTest {
+public class SimpleLatingTest extends AbstractSpatialTest<LatLng> {
 
-	private Vessel<LatLng> vessel;
-
-	@BeforeEach
-	void setUp() {
-		vessel = Vessel.<LatLng>builder()
-				.position(new LatLng(0.0, 0.0))
-				.knots(Quantities.getQuantity(10.0, KNOT))
-				.bearing(0.0)
-				.rateOfTurn(0.0)
-				.build();
+	@NotNull
+	@Override
+	protected LatLng position(double lat, double lng) {
+		return new LatLng(lat, lng);
 	}
 
 	@Test
-	void calcDestination() {
+	@Override
+	void calcDestinationFromPointWithBearingAndDistance() {
 		assertThat(travel(vessel.getPosition(), vessel.getBearing(),
 				vessel.distance(Duration.ofHours(1)).getValue().doubleValue(),
 				LengthUnit.NAUTICAL_MILE))
-				.isEqualTo(new LatLng(0.166554, 0.0));
+				.isEqualTo(position(0.166554, 0.0));
 	}
 
 	@Test
-	void calcDistance() {
-		assertThat(distance(vessel.getPosition(), new LatLng(0.166554, 0.0), LengthUnit.NAUTICAL_MILE))
+	@Override
+	void calcDistanceFromPointToPoint() {
+		assertThat(distance(vessel.getPosition(), position(0.166554, 0.0), LengthUnit.NAUTICAL_MILE))
 				.isCloseTo(10.0, withinPercentage(0.01));
 	}
 
 	@Test
-	void calcBearing() {
-		assertThat(initialBearing(vessel.getPosition(), new LatLng(0.166554, 0.0)))
+	@Override
+	void calcBearingFromPointToPoint() {
+		assertThat(initialBearing(vessel.getPosition(), position(0.166554, 0.0)))
 				.isCloseTo(0.0, withinPercentage(0.01));
 	}
 

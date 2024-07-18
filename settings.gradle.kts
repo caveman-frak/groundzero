@@ -1,4 +1,3 @@
 rootProject.name = "groundzero"
 
-include("import-export", "utility")
-include("common")
+include("common", "import-export", "utility", "user-interface")

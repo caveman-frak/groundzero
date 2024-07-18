@@ -2,55 +2,46 @@ package uk.co.bluegecko.utility.spatial;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.withinPercentage;
-import static si.uom.NonSI.KNOT;
 
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.locationtech.spatial4j.context.SpatialContext;
 import org.locationtech.spatial4j.context.SpatialContextFactory;
 import org.locationtech.spatial4j.shape.Point;
-import tech.units.indriya.quantity.Quantities;
-import uk.co.bluegecko.utility.spatial.Vessel.VesselBuilder;
 
-public class Spatial4JTest {
+public class Spatial4JTest extends AbstractSpatialTest<Point> {
 
 	SpatialContext ctx;
-	Vessel<Point> vessel;
 
 	@BeforeEach
-	void setUp() {
+	void setUpContext() {
 		ctx = SpatialContextFactory.makeSpatialContext(Map.of("geo", "true"), null);
-		Point location = ctx.getShapeFactory().pointLatLon(0.0, 0.0);
-		VesselBuilder<Point> pointVesselBuilder = Vessel.<Point>builder()
-				.position(location);
-		vessel = pointVesselBuilder.knots(Quantities.getQuantity(1.0, KNOT))
-				.bearing(0.0)
-				.rateOfTurn(0.0)
-				.build();
+	}
+
+	@NotNull
+	@Override
+	Point position(double lat, double lng) {
+		return ctx.getShapeFactory().pointLatLon(lat, lng);
 	}
 
 	@Test
-	@Disabled("not implemented  for Spatial4J")
-	void calcDestination() {
+	@Override
+	void calcDestinationFromPointWithBearingAndDistance() {
+		assertThat(ctx.getDistCalc().pointOnBearing(vessel.getPosition(), 0.166554, 0, ctx, null))
+				.isEqualTo(position(0.166554, 0.0));
 	}
 
 	@Test
-	void calcDistance() {
-		assertThat(ctx.calcDistance(vessel.getPosition(), 0.166554, 0.0))
+	@Override
+	void calcDistanceFromPointToPoint() {
+		assertThat(ctx.getDistCalc().distance(vessel.getPosition(), position(0.166554, 0.0)))
 				.isCloseTo(0.166554, withinPercentage(0.01));
 	}
 
-	@Test
-	@Disabled("not implemented  for Spatial4J")
-	void calcBearing() {
-	}
-
-	@Test
-	void calcPointFromBearing() {
-		assertThat(ctx.getDistCalc().pointOnBearing(vessel.getPosition(), 0.166554, 0, ctx, null))
-				.isEqualTo(ctx.getShapeFactory().pointLatLon(0.166554, 0.0));
+	@Override
+	void calcBearingFromPointToPoint() {
 	}
 
 }

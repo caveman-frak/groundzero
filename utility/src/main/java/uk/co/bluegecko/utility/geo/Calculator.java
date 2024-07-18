@@ -277,6 +277,13 @@ public record Calculator(Context ctx) {
 	 */
 	public Point2D intersection(double lat1, double lng1, double bearing1,
 			double lat2, double lng2, double bearing2) {
+		double a = sqrt(pow(sin(abs(lat2 - lat1) / 2), 2));
+		double b = pow(sin(abs(lng2 - lng1) / 2), 2);
+		double dist12 = 2 * asin(a + cos(lat1) * cos(lat2) * b);
+//		δ12 = 2⋅asin( √(sin²(Δφ/2) + cos φ1 ⋅ cos φ2 ⋅ sin²(Δλ/2)) )
+		double bearingA = acos((sin(lat2) - sin(lat1) * cos(dist12)) / (sin(dist12) * cos(lat1)));
+//	 *      θa = acos( ( sin φ2 − sin φ1 ⋅ cos δ12 ) / ( sin δ12 ⋅ cos φ1 ) )
+//	 *      θb = acos( ( sin φ1 − sin φ2 ⋅ cos δ12 ) / ( sin δ12 ⋅ cos φ2 ) )
 		return null;
 	}
 
@@ -299,6 +306,13 @@ public record Calculator(Context ctx) {
 	 */
 	public double normaliseLongitude(double radians) {
 		return (radians + 3 * PI) % (2 * PI) - PI;
+	}
+
+	/**
+	 * Fix bearing between 0° and +360°.
+	 */
+	public double normaliseBearing(double radians) {
+		return abs(radians % (2 * PI));
 	}
 
 	/**
