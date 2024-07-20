@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.text.Text?>
+<GridPane alignment="center" hgap="10" vgap="10" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+  fx:controller="uk.co.bluegecko.ui.geometry.javafx.FXMLControlsController">
+  <padding>
+    <Insets bottom="10" left="25" right="25" top="25"/>
+  </padding>
+  <Text text="Test Points Follow Shape" id="title-text" textAlignment="CENTER" GridPane.columnIndex="0"
+    GridPane.columnSpan="6" GridPane.rowIndex="0"/>
+
+  <Label text="Shape:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+  <RadioButton selected="true" text="Cubic Curve" id="cubic" GridPane.columnIndex="1" GridPane.rowIndex="1">
+    <toggleGroup>
+      <ToggleGroup fx:id="shape"/>
+    </toggleGroup>
+  </RadioButton>
+  <RadioButton text="Quadratic Curve" id="quad" toggleGroup="$shape" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+  <RadioButton text="Arc" id="arc" toggleGroup="$shape" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+  <RadioButton text="Ellipse" id="ellipse" toggleGroup="$shape" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+  <RadioButton text="Line" id="line" toggleGroup="$shape" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+  <RadioButton text="Rectangle" id="rect" toggleGroup="$shape" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+
+  <Label text="Start:" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+  <TextField fx:id="startPointX" prefWidth="50" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+  <TextField fx:id="startPointY" prefWidth="50" GridPane.columnIndex="4" GridPane.rowIndex="1"/>
+
+  <Label text="End:" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+  <TextField fx:id="endPointX" prefWidth="50" GridPane.columnIndex="3" GridPane.rowIndex="2"/>
+  <TextField fx:id="endPointY" prefWidth="50" GridPane.columnIndex="4" GridPane.rowIndex="2"/>
+
+  <Label text="Control #1:" GridPane.columnIndex="5" GridPane.rowIndex="1"/>
+  <TextField fx:id="control1X" prefWidth="50" GridPane.columnIndex="6" GridPane.rowIndex="1"/>
+  <TextField fx:id="control1Y" prefWidth="50" GridPane.columnIndex="7" GridPane.rowIndex="1"/>
+
+  <Label text="Control #2:" GridPane.columnIndex="5" GridPane.rowIndex="2"/>
+  <TextField fx:id="control2X" prefWidth="50" GridPane.columnIndex="6" GridPane.rowIndex="2"/>
+  <TextField fx:id="control2Y" prefWidth="50" GridPane.columnIndex="7" GridPane.rowIndex="2"/>
+
+  <Label text="Drawing delay:" GridPane.halignment="RIGHT" GridPane.columnIndex="4" GridPane.rowIndex="4"
+    GridPane.columnSpan="2"/>
+  <TextField fx:id="delay" prefWidth="80" GridPane.columnIndex="6" GridPane.rowIndex="4" GridPane.columnSpan="2"/>
+
+  <Label text="No of points:" GridPane.halignment="RIGHT" GridPane.columnIndex="4" GridPane.rowIndex="5"
+    GridPane.columnSpan="2"/>
+  <TextField fx:id="points" prefWidth="80" GridPane.columnIndex="6" GridPane.rowIndex="5" GridPane.columnSpan="2"/>
+
+  <FlowPane columnHalignment="RIGHT" hgap="10" GridPane.halignment="RIGHT" GridPane.columnIndex="3"
+    GridPane.rowIndex="6" GridPane.columnSpan="6">
+    <Label text="Apply"/>
+    <Button text="Draw Shape" onAction="#drawShape"/>
+    <Button text="Draw Points" onAction="#drawPoints"/>
+    <Button text="Clear" onAction="#clearGraphics"/>
+    <Button text="Reset" onAction="#resetControls"/>
+  </FlowPane>
+</GridPane>
