@@ -6,6 +6,8 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
+import uk.co.bluegecko.ui.geometry.javafx.controller.FXMLControlsController;
+import uk.co.bluegecko.ui.geometry.javafx.controller.FXMLGraphicsController;
 
 @Slf4j
 public class GeometryDisplay extends Application {

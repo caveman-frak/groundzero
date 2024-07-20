@@ -1,4 +1,4 @@
-package uk.co.bluegecko.ui.geometry.javafx;
+package uk.co.bluegecko.ui.geometry.javafx.controller;
 
 import static uk.co.bluegecko.ui.geometry.calc.GeometryCalculator.calculatePointsAlongCubicBezierCurve;
 import static uk.co.bluegecko.ui.geometry.calc.GeometryCalculator.calculatePointsAlongEllipticArc;

@@ -1,4 +1,4 @@
-package uk.co.bluegecko.ui.geometry.javafx;
+package uk.co.bluegecko.ui.geometry.javafx.controller;
 
 import java.awt.Point;
 import java.awt.geom.Point2D;

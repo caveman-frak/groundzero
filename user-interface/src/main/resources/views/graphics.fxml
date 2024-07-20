@@ -2,4 +2,4 @@
 
 <?import javafx.scene.layout.Pane?>
 <Pane fx:id="canvas" id="graphics" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-  fx:controller="uk.co.bluegecko.ui.geometry.javafx.FXMLGraphicsController" minWidth="600" minHeight="600"/>
+  fx:controller="uk.co.bluegecko.ui.geometry.javafx.controller.FXMLGraphicsController" minWidth="600" minHeight="600"/>
