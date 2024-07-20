@@ -1,9 +1,9 @@
 package uk.co.bluegecko.ui.geometry.javafx;
 
-import static uk.co.bluegecko.ui.geometry.calc.CubicBezierCurve.calculatePointsOnCubicBezierCurve;
-import static uk.co.bluegecko.ui.geometry.calc.EllipticArc.calculatePointsOnEllipticArc;
-import static uk.co.bluegecko.ui.geometry.calc.LinePoints.calculatePointsOnLine;
-import static uk.co.bluegecko.ui.geometry.calc.QuadraticBezierCurve.calculatePointsOnQuadraticBezierCurve;
+import static uk.co.bluegecko.ui.geometry.calc.GeometryCalculator.calculatePointsAlongCubicBezierCurve;
+import static uk.co.bluegecko.ui.geometry.calc.GeometryCalculator.calculatePointsAlongEllipticArc;
+import static uk.co.bluegecko.ui.geometry.calc.GeometryCalculator.calculatePointsAlongLine;
+import static uk.co.bluegecko.ui.geometry.calc.GeometryCalculator.calculatePointsAlongQuadraticBezierCurve;
 
 import java.awt.Point;
 import java.net.URL;
@@ -70,13 +70,12 @@ public class FXMLControlsController implements Initializable {
 	protected void drawPoints(ActionEvent e) {
 		graphicsController.drawPoints(
 				switch (shape()) {
-					case CUBIC -> calculatePointsOnCubicBezierCurve(start(), control1(), control2(), end(), points())
-							.stream();
-					case QUADRATIC ->
-							calculatePointsOnQuadraticBezierCurve(start(), control1(), end(), points()).stream();
-					case ARC -> calculatePointsOnEllipticArc(start(), control1(), end().x, end().y, points()).stream();
-					case ELLIPSE -> calculatePointsOnEllipticArc(start(), control1(), 0, 360, points()).stream();
-					case LINE -> calculatePointsOnLine(start(), end(), points()).stream();
+					case CUBIC ->
+							calculatePointsAlongCubicBezierCurve(start(), control1(), control2(), end(), points());
+					case QUADRATIC -> calculatePointsAlongQuadraticBezierCurve(start(), control1(), end(), points());
+					case ARC -> calculatePointsAlongEllipticArc(start(), control1(), end().x, end().y, points());
+					case ELLIPSE -> calculatePointsAlongEllipticArc(start(), control1(), 0, 360, points());
+					case LINE -> calculatePointsAlongLine(start(), end(), points());
 					default -> Stream.of();
 				}
 				, Duration.ZERO);
