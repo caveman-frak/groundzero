@@ -14,7 +14,7 @@
   <padding>
     <Insets bottom="10" left="25" right="25" top="25"/>
   </padding>
-  <Text text="Test Points Follow Shape" id="title-text" textAlignment="CENTER" GridPane.columnIndex="0"
+  <Text text="Test: Points Follow Shape" id="title-text" textAlignment="CENTER" GridPane.columnIndex="0"
     GridPane.columnSpan="6" GridPane.rowIndex="0"/>
 
   <Label text="Shape:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>

@@ -108,7 +108,7 @@ public class GraphicsController implements Initializable {
 
 	private Line line(int x1, int y1, int x2, int y2) {
 		Line line = new Line(x1, y1, x2, y2);
-		line.setStroke(Color.gray(0.5));
+		line.setStroke(Color.gray(0.5, 0.5));
 		line.setStrokeWidth(1.0);
 		return line;
 	}
