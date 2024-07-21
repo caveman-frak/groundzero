@@ -1,10 +1,5 @@
 package uk.co.bluegecko.ui.geometry.javafx.controller;
 
-import static uk.co.bluegecko.ui.geometry.calc.GeometryCalculator.calculatePointsAlongCubicBezierCurve;
-import static uk.co.bluegecko.ui.geometry.calc.GeometryCalculator.calculatePointsAlongEllipticArc;
-import static uk.co.bluegecko.ui.geometry.calc.GeometryCalculator.calculatePointsAlongLine;
-import static uk.co.bluegecko.ui.geometry.calc.GeometryCalculator.calculatePointsAlongQuadraticBezierCurve;
-
 import java.awt.Point;
 import java.net.URL;
 import java.time.Duration;
@@ -21,12 +16,21 @@ import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.QuadCurve;
 import javafx.scene.shape.Rectangle;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import net.rgielen.fxweaver.core.FxmlView;
+import org.springframework.stereotype.Component;
+import uk.co.bluegecko.ui.geometry.calc.GeometryCalculator;
 import uk.co.bluegecko.ui.geometry.javafx.control.NumericField;
 
 @Slf4j
+@Component
+@FxmlView("/views/controls.fxml")
+@RequiredArgsConstructor
 public class ControlsController implements Initializable {
+
+	private final GeometryCalculator calculator;
 
 	@FXML
 	private NumericField startPointX;
@@ -75,12 +79,14 @@ public class ControlsController implements Initializable {
 	protected void drawPoints(ActionEvent e) {
 		graphicsController.drawPoints(
 				switch (shape()) {
-					case CUBIC ->
-							calculatePointsAlongCubicBezierCurve(start(), control1(), control2(), end(), points());
-					case QUADRATIC -> calculatePointsAlongQuadraticBezierCurve(start(), control1(), end(), points());
-					case ARC -> calculatePointsAlongEllipticArc(start(), control1(), end().x, end().y, points());
-					case ELLIPSE -> calculatePointsAlongEllipticArc(start(), control1(), 0, 360, points());
-					case LINE -> calculatePointsAlongLine(start(), end(), points());
+					case CUBIC -> calculator.calculatePointsAlongCubicBezierCurve(start(), control1(), control2(),
+							end(), points());
+					case QUADRATIC ->
+							calculator.calculatePointsAlongQuadraticBezierCurve(start(), control1(), end(), points());
+					case ARC ->
+							calculator.calculatePointsAlongEllipticArc(start(), control1(), end().x, end().y, points());
+					case ELLIPSE -> calculator.calculatePointsAlongEllipticArc(start(), control1(), 0, 360, points());
+					case LINE -> calculator.calculatePointsAlongLine(start(), end(), points());
 					default -> Stream.of();
 				},
 				duration());

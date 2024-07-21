@@ -22,10 +22,14 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import net.rgielen.fxweaver.core.FxmlView;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Component;
 import uk.co.bluegecko.ui.geometry.javafx.concurrent.PeriodicPulse;
 
 @Slf4j
+@Component
+@FxmlView("/views/graphics.fxml")
 public class GraphicsController implements Initializable {
 
 	private static final int SPACING = 20;

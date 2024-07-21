@@ -6,8 +6,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import net.rgielen.fxweaver.core.FxmlView;
+import org.springframework.stereotype.Component;
 import uk.co.bluegecko.ui.geometry.javafx.concurrent.PeriodicPulse;
 
+@Component
+@FxmlView("/views/status.fxml")
 public class StatusController implements Initializable {
 
 	@FXML
@@ -32,4 +36,5 @@ public class StatusController implements Initializable {
 		progress.progressProperty().unbind();
 		progress.setProgress(0);
 	}
+	
 }

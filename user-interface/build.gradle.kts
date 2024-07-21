@@ -10,6 +10,7 @@ javafx {
 }
 
 dependencies {
+    implementation("net.rgielen:javafx-weaver-spring-boot-starter:2.0.0")
     implementation("org.controlsfx:controlsfx:11.2.1")
 }
 
