@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.layout.HBox?>
+<HBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+  fx:controller="uk.co.bluegecko.ui.geometry.javafx.controller.StatusController" prefWidth="600.0"
+  styleClass="status-bar" spacing="5">
+
+  <Label fx:id="status" maxWidth="Infinity" minWidth="100" HBox.hgrow="ALWAYS"/>
+  <Label fx:id="action" prefWidth="100" minWidth="150" maxWidth="150"/>
+  <ProgressBar fx:id="progress" prefWidth="200" minWidth="200" maxWidth="200" progress="0.0"/>
+</HBox>

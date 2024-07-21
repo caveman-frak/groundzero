@@ -1,7 +1,7 @@
 .root {
      -fx-background-image: url("../images/linen-background.jpg");
 }
-.label {
+.Label {
     -fx-text-fill: blue;
 }
 #title-text {
@@ -13,4 +13,14 @@
 #graphics {
   -fx-border-insets: 5;
   -fx-border-color: black;
+}
+.status-bar {
+  -fx-padding: 5;
+  -fx-alignment: center;
+}
+.status-bar Label {
+  -fx-border-color: black;
+}
+.status-bar #progress {
+  -fx-border-color: blue;
 }

@@ -14,7 +14,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.CubicCurve;
@@ -23,39 +22,45 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.QuadCurve;
 import javafx.scene.shape.Rectangle;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import uk.co.bluegecko.ui.geometry.javafx.control.NumericField;
 
-public class FXMLControlsController implements Initializable {
+@Slf4j
+public class ControlsController implements Initializable {
 
 	@FXML
-	private TextField startPointX;
+	private NumericField startPointX;
 	@FXML
-	private TextField startPointY;
+	private NumericField startPointY;
 	@FXML
-	private TextField endPointX;
+	private NumericField endPointX;
 	@FXML
-	private TextField endPointY;
+	private NumericField endPointY;
 	@FXML
-	private TextField control1X;
+	private NumericField control1X;
 	@FXML
-	private TextField control1Y;
+	private NumericField control1Y;
 	@FXML
-	private TextField control2X;
+	private NumericField control2X;
 	@FXML
-	private TextField control2Y;
+	private NumericField control2Y;
 	@FXML
-	public TextField delay;
+	public NumericField duration;
 	@FXML
-	private TextField points;
+	private NumericField points;
 	@FXML
-	private ToggleGroup shape;
+	private ToggleGroup shapeSelect;
 
 	@Setter
-	private FXMLGraphicsController graphicsController;
+	private GraphicsController graphicsController;
 
 	@FXML
 	protected void drawShape(ActionEvent e) {
+		log.info("Drawing markers");
 		graphicsController.drawMarkers(Stream.of(start(), end(), control1(), control2()));
-		graphicsController.drawShape(switch (shape()) {
+		Shape shape = shape();
+		log.info("Drawing shape {}", shape);
+		graphicsController.drawShape(switch (shape) {
 			case QUADRATIC -> new QuadCurve(start().x, start().y, control1().x, control1().y, end().x, end().y);
 			case CUBIC -> new CubicCurve(start().x, start().y, control1().x, control1().y, control2().x, control2().y,
 					end().x, end().y);
@@ -77,22 +82,25 @@ public class FXMLControlsController implements Initializable {
 					case ELLIPSE -> calculatePointsAlongEllipticArc(start(), control1(), 0, 360, points());
 					case LINE -> calculatePointsAlongLine(start(), end(), points());
 					default -> Stream.of();
-				}
-				, Duration.ZERO);
+				},
+				duration());
 	}
 
 	@FXML
 	protected void clearGraphics(ActionEvent e) {
+		log.info("Clearing canvas");
 		graphicsController.clearGraphics();
 	}
 
 	@FXML
 	protected void resetControls(ActionEvent e) {
+		log.info("Resetting control state");
 		controlDefaults();
 	}
 
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
+		log.info("Initialising. URL = {}, Bundle = {}", url, rb);
 		controlDefaults();
 	}
 
@@ -105,7 +113,7 @@ public class FXMLControlsController implements Initializable {
 		control1Y.setText("250");
 		control2X.setText("400");
 		control2Y.setText("150");
-		delay.setText("10s");
+		duration.setText("10");
 		points.setText("100");
 	}
 
@@ -114,7 +122,7 @@ public class FXMLControlsController implements Initializable {
 	}
 
 	private Shape shape() {
-		return switch (((RadioButton) shape.getSelectedToggle()).getId()) {
+		return switch (((RadioButton) shapeSelect.getSelectedToggle()).getId()) {
 			case "cubic" -> Shape.CUBIC;
 			case "quad" -> Shape.QUADRATIC;
 			case "arc" -> Shape.ARC;
@@ -125,27 +133,27 @@ public class FXMLControlsController implements Initializable {
 	}
 
 	private Point start() {
-		return new Point(Integer.parseInt(startPointX.getText()), Integer.parseInt(startPointY.getText()));
+		return new Point(startPointX.value(), startPointY.value());
 	}
 
 	private Point end() {
-		return new Point(Integer.parseInt(endPointX.getText()), Integer.parseInt(endPointY.getText()));
+		return new Point(endPointX.value(), endPointY.value());
 	}
 
 	private Point control1() {
-		return new Point(Integer.parseInt(control1X.getText()), Integer.parseInt(control1Y.getText()));
+		return new Point(control1X.value(), control1Y.value());
 	}
 
 	private Point control2() {
-		return new Point(Integer.parseInt(control2X.getText()), Integer.parseInt(control2Y.getText()));
+		return new Point(control2X.value(), control2Y.value());
 	}
 
-	private Duration delay() {
-		return Duration.ZERO;
+	private Duration duration() {
+		return duration.value() > 0 ? Duration.ofSeconds(duration.value()) : Duration.ZERO;
 	}
 
 	private int points() {
-		return Integer.parseInt(points.getText());
+		return points.value();
 	}
 
 }
