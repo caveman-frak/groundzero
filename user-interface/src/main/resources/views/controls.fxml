@@ -14,52 +14,52 @@
   <padding>
     <Insets bottom="10" left="25" right="25" top="25"/>
   </padding>
-  <Text text="Test: Points Follow Shape" id="title-text" textAlignment="CENTER" GridPane.columnIndex="0"
+  <Text text="%heading" id="title-text" textAlignment="CENTER" GridPane.columnIndex="0"
     GridPane.columnSpan="6" GridPane.rowIndex="0"/>
 
-  <Label text="Shape:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-  <RadioButton selected="true" text="Cubic Curve" id="cubic" GridPane.columnIndex="1" GridPane.rowIndex="1">
+  <Label text="%shape" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+  <RadioButton selected="true" text="%cubic" id="cubic" GridPane.columnIndex="1" GridPane.rowIndex="1">
     <toggleGroup>
       <ToggleGroup fx:id="shapeSelect"/>
     </toggleGroup>
   </RadioButton>
-  <RadioButton text="Quadratic Curve" id="quad" toggleGroup="$shapeSelect" GridPane.columnIndex="1"
+  <RadioButton text="%quadratic" id="quad" toggleGroup="$shapeSelect" GridPane.columnIndex="1"
     GridPane.rowIndex="2"/>
-  <RadioButton text="Arc" id="arc" toggleGroup="$shapeSelect" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
-  <RadioButton text="Ellipse" id="ellipse" toggleGroup="$shapeSelect" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
-  <RadioButton text="Line" id="line" toggleGroup="$shapeSelect" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
-  <RadioButton text="Rectangle" id="rect" toggleGroup="$shapeSelect" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+  <RadioButton text="%arc" id="arc" toggleGroup="$shapeSelect" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+  <RadioButton text="%ellipse" id="ellipse" toggleGroup="$shapeSelect" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+  <RadioButton text="%line" id="line" toggleGroup="$shapeSelect" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+  <RadioButton text="%rectangle" id="rect" toggleGroup="$shapeSelect" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
 
-  <Label text="Start:" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+  <Label text="%start" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
   <NumericField fx:id="startPointX" prefWidth="50" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
   <NumericField fx:id="startPointY" prefWidth="50" GridPane.columnIndex="4" GridPane.rowIndex="1"/>
 
-  <Label text="End:" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+  <Label text="%end" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
   <NumericField fx:id="endPointX" prefWidth="50" GridPane.columnIndex="3" GridPane.rowIndex="2"/>
   <NumericField fx:id="endPointY" prefWidth="50" GridPane.columnIndex="4" GridPane.rowIndex="2"/>
 
-  <Label text="Control #1:" GridPane.columnIndex="5" GridPane.rowIndex="1"/>
+  <Label text="%control1" GridPane.columnIndex="5" GridPane.rowIndex="1"/>
   <NumericField fx:id="control1X" prefWidth="50" GridPane.columnIndex="6" GridPane.rowIndex="1"/>
   <NumericField fx:id="control1Y" prefWidth="50" GridPane.columnIndex="7" GridPane.rowIndex="1"/>
 
-  <Label text="Control #2:" GridPane.columnIndex="5" GridPane.rowIndex="2"/>
+  <Label text="%control2" GridPane.columnIndex="5" GridPane.rowIndex="2"/>
   <NumericField fx:id="control2X" prefWidth="50" GridPane.columnIndex="6" GridPane.rowIndex="2"/>
   <NumericField fx:id="control2Y" prefWidth="50" GridPane.columnIndex="7" GridPane.rowIndex="2"/>
 
-  <Label text="Drawing delay:" GridPane.halignment="RIGHT" GridPane.columnIndex="4" GridPane.rowIndex="4"
+  <Label text="%delay" GridPane.halignment="RIGHT" GridPane.columnIndex="4" GridPane.rowIndex="4"
     GridPane.columnSpan="2"/>
   <NumericField fx:id="duration" prefWidth="80" GridPane.columnIndex="6" GridPane.rowIndex="4" GridPane.columnSpan="2"/>
 
-  <Label text="No of points:" GridPane.halignment="RIGHT" GridPane.columnIndex="4" GridPane.rowIndex="5"
+  <Label text="%points" GridPane.halignment="RIGHT" GridPane.columnIndex="4" GridPane.rowIndex="5"
     GridPane.columnSpan="2"/>
   <NumericField fx:id="points" prefWidth="80" GridPane.columnIndex="6" GridPane.rowIndex="5" GridPane.columnSpan="2"/>
 
   <FlowPane columnHalignment="RIGHT" hgap="10" GridPane.halignment="RIGHT" GridPane.columnIndex="3"
     GridPane.rowIndex="6" GridPane.columnSpan="6">
-    <Label text="Apply"/>
-    <Button text="Draw Shape" onAction="#drawShape"/>
-    <Button text="Draw Points" onAction="#drawPoints"/>
-    <Button text="Clear" onAction="#clearGraphics"/>
-    <Button text="Reset" onAction="#resetControls"/>
+    <Label text="%apply"/>
+    <Button text="%draw-shape" onAction="#drawShape"/>
+    <Button text="%draw-point" onAction="#drawPoints"/>
+    <Button text="%clear" onAction="#clearGraphics"/>
+    <Button text="%reset" onAction="#resetControls"/>
   </FlowPane>
 </GridPane>

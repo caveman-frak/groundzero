@@ -35,7 +35,7 @@ public class GeometryDisplay extends Application {
 
 	@Override
 	public void start(Stage stage) {
-		context.publishEvent(new StageReadyEvent(stage));
+		context.publishEvent(new StageReadyEvent(stage, true));
 		log.info("Starting application");
 	}
 

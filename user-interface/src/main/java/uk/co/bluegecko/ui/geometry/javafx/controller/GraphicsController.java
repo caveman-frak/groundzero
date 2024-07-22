@@ -37,15 +37,13 @@ public class GraphicsController implements Initializable {
 	private static final String POINTS = "points";
 	private static final String MARKER = "markers";
 
+	private ResourceBundle rb;
+
 	@FXML
 	private Pane canvas;
 
 	@Setter
 	private StatusController statusController;
-
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-	}
 
 	public void drawGrid() {
 		Group grid = new Group();
@@ -85,7 +83,7 @@ public class GraphicsController implements Initializable {
 		int number = mutableList.size();
 		Duration pause = duration.toSeconds() > 0 ? Duration.ofNanos(duration.toNanos() / number) : Duration.ZERO;
 
-		return new ShowPointsOverTime(pause, number, mutableList, children);
+		return new ShowPointsOverTime(rb, pause, number, mutableList, children);
 	}
 
 	private ObservableList<Node> getOrAdd(Pane parent, String name) {
@@ -117,14 +115,21 @@ public class GraphicsController implements Initializable {
 		return line;
 	}
 
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		this.rb = resources;
+	}
+
 	private static class ShowPointsOverTime extends PeriodicPulse {
 
+		private final ResourceBundle resourceBundle;
 		private final List<? extends Shape> shapes;
 		private final ObservableList<Node> children;
 
-		public ShowPointsOverTime(Duration pause, int number, List<? extends Shape> shapes,
-				ObservableList<Node> children) {
+		public ShowPointsOverTime(ResourceBundle resourceBundle, Duration pause, int number,
+				List<? extends Shape> shapes, ObservableList<Node> children) {
 			super(pause, number);
+			this.resourceBundle = resourceBundle;
 			this.shapes = shapes;
 			this.children = children;
 		}
@@ -132,7 +137,7 @@ public class GraphicsController implements Initializable {
 		@Override
 		protected void run() {
 			int i = getTotal().get() - shapes.size();
-			updateMessage("Drawing point #" + i);
+			updateMessage(resourceBundle.getString("drawing").formatted(i));
 			updateProgress(i);
 			if (!shapes.isEmpty()) {
 				Shape point = shapes.removeFirst();

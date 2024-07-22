@@ -4,8 +4,8 @@ import javafx.stage.Stage;
 
 public class StageReadyEvent extends StageEvent {
 
-	public StageReadyEvent(Stage stage) {
-		super(stage);
+	public StageReadyEvent(Stage stage, boolean primary) {
+		super(stage, primary, StageLifecycle.READY);
 	}
-	
+
 }
