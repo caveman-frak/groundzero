@@ -1,10 +1,12 @@
 package uk.co.bluegecko.ui.geometry.javafx.controller;
 
 import java.awt.Point;
+import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.net.URL;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -15,6 +17,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -70,8 +73,17 @@ public class GraphicsController implements Initializable {
 	}
 
 	public void drawPoints(Stream<Point2D> points, Duration duration) {
-		Stream<Circle> list = points.map(p -> new Circle(p.getX(), p.getY(), 2, Color.BLUE));
-		PeriodicPulse showPoints = drawPointsOverTime(list, duration, getOrAdd(canvas, POINTS));
+		Stream<Circle> shapes = points.map(p -> new Circle(p.getX(), p.getY(), 2, Color.BLUE));
+		PeriodicPulse showPoints = drawPointsOverTime(shapes, duration, getOrAdd(canvas, POINTS));
+		statusController.bindProgress(showPoints);
+		showPoints.start();
+	}
+
+	public void drawLines(Stream<Line2D> lines, Duration duration) {
+		Stream<Shape> shapes = lines.map(p -> new Shape[]{new Circle(p.getX1(), p.getY1(), 2, Color.BLUE),
+						new Line(p.getX1(), p.getY1(), p.getX2(), p.getY2())})
+				.flatMap(Arrays::stream);
+		PeriodicPulse showPoints = drawPointsOverTime(shapes, duration, getOrAdd(canvas, POINTS));
 		statusController.bindProgress(showPoints);
 		showPoints.start();
 	}
@@ -79,11 +91,17 @@ public class GraphicsController implements Initializable {
 	@NotNull
 	private PeriodicPulse drawPointsOverTime(Stream<? extends Shape> shapes, Duration duration,
 			ObservableList<Node> children) {
-		List<? extends Shape> mutableList = shapes.collect(Collectors.toCollection(ArrayList::new));
+		List<? extends Shape> mutableList =
+				shapes.peek(s -> s.setOnMouseClicked(this::showTangent))
+						.collect(Collectors.toCollection(ArrayList::new));
 		int number = mutableList.size();
 		Duration pause = duration.toSeconds() > 0 ? Duration.ofNanos(duration.toNanos() / number) : Duration.ZERO;
 
 		return new ShowPointsOverTime(rb, pause, number, mutableList, children);
+	}
+
+	private void showTangent(MouseEvent e) {
+		log.info("Clicked at {},{} on {}", e.getX(), e.getY(), e.getSource());
 	}
 
 	private ObservableList<Node> getOrAdd(Pane parent, String name) {

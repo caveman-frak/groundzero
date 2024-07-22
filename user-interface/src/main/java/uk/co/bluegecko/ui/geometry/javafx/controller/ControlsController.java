@@ -77,6 +77,12 @@ public class ControlsController implements Initializable {
 
 	@FXML
 	protected void drawPoints(ActionEvent e) {
+		if (shape() == Shape.CUBIC) {
+			graphicsController.drawLines(
+					calculator.calculateTangentsAlongCubicBezierCurve(start(), control1(), control2(),
+							end(), points()), duration());
+			return;
+		}
 		graphicsController.drawPoints(
 				switch (shape()) {
 					case CUBIC -> calculator.calculatePointsAlongCubicBezierCurve(start(), control1(), control2(),

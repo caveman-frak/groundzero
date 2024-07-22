@@ -14,15 +14,15 @@
   <padding>
     <Insets bottom="10" left="25" right="25" top="25"/>
   </padding>
+  <fx:define>
+    <ToggleGroup fx:id="shapeSelect"/>
+  </fx:define>
   <Text text="%heading" id="title-text" textAlignment="CENTER" GridPane.columnIndex="0"
     GridPane.columnSpan="6" GridPane.rowIndex="0"/>
 
   <Label text="%shape" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-  <RadioButton selected="true" text="%cubic" id="cubic" GridPane.columnIndex="1" GridPane.rowIndex="1">
-    <toggleGroup>
-      <ToggleGroup fx:id="shapeSelect"/>
-    </toggleGroup>
-  </RadioButton>
+  <RadioButton selected="true" text="%cubic" id="cubic" toggleGroup="$shapeSelect" GridPane.columnIndex="1"
+    GridPane.rowIndex="1"/>
   <RadioButton text="%quadratic" id="quad" toggleGroup="$shapeSelect" GridPane.columnIndex="1"
     GridPane.rowIndex="2"/>
   <RadioButton text="%arc" id="arc" toggleGroup="$shapeSelect" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
