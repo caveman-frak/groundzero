@@ -23,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
 import uk.co.bluegecko.ui.geometry.calc.GeometryCalculator;
+import uk.co.bluegecko.ui.geometry.calc.GeometryCalculator.Accuracy;
 import uk.co.bluegecko.ui.geometry.javafx.control.NumericField;
 
 @Slf4j
@@ -121,12 +122,12 @@ public class ControlsController implements Initializable {
 		graphicsController.showLength(shape(),
 				switch (shape()) {
 					case CUBIC -> calculator.calculateLengthOfCubicBezierCurve(
-							start(), control1(), control2(), end());
+							start(), control1(), control2(), end(), Accuracy.MAX);
 					case QUADRATIC -> calculator.calculateLengthOfQuadraticBezierCurve(
-							start(), control1(), end());
+							start(), control1(), end(), Accuracy.MAX);
 					case ARC -> calculator.calculateLengthOfEllipticArc(
-							control1(), end().x, end().y);
-					case ELLIPSE -> calculator.calculateLengthOfEllipticArc(control1(), 0, 360);
+							control1(), end().x, end().y, Accuracy.MAX);
+					case ELLIPSE -> calculator.calculateLengthOfEllipticArc(control1(), 0, 360, Accuracy.MAX);
 					case LINE -> calculator.calculateLengthOfLine(start(), end());
 					default -> 0.0;
 				});

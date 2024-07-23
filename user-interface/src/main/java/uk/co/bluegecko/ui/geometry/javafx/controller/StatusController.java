@@ -33,7 +33,7 @@ public class StatusController {
 	}
 
 	public void showLength(Shape shape, double length) {
-		status.setText(String.format("%s has a length of %1.4f", shape, length));
+		status.setText(String.format("%s has a length of %1.2f", shape, length));
 	}
-	
+
 }
