@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ToggleGroup?>
@@ -45,6 +46,8 @@
   <Label text="%control2" GridPane.columnIndex="5" GridPane.rowIndex="2"/>
   <NumericField fx:id="control2X" prefWidth="50" GridPane.columnIndex="6" GridPane.rowIndex="2"/>
   <NumericField fx:id="control2Y" prefWidth="50" GridPane.columnIndex="7" GridPane.rowIndex="2"/>
+
+  <CheckBox fx:id="showLines" text="%showlines" GridPane.columnIndex="6" GridPane.rowIndex="3" GridPane.columnSpan="2"/>
 
   <Label text="%delay" GridPane.halignment="RIGHT" GridPane.columnIndex="4" GridPane.rowIndex="4"
     GridPane.columnSpan="2"/>

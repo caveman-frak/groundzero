@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.shape.Arc;
@@ -49,6 +50,8 @@ public class ControlsController implements Initializable {
 	@FXML
 	private NumericField control2Y;
 	@FXML
+	private CheckBox showLines;
+	@FXML
 	public NumericField duration;
 	@FXML
 	private NumericField points;
@@ -77,25 +80,56 @@ public class ControlsController implements Initializable {
 
 	@FXML
 	protected void drawPoints(ActionEvent e) {
-		if (shape() == Shape.CUBIC) {
-			graphicsController.drawLines(
-					calculator.calculateTangentsAlongCubicBezierCurve(start(), control1(), control2(),
-							end(), points()), duration());
-			return;
+		showLength();
+		if (showLines()) {
+			drawLines();
+		} else {
+			drawPoints();
 		}
+	}
+
+	private void drawLines() {
+		graphicsController.drawLines(
+				switch (shape()) {
+					case CUBIC -> calculator.calculateTangentsAlongCubicBezierCurve(
+							start(), control1(), control2(), end(), points());
+					case QUADRATIC -> calculator.calculateTangentsAlongQuadraticBezierCurve(
+							start(), control1(), end(), points());
+					case ARC -> calculator.calculateTangentsAlongEllipticArc(
+							start(), control1(), end().x, end().y, points());
+					case ELLIPSE -> calculator.calculateTangentsAlongEllipticArc(start(), control1(), 0, 360, points());
+					default -> Stream.of();
+				}, duration());
+	}
+
+	private void drawPoints() {
 		graphicsController.drawPoints(
 				switch (shape()) {
-					case CUBIC -> calculator.calculatePointsAlongCubicBezierCurve(start(), control1(), control2(),
-							end(), points());
-					case QUADRATIC ->
-							calculator.calculatePointsAlongQuadraticBezierCurve(start(), control1(), end(), points());
-					case ARC ->
-							calculator.calculatePointsAlongEllipticArc(start(), control1(), end().x, end().y, points());
+					case CUBIC -> calculator.calculatePointsAlongCubicBezierCurve(
+							start(), control1(), control2(), end(), points());
+					case QUADRATIC -> calculator.calculatePointsAlongQuadraticBezierCurve(
+							start(), control1(), end(), points());
+					case ARC -> calculator.calculatePointsAlongEllipticArc(
+							start(), control1(), end().x, end().y, points());
 					case ELLIPSE -> calculator.calculatePointsAlongEllipticArc(start(), control1(), 0, 360, points());
 					case LINE -> calculator.calculatePointsAlongLine(start(), end(), points());
 					default -> Stream.of();
-				},
-				duration());
+				}, duration());
+	}
+
+	private void showLength() {
+		graphicsController.showLength(shape(),
+				switch (shape()) {
+					case CUBIC -> calculator.calculateLengthOfCubicBezierCurve(
+							start(), control1(), control2(), end());
+					case QUADRATIC -> calculator.calculateLengthOfQuadraticBezierCurve(
+							start(), control1(), end());
+					case ARC -> calculator.calculateLengthOfEllipticArc(
+							control1(), end().x, end().y);
+					case ELLIPSE -> calculator.calculateLengthOfEllipticArc(control1(), 0, 360);
+					case LINE -> calculator.calculateLengthOfLine(start(), end());
+					default -> 0.0;
+				});
 	}
 
 	@FXML
@@ -166,6 +200,10 @@ public class ControlsController implements Initializable {
 
 	private int points() {
 		return points.value();
+	}
+
+	private boolean showLines() {
+		return showLines.isSelected();
 	}
 
 }

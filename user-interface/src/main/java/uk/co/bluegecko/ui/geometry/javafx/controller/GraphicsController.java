@@ -88,6 +88,10 @@ public class GraphicsController implements Initializable {
 		showPoints.start();
 	}
 
+	public void showLength(ControlsController.Shape shape, double length) {
+		statusController.showLength(shape, length);
+	}
+
 	@NotNull
 	private PeriodicPulse drawPointsOverTime(Stream<? extends Shape> shapes, Duration duration,
 			ObservableList<Node> children) {
