@@ -6,7 +6,6 @@ import javafx.scene.control.ProgressBar;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
 import uk.co.bluegecko.ui.geometry.javafx.concurrent.PeriodicPulse;
-import uk.co.bluegecko.ui.geometry.javafx.controller.ControlsController.Shape;
 
 @Component
 @FxmlView("/views/status.fxml")
@@ -32,8 +31,8 @@ public class StatusController {
 		progress.setProgress(0);
 	}
 
-	public void showLength(Shape shape, double length) {
-		status.setText(String.format("%s has a length of %1.2f", shape, length));
+	public void status(String message, Object... args) {
+		this.status.setText(String.format(message, args));
 	}
 
 }

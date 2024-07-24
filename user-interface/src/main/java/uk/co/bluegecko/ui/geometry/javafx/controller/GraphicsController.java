@@ -89,7 +89,7 @@ public class GraphicsController implements Initializable {
 	}
 
 	public void showLength(ControlsController.Shape shape, double length) {
-		statusController.showLength(shape, length);
+		statusController.status("%s has a length of %1.2f", shape, length);
 	}
 
 	@NotNull
@@ -105,7 +105,7 @@ public class GraphicsController implements Initializable {
 	}
 
 	private void showTangent(MouseEvent e) {
-		log.info("Clicked at {},{} on {}", e.getX(), e.getY(), e.getSource());
+		statusController.status("Clicked at [%1.1f,%1.1f] on %s", e.getX(), e.getY(), e.getSource());
 	}
 
 	private ObservableList<Node> getOrAdd(Pane parent, String name) {
@@ -165,6 +165,8 @@ public class GraphicsController implements Initializable {
 				Shape point = shapes.removeFirst();
 				children.add(point);
 			} else {
+				updateMessage("");
+				updateProgress(0);
 				stop();
 			}
 		}

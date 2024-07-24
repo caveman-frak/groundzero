@@ -8,6 +8,7 @@
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 <?import uk.co.bluegecko.ui.geometry.javafx.control.NumericField?>
 <GridPane alignment="center" hgap="10" vgap="10" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
@@ -22,14 +23,14 @@
     GridPane.columnSpan="6" GridPane.rowIndex="0"/>
 
   <Label text="%shape" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-  <RadioButton selected="true" text="%cubic" id="cubic" toggleGroup="$shapeSelect" GridPane.columnIndex="1"
-    GridPane.rowIndex="1"/>
-  <RadioButton text="%quadratic" id="quad" toggleGroup="$shapeSelect" GridPane.columnIndex="1"
-    GridPane.rowIndex="2"/>
-  <RadioButton text="%arc" id="arc" toggleGroup="$shapeSelect" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
-  <RadioButton text="%ellipse" id="ellipse" toggleGroup="$shapeSelect" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
-  <RadioButton text="%line" id="line" toggleGroup="$shapeSelect" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
-  <RadioButton text="%rectangle" id="rect" toggleGroup="$shapeSelect" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+  <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.rowSpan="6">
+    <RadioButton selected="true" text="%cubic" id="cubic" toggleGroup="$shapeSelect"/>
+    <RadioButton text="%quadratic" id="quad" toggleGroup="$shapeSelect"/>
+    <RadioButton text="%arc" id="arc" toggleGroup="$shapeSelect"/>
+    <RadioButton text="%ellipse" id="ellipse" toggleGroup="$shapeSelect"/>
+    <RadioButton text="%line" id="line" toggleGroup="$shapeSelect"/>
+    <RadioButton text="%rectangle" id="rect" toggleGroup="$shapeSelect"/>
+  </VBox>
 
   <Label text="%start" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
   <NumericField fx:id="startPointX" prefWidth="50" GridPane.columnIndex="3" GridPane.rowIndex="1"/>

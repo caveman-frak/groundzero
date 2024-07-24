@@ -7,10 +7,6 @@ import java.awt.geom.Point2D;
 import java.util.function.DoubleUnaryOperator;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-import javafx.util.Pair;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.Accessors;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -167,7 +163,6 @@ public class GeometryCalculator {
 	public Stream<Point2D> calculatePointsAlongLine(Point2D start, Point2D end, int numPoints) {
 		return IntStream.range(0, numPoints).boxed().map(i -> (double) i / numPoints)
 				.map(f -> calculatePointOnLine(f, start, end));
-
 	}
 
 	public double calculateLengthOfLine(Point start, Point end) {
@@ -182,51 +177,18 @@ public class GeometryCalculator {
 
 	protected double gaussianQuadrature(DoubleUnaryOperator integrand, double thetaStart, double thetaEnd,
 			Accuracy accuracy) {
-		// Nodes (key) and Weights (value) for n-point Gaussian quadrature
-		Pair<double[], double[]> node = switch (accuracy) {
-			case LOW -> new Pair<>(
-					new double[]{-0.5773502691896257, 0.5773502691896257},
-					new double[]{1.0, 1.0});
-			case MEDIUM -> new Pair<>(
-					new double[]{-0.7745966692414834, 0.0, 0.7745966692414834},
-					new double[]{0.5555555555555556, 0.8888888888888888, 0.5555555555555556});
-			case HIGH -> new Pair<>(
-					new double[]{-0.8611363115940526, -0.3399810435848563, 0.3399810435848563, 0.8611363115940526},
-					new double[]{0.3478548451374538, 0.6521451548625461, 0.6521451548625461, 0.3478548451374538});
-			case MAX -> new Pair<>(
-					new double[]{-0.9061798459386640, -0.5384693101056831, 0.0, 0.5384693101056831, 0.9061798459386640},
-					new double[]{0.2369268850561891, 0.4786286704993665, 0.5688888888888889, 0.4786286704993665,
-							0.2369268850561891});
-		};
+		GaussianWeights[] gaussian = GaussianWeights.forAccuracy(accuracy);
 
-		// Change of interval
-		double deltaM = 0.5 * (thetaEnd + thetaStart);
-		double deltaR = 0.5 * (thetaEnd - thetaStart);
-
-		double integral = 0.0;
-		for (int i = 0; i < accuracy.iterations(); i++) {
-			double deltaX = deltaR * node.getKey()[i];
-			integral += node.getValue()[i] * integrand.applyAsDouble(deltaM + deltaX);
-		}
-		integral *= deltaR;
-
-		return integral;
+		return IntStream.range(0, accuracy.iterations()).asDoubleStream()
+				.reduce(0,
+						(t, i) -> t + gaussian[(int) i].weight()
+								* integrand.applyAsDouble(0.5 * (thetaEnd + thetaStart)
+								+ 0.5 * (thetaEnd - thetaStart) * gaussian[(int) i].abscissae()))
+				* 0.5 * (thetaEnd - thetaStart);
 	}
 
 	private Line2D line(Point2D start, Point2D end) {
 		return new Double(start.getX(), start.getY(), end.getX(), end.getY());
-	}
-
-	@RequiredArgsConstructor
-	@Getter
-	@Accessors(fluent = true)
-	public enum Accuracy {
-		LOW(2),
-		MEDIUM(3),
-		HIGH(4),
-		MAX(5);
-
-		private final int iterations;
 	}
 
 }

@@ -19,11 +19,11 @@ public class GeometryDisplay extends Application {
 
 	@Override
 	public void init() {
+		log.info("Initialising application");
 		context = new SpringApplicationBuilder()
 				.web(WebApplicationType.NONE)
 				.sources(GeometryDisplay.class, GeometryCalculator.class)
 				.run(getParameters().getRaw().toArray(new String[0]));
-		log.info("Initialising application");
 	}
 
 	@Override
@@ -35,8 +35,8 @@ public class GeometryDisplay extends Application {
 
 	@Override
 	public void start(Stage stage) {
-		context.publishEvent(new StageReadyEvent(stage, true));
 		log.info("Starting application");
+		context.publishEvent(new StageReadyEvent(stage, true));
 	}
 
 	public static void main(String[] args) {
