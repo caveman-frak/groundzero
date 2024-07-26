@@ -135,6 +135,7 @@ public class PathTest extends AbstractPathTest {
 
 		assertThat(rule(ctx, CloseContext.class)).isNotNull()
 				.extracting(ParserRuleContext::getChildCount).isEqualTo(1);
+		assertThat(rule(ctx, CloseContext.class).getText()).isEqualTo("Z");
 	}
 
 	@Configuration

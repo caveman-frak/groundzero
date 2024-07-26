@@ -1,4 +1,4 @@
-package uk.co.bluegecko.utility.format;
+package uk.co.bluegecko.common.format;
 
 import java.awt.Point;
 import java.text.ParseException;

@@ -1,4 +1,4 @@
-package uk.co.bluegecko.utility.format;
+package uk.co.bluegecko.common.format;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

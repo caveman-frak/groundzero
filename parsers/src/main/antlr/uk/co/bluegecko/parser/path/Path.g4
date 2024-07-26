@@ -44,13 +44,13 @@ fragment ZERO_OR_ONE : ( '0' | '1' ) ;
 
 fragment WHITESPACE : ( ' ' | '\t' ) ;
 
-A : 'A' ;
-C : 'C' ;
-H : 'H' ;
-L : 'L' ;
-M : 'M' ;
-Q : 'Q' ;
-V : 'V' ;
+A : ( 'A' | 'a' ) ;
+C : ( 'C' | 'c' ) ;
+H : ( 'H' | 'h' ) ;
+L : ( 'L' | 'l' ) ;
+M : ( 'M' | 'm' ) ;
+Q : ( 'Q' | 'q' ) ;
+V : ( 'V' | 'v' ) ;
 Z : ( 'Z' | 'z' ) ;
 
 OPTION :  ZERO_OR_ONE ;

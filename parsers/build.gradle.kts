@@ -4,6 +4,7 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":common"))
     antlr("org.antlr:antlr4:4.13.1")
 }
 
