@@ -8,6 +8,7 @@ import java.awt.Point;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 @SpringJUnitConfig
@@ -29,6 +30,11 @@ class PathListenerDrawerTest extends AbstractPathTest {
 
 		assertThat(listener.getPosition()).isEqualTo(new Point(0, 0));
 		verifyNoInteractions(graphics);
+	}
+
+	@Configuration
+	public static class Config {
+
 	}
 
 }

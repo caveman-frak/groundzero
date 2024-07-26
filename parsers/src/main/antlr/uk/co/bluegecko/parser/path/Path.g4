@@ -14,19 +14,19 @@ segment : command SPACE? NEWLINE* ;
 
 command : ( move | line | horizontal | vertical | arc | cubic | quadratic | close ) ;
 
-move : M SPACE? POINT ;
+move : M SPACE? destination=POINT ;
 
-line : L SPACE? POINT ;
+line : L SPACE? destination=POINT ;
 
-horizontal : H SPACE? NUMBER ;
+horizontal : H SPACE? distance=NUMBER ;
 
-vertical : V SPACE? NUMBER ;
+vertical : V SPACE? distance=NUMBER ;
 
-arc : A SPACE? POINT SPACE NUMBER SPACE OPTION SPACE OPTION SPACE POINT ;
+arc : A SPACE? radius=POINT SPACE rotation=NUMBER SPACE destination=POINT SPACE largeArc=OPTION SPACE sweep=OPTION ;
 
-cubic : C SPACE? POINT SPACE POINT SPACE POINT ;
+cubic : C SPACE? control1=POINT SPACE control2=POINT SPACE destination=POINT ;
 
-quadratic : Q SPACE? POINT SPACE POINT ;
+quadratic : Q SPACE? control=POINT SPACE destination=POINT ;
 
 close : Z ;
 
@@ -61,14 +61,10 @@ DECIMAL: DIGIT+ ( DOT DIGIT+ )? ;
 
 SPACE: WHITESPACE+ ;
 
-SEPARATOR : COMMA WHITESPACE? -> skip ;
+SEPARATOR : COMMA WHITESPACE? ;
 
-NEWLINE : ( '\r'? '\n' | '\r' )+ -> skip ;
+NEWLINE : ( '\r'? '\n' | '\r' )+ ;
 
-X : NUMBER ;
-
-Y : NUMBER ;
-
-POINT : X SEPARATOR Y ;
+POINT : NUMBER SEPARATOR NUMBER ;
 
 ANY : . ;

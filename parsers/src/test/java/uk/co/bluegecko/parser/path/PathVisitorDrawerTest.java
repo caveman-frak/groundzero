@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 @SpringJUnitConfig
@@ -18,7 +19,12 @@ class PathVisitorDrawerTest extends AbstractPathTest {
 
 	@Test
 	void parseMove() {
-		assertThat(walkPathWith(visitor, "M10,10")).isNull();
+		assertThat(visitPathWith(visitor, "M10,10")).isNull();
+	}
+
+	@Configuration
+	public static class Config {
+
 	}
 
 }
