@@ -3,10 +3,12 @@ package uk.co.bluegecko.parser.path;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.startsWith;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import org.antlr.v4.runtime.InputMismatchException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -15,11 +17,20 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 @SpringJUnitConfig
 public class PathTest extends AbstractPathTest {
 
+	private PathListener listener;
+
+	@BeforeEach
+	void setUp() {
+		listener = new PathBaseListener();
+	}
+
 	@Test
 	void invalidParser() {
-		walkPathWith("FOO BAR");
+		walkPathWith(listener, "FOO BAR");
 
-		verify(errorListener).syntaxError(any(), any(), eq(1), eq(7), any(), any(InputMismatchException.class));
+		verify(errorListener)
+				.syntaxError(any(), any(), eq(1), eq(0), startsWith("mismatched input 'F' expecting "),
+						any(InputMismatchException.class));
 	}
 
 	@ParameterizedTest
@@ -31,58 +42,56 @@ public class PathTest extends AbstractPathTest {
 			// various line endings
 			"M10,10\n", "M10,10\r", "M10,10\r\n", "M10,10  \r", "M10,10\r\r"})
 	void parserMove(String content) {
-		PathParser parser = walkPathWith(content);
-
-		System.out.println(parser);
+		walkPathWith(listener, content);
 
 		verify(errorListener, never()).syntaxError(any(), any(), anyInt(), anyInt(), any(), any());
 	}
 
 	@Test
 	void parserLine() {
-		walkPathWith("L 10,10");
+		walkPathWith(listener, "L 10,10");
 
 		verify(errorListener, never()).syntaxError(any(), any(), anyInt(), anyInt(), any(), any());
 	}
 
 	@Test
 	void parserHorizontal() {
-		walkPathWith("H10");
+		walkPathWith(listener, "H10");
 
 		verify(errorListener, never()).syntaxError(any(), any(), anyInt(), anyInt(), any(), any());
 	}
 
 	@Test
 	void parserVertical() {
-		walkPathWith("V 10");
+		walkPathWith(listener, "V 10");
 
 		verify(errorListener, never()).syntaxError(any(), any(), anyInt(), anyInt(), any(), any());
 	}
 
 	@Test
 	void parserCubic() {
-		walkPathWith("C 10,10 20,10 20,20");
+		walkPathWith(listener, "C 10,10 20,10 20,20");
 
 		verify(errorListener, never()).syntaxError(any(), any(), anyInt(), anyInt(), any(), any());
 	}
 
 	@Test
 	void parserQuadratic() {
-		walkPathWith("Q10,10 15,15");
+		walkPathWith(listener, "Q10,10 15,15");
 
 		verify(errorListener, never()).syntaxError(any(), any(), anyInt(), anyInt(), any(), any());
 	}
 
 	@Test
 	void parserArc() {
-		walkPathWith("A 10,10 20 1 0 40,30");
+		walkPathWith(listener, "A 10,10 20 1 0 40,30");
 
 		verify(errorListener, never()).syntaxError(any(), any(), anyInt(), anyInt(), any(), any());
 	}
 
 	@Test
 	void parseClose() {
-		walkPathWith("Z");
+		walkPathWith(listener, "Z");
 
 		verify(errorListener, never()).syntaxError(any(), any(), anyInt(), anyInt(), any(), any());
 	}

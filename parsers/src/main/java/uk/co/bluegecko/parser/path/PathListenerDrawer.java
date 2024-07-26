@@ -2,8 +2,6 @@ package uk.co.bluegecko.parser.path;
 
 import java.awt.Graphics;
 import java.awt.Point;
-import java.util.Objects;
-import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -12,7 +10,7 @@ import uk.co.bluegecko.parser.path.PathParser.MoveContext;
 
 @Getter
 @RequiredArgsConstructor
-public class PathListenerDrawer extends PathBaseListener {
+public class PathListenerDrawer extends PathBaseListener implements PathPrinter {
 
 	private final Graphics graphics;
 
@@ -22,17 +20,18 @@ public class PathListenerDrawer extends PathBaseListener {
 	@Override
 	public void enterMove(MoveContext ctx) {
 		context = ctx;
-		System.out.println(">M: " + string(ctx));
+		println(">M: " + string(ctx));
 	}
 
 	@Override
 	public void enterHorizontal(HorizontalContext ctx) {
 		context = ctx;
-		System.out.println(">H: " + string(ctx));
+		println(">H: " + string(ctx));
 	}
 
-	private String string(ParserRuleContext ctx) {
-		return ctx.children.stream().map(Objects::toString).collect(Collectors.joining(", "));
+	@Override
+	public String prefix() {
+		return "Listener: ";
 	}
 
 }

@@ -25,7 +25,7 @@ class PathListenerDrawerTest extends AbstractPathTest {
 
 	@Test
 	void parseMove() {
-		walkPathWith("M10,10");
+		walkPathWith(listener, "M10,10");
 
 		assertThat(listener.getPosition()).isEqualTo(new Point(0, 0));
 		verifyNoInteractions(graphics);

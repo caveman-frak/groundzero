@@ -10,32 +10,25 @@ grammar Path;
 
 path : segment+ EOF ;
 
-segment : command WHITESPACE? NEWLINE* ;
+segment : command SPACE? NEWLINE* ;
 
 command : ( move | line | horizontal | vertical | arc | cubic | quadratic | close ) ;
 
-move : M WHITESPACE? POINT ;
+move : M SPACE? POINT ;
 
-line : L WHITESPACE? POINT ;
+line : L SPACE? POINT ;
 
-horizontal : H WHITESPACE? NUMBER ;
+horizontal : H SPACE? NUMBER ;
 
-vertical : V WHITESPACE? NUMBER ;
+vertical : V SPACE? NUMBER ;
 
-arc : A WHITESPACE? POINT WHITESPACE NUMBER WHITESPACE OPTION WHITESPACE OPTION WHITESPACE POINT ;
-//arc : A WHITESPACE? POINT WHITESPACE POINT WHITESPACE POINT WHITESPACE NUMBER ;
+arc : A SPACE? POINT SPACE NUMBER SPACE OPTION SPACE OPTION SPACE POINT ;
 
-cubic : C WHITESPACE? POINT WHITESPACE POINT WHITESPACE POINT ;
+cubic : C SPACE? POINT SPACE POINT SPACE POINT ;
 
-quadratic : Q WHITESPACE? POINT WHITESPACE POINT ;
+quadratic : Q SPACE? POINT SPACE POINT ;
 
 close : Z ;
-
-point : POINT ;
-
-number : NUMBER ;
-
-option : OPTION ;
 
 /*
  * Lexer Rules
@@ -45,9 +38,11 @@ fragment DIGIT : [0-9] ;
 
 fragment DOT : '.' ;
 
-fragment COMMA : ',' ;
+fragment COMMA : ( ',' ) ;
 
 fragment ZERO_OR_ONE : ( '0' | '1' ) ;
+
+fragment WHITESPACE : ( ' ' | '\t' ) ;
 
 A : 'A' ;
 C : 'C' ;
@@ -64,7 +59,7 @@ NUMBER : DIGIT+ ;
 
 DECIMAL: DIGIT+ ( DOT DIGIT+ )? ;
 
-WHITESPACE : ( ' ' | '\t' )+ ;
+SPACE: WHITESPACE+ ;
 
 SEPARATOR : COMMA WHITESPACE? -> skip ;
 
@@ -75,3 +70,5 @@ X : NUMBER ;
 Y : NUMBER ;
 
 POINT : X SEPARATOR Y ;
+
+ANY : . ;

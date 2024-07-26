@@ -7,23 +7,37 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Configuration;
 
-public class AbstractPathTest {
+public abstract class AbstractPathTest implements PathPrinter {
 
 	@MockBean
 	ANTLRErrorListener errorListener;
 
-	protected PathParser walkPathWith(String content) {
+	protected PathParser walkPathWith(PathListener listener, String content) {
 		PathParser parser = new PathParser(
 				new CommonTokenStream(
 						new PathLexer(CharStreams.fromString(content))));
 		parser.addErrorListener(errorListener);
 		new ParseTreeWalker().walk(
-				new PathBaseListener(), parser.path());
+				listener, parser.path());
 		return parser;
+	}
+
+	protected String walkPathWith(PathVisitor<String> visitor, String content) {
+		PathParser parser = new PathParser(
+				new CommonTokenStream(
+						new PathLexer(CharStreams.fromString(content))));
+		parser.addErrorListener(errorListener);
+		return visitor.visit(parser.path());
+	}
+
+	@Override
+	public String prefix() {
+		return getClass().getSimpleName() + ": ";
 	}
 
 	@Configuration
 	static class Config {
 
 	}
+	
 }
