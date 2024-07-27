@@ -2,13 +2,9 @@ package uk.co.bluegecko.parser.path;
 
 import java.awt.Graphics;
 import java.awt.Point;
-import java.nio.charset.StandardCharsets;
-import java.text.ParseException;
-import java.util.Locale;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.antlr.v4.runtime.tree.TerminalNode;
 import uk.co.bluegecko.common.format.PointFormatter;
 import uk.co.bluegecko.parser.path.PathParser.ArcContext;
 import uk.co.bluegecko.parser.path.PathParser.CloseContext;
@@ -22,7 +18,7 @@ import uk.co.bluegecko.parser.path.PathParser.VerticalContext;
 @Slf4j
 @Getter
 @RequiredArgsConstructor
-public class PathListenerDrawer extends PathBaseListener implements PathPrinter {
+public class PathListenerDrawer extends PathBaseListener implements PathHelper {
 
 	private final Graphics graphics;
 
@@ -100,32 +96,6 @@ public class PathListenerDrawer extends PathBaseListener implements PathPrinter 
 		Point point = point(ctx.destination.getText());
 		Point location = isRelative(ctx.Q()) ? offset(position, point) : point;
 		position.setLocation(location);
-	}
-
-	@Override
-	public String prefix() {
-		return "Listener: ";
-	}
-
-	protected boolean isRelative(TerminalNode node) {
-		return Character.isLowerCase(node.getText().getBytes(StandardCharsets.UTF_8)[0]);
-	}
-
-	protected Point offset(Point start, Point offset) {
-		Point location = start.getLocation();
-		location.translate(offset.x, offset.y);
-		return location;
-	}
-
-	protected Point point(String text) {
-		try {
-			String point = String.format("[%s]", text.replaceAll("[ \t]", "")
-					.replace(',', ';'));
-			return formatter.parse(point, Locale.UK);
-		} catch (ParseException e) {
-			log.error("Unable to parse point '{}' because {}", text, e.getMessage(), e);
-			return position;
-		}
 	}
 
 }
