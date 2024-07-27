@@ -5,7 +5,6 @@ import java.awt.Point;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import uk.co.bluegecko.common.format.PointFormatter;
 import uk.co.bluegecko.parser.path.PathParser.ArcContext;
 import uk.co.bluegecko.parser.path.PathParser.CloseContext;
 import uk.co.bluegecko.parser.path.PathParser.CubicContext;
@@ -22,7 +21,6 @@ public class PathListenerDrawer extends PathBaseListener implements PathHelper {
 
 	private final Graphics graphics;
 
-	private final PointFormatter formatter = new PointFormatter();
 	private final Point origin = new Point();
 	private final Point position = new Point();
 

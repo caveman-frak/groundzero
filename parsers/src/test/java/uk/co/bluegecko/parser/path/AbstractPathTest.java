@@ -25,7 +25,7 @@ public abstract class AbstractPathTest implements PathPrinter {
 		new ParseTreeWalker().walk(listener, parsePath(content));
 	}
 
-	protected String visitPathWith(PathVisitor<String> visitor, String content) {
+	protected <T> T walkPathWith(PathVisitor<T> visitor, String content) {
 		return visitor.visit(parsePath(content));
 	}
 
@@ -39,7 +39,7 @@ public abstract class AbstractPathTest implements PathPrinter {
 
 	@Override
 	public String prefix() {
-		return getClass().getSimpleName() + ": ";
+		return String.format("%s: ", getClass().getSimpleName());
 	}
 
 }
