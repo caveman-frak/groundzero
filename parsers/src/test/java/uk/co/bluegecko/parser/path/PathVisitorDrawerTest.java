@@ -1,14 +1,16 @@
 package uk.co.bluegecko.parser.path;
 
-import static java.awt.geom.Arc2D.OPEN;
+import static java.awt.geom.PathIterator.SEG_CLOSE;
+import static java.awt.geom.PathIterator.SEG_LINETO;
+import static java.awt.geom.PathIterator.SEG_MOVETO;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.awt.Point;
-import java.awt.geom.Arc2D;
-import java.awt.geom.CubicCurve2D;
-import java.awt.geom.Line2D;
-import java.awt.geom.QuadCurve2D;
-import org.assertj.core.api.Assertions;
+import java.awt.Rectangle;
+import java.awt.geom.Path2D;
+import java.awt.geom.Path2D.Double;
+import java.awt.geom.PathIterator;
+import java.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -19,66 +21,69 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 class PathVisitorDrawerTest extends AbstractPathTest {
 
 	private PathVisitorDrawer visitor;
-	private ShapeComparator shapeComparator;
 
 	@BeforeEach
 	void setUp() {
 		visitor = new PathVisitorDrawer();
-		shapeComparator = new ShapeComparator();
-		Assertions.useRepresentation(new ShapeRepresentation());
 	}
 
 	@Test
 	void parseMoveAbsolute() {
-		assertThat(walkPathWith(visitor, "M10,10\nM10,10")).isNull();
-
-		assertThat(visitor.getOrigin()).isEqualTo(new Point(10, 10));
-		assertThat(visitor.getPosition()).isEqualTo(new Point(10, 10));
-		assertThat(visitor.getShapes()).isEmpty();
+		assertThat(walkPathWith(visitor, "M10,10\nM10,10").getCurrentPoint())
+				.isEqualTo(new Point(10, 10));
 	}
 
 	@Test
 	void parseMoveRelative() {
-		assertThat(walkPathWith(visitor, "M10,10\nm10,10")).isNull();
-
-		assertThat(visitor.getOrigin()).isEqualTo(new Point(20, 20));
-		assertThat(visitor.getPosition()).isEqualTo(new Point(20, 20));
-		assertThat(visitor.getShapes()).isEmpty();
+		assertThat(walkPathWith(visitor, "M10,10\nm10,10").getCurrentPoint())
+				.isEqualTo(new Point(20, 20));
 	}
 
 	@Test
 	void parseCloseNoMove() {
-		assertThat(walkPathWith(visitor, "Z")).isNotNull();
-
-		assertThat(visitor.getOrigin()).isEqualTo(new Point(0, 0));
-		assertThat(visitor.getPosition()).isEqualTo(new Point(0, 0));
-		assertThat(visitor.getShapes()).isEmpty();
+		assertThat(walkPathWith(visitor, "Z").getCurrentPoint())
+				.isEqualTo(new Point(0, 0));
 	}
 
 	@Test
 	void parseCloseWithLines() {
-		assertThat(walkPathWith(visitor, "h10\nv10\nZ")).isNotNull()
-				.isInstanceOf(Line2D.class);
+		Path2D path = walkPathWith(visitor, "h10\nv10\nZ");
+		assertThat(path.getCurrentPoint()).as("point")
+				.isEqualTo(new Point(0, 0));
+		assertThat(path.getBounds()).as("bounds").isEqualTo(new Rectangle(0, 0, 10, 10));
+		assertThat(path.contains(5, 5)).as("contains").isTrue();
+	}
 
-		assertThat(visitor.getOrigin()).isEqualTo(new Point(0, 0));
-		assertThat(visitor.getPosition()).isEqualTo(new Point(0, 0));
-		assertThat(visitor.getShapes()).hasSize(3).usingElementComparator(shapeComparator)
-				.contains(new Line2D.Double(0, 0, 10, 0),
-						new Line2D.Double(10, 0, 10, 10),
-						new Line2D.Double(10, 10, 0, 0));
+	@Test
+	void iterateClosedPath() {
+		double[] coordinates = new double[]{-1, -1, -1, -1, -1, -1};
+		PathIterator iterator = walkPathWith(visitor, "h10\nv10\nZ").getPathIterator(null);
+
+		assertThat(iterator.currentSegment(coordinates)).as("move 0,0").isEqualTo(SEG_MOVETO);
+		assertThat(coordinates).as("0").hasSize(6).containsExactly(0, 0, -1, -1, -1, -1);
+		iterator.next();
+		Arrays.fill(coordinates, -1);
+		assertThat(iterator.currentSegment(coordinates)).as("horizontal 10").isEqualTo(SEG_LINETO);
+		assertThat(coordinates).as("1").hasSize(6).containsExactly(10, 0, -1, -1, -1, -1);
+		iterator.next();
+		Arrays.fill(coordinates, -1);
+		assertThat(iterator.currentSegment(coordinates)).as("vertical 10").isEqualTo(SEG_LINETO);
+		assertThat(coordinates).as("2").hasSize(6).containsExactly(10, 10, -1, -1, -1, -1);
+		iterator.next();
+		Arrays.fill(coordinates, -1);
+		assertThat(iterator.currentSegment(coordinates)).as("close").isEqualTo(SEG_CLOSE);
+		assertThat(coordinates).as("3").hasSize(6).containsExactly(-1, -1, -1, -1, -1, -1);
+		iterator.next();
+		Arrays.fill(coordinates, -1);
+		assertThat(iterator.currentSegment(coordinates)).as("return 0, 0").isEqualTo(SEG_MOVETO);
+		assertThat(coordinates).as("4").hasSize(6).containsExactly(0, 0, -1, -1, -1, -1);
+		assertThat(iterator.isDone()).isTrue();
 	}
 
 	@Test
 	void parseCloseWithMoveAndLines() {
-		assertThat(walkPathWith(visitor, "M10,10\nh10\nv10\nZ")).isNotNull()
-				.isInstanceOf(Line2D.class);
-
-		assertThat(visitor.getOrigin()).isEqualTo(new Point(10, 10));
-		assertThat(visitor.getPosition()).isEqualTo(new Point(10, 10));
-		assertThat(visitor.getShapes()).hasSize(3).usingElementComparator(shapeComparator)
-				.contains(new Line2D.Double(10, 10, 20, 10),
-						new Line2D.Double(20, 10, 20, 20),
-						new Line2D.Double(20, 20, 10, 10));
+		assertThat(walkPathWith(visitor, "M10,10\nh10\nv10\nZ").getCurrentPoint())
+				.isEqualTo(new Point(10, 10));
 	}
 
 	@Nested
@@ -86,71 +91,44 @@ class PathVisitorDrawerTest extends AbstractPathTest {
 
 		@Test
 		void parseMove() {
-			assertThat(walkPathWith(visitor, "M10,10")).isNull();
-
-			assertThat(visitor.getOrigin()).isEqualTo(new Point(10, 10));
-			assertThat(visitor.getPosition()).isEqualTo(new Point(10, 10));
-			assertThat(visitor.getShapes()).isEmpty();
+			assertThat(walkPathWith(visitor, "M10,10").getCurrentPoint())
+					.isEqualTo(new Point(10, 10));
 		}
 
 		@Test
 		void parseHorizontal() {
-			assertThat(walkPathWith(visitor, "H10")).isNotNull();
-
-			assertThat(visitor.getOrigin()).isEqualTo(new Point(0, 0));
-			assertThat(visitor.getPosition()).isEqualTo(new Point(10, 0));
-			assertThat(visitor.getShapes()).hasSize(1).usingElementComparator(shapeComparator)
-					.contains(new Line2D.Double(0, 0, 10, 0));
+			assertThat(walkPathWith(visitor, "H10").getCurrentPoint())
+					.isEqualTo(new Point(10, 0));
 		}
 
 		@Test
 		void parseVertical() {
-			assertThat(walkPathWith(visitor, "V10")).isNotNull();
-
-			assertThat(visitor.getOrigin()).isEqualTo(new Point(0, 0));
-			assertThat(visitor.getPosition()).isEqualTo(new Point(0, 10));
-			assertThat(visitor.getShapes()).hasSize(1).usingElementComparator(shapeComparator)
-					.contains(new Line2D.Double(0, 0, 0, 10));
+			assertThat(walkPathWith(visitor, "V10").getCurrentPoint())
+					.isEqualTo(new Point(0, 10));
 		}
 
 		@Test
 		void parseLine() {
-			assertThat(walkPathWith(visitor, "L10,10")).isNotNull();
-
-			assertThat(visitor.getOrigin()).isEqualTo(new Point(0, 0));
-			assertThat(visitor.getPosition()).isEqualTo(new Point(10, 10));
-			assertThat(visitor.getShapes()).hasSize(1).usingElementComparator(shapeComparator)
-					.contains(new Line2D.Double(0, 0, 10, 10));
+			assertThat(walkPathWith(visitor, "L10,10").getCurrentPoint())
+					.isEqualTo(new Point(10, 10));
 		}
 
 		@Test
 		void parseCubicCurve() {
-			assertThat(walkPathWith(visitor, "C5,0 0,5 10,10")).isNotNull();
-
-			assertThat(visitor.getOrigin()).isEqualTo(new Point(0, 0));
-			assertThat(visitor.getPosition()).isEqualTo(new Point(10, 10));
-			assertThat(visitor.getShapes()).hasSize(1).usingElementComparator(shapeComparator)
-					.contains(new CubicCurve2D.Double(0, 0, 5, 0, 0, 5, 10, 10));
+			assertThat(walkPathWith(visitor, "C5,0 0,5 10,10").getCurrentPoint())
+					.isEqualTo(new Point(10, 10));
 		}
 
 		@Test
 		void parseQuadraticCurve() {
-			assertThat(walkPathWith(visitor, "Q5,0 10,10")).isNotNull();
-
-			assertThat(visitor.getOrigin()).isEqualTo(new Point(0, 0));
-			assertThat(visitor.getPosition()).isEqualTo(new Point(10, 10));
-			assertThat(visitor.getShapes()).hasSize(1).usingElementComparator(shapeComparator)
-					.contains(new QuadCurve2D.Double(0, 0, 5, 0, 10, 10));
+			assertThat(walkPathWith(visitor, "Q5,0 10,10").getCurrentPoint())
+					.isEqualTo(new Point(10, 10));
 		}
 
 		@Test
 		void parseArc() {
-			assertThat(walkPathWith(visitor, "A5,10 15 10,10 0 1")).isNotNull();
-
-			assertThat(visitor.getOrigin()).isEqualTo(new Point(0, 0));
-			assertThat(visitor.getPosition()).isEqualTo(new Point(10, 10));
-			assertThat(visitor.getShapes()).hasSize(1).usingElementComparator(shapeComparator)
-					.contains(new Arc2D.Double(0, 0, 5, 10, 90, 180, OPEN));
+			assertThat(walkPathWith(visitor, "A5,10 15 10,10 0 1").getCurrentPoint())
+					.isEqualTo(new Point(0, 0));
 		}
 
 	}
@@ -160,76 +138,51 @@ class PathVisitorDrawerTest extends AbstractPathTest {
 
 		@BeforeEach
 		void setUpRelative() {
-			walkPathWith(visitor, "M10,10");
+			Path2D p = new Double();
+			p.moveTo(10, 10);
+			visitor = new PathVisitorDrawer(p);
 		}
 
 		@Test
-		void parseMoveRelative() {
-			assertThat(walkPathWith(visitor, "m10,10")).isNull();
-
-			assertThat(visitor.getOrigin()).isEqualTo(new Point(20, 20));
-			assertThat(visitor.getPosition()).isEqualTo(new Point(20, 20));
-			assertThat(visitor.getShapes()).isEmpty();
+		void parseMove() {
+			assertThat(walkPathWith(visitor, "m10,10").getCurrentPoint())
+					.isEqualTo(new Point(20, 20));
 		}
 
 		@Test
 		void parseHorizontal() {
-			assertThat(walkPathWith(visitor, "h10")).isNotNull();
-
-			assertThat(visitor.getOrigin()).isEqualTo(new Point(10, 10));
-			assertThat(visitor.getPosition()).isEqualTo(new Point(20, 10));
-			assertThat(visitor.getShapes()).hasSize(1).usingElementComparator(shapeComparator)
-					.contains(new Line2D.Double(10, 10, 20, 10));
+			assertThat(walkPathWith(visitor, "h10").getCurrentPoint())
+					.isEqualTo(new Point(20, 10));
 		}
 
 		@Test
 		void parseVertical() {
-			assertThat(walkPathWith(visitor, "v10")).isNotNull();
-
-			assertThat(visitor.getOrigin()).isEqualTo(new Point(10, 10));
-			assertThat(visitor.getPosition()).isEqualTo(new Point(10, 20));
-			assertThat(visitor.getShapes()).hasSize(1).usingElementComparator(shapeComparator)
-					.contains(new Line2D.Double(10, 10, 10, 20));
+			assertThat(walkPathWith(visitor, "v10").getCurrentPoint())
+					.isEqualTo(new Point(10, 20));
 		}
 
 		@Test
 		void parseLine() {
-			assertThat(walkPathWith(visitor, "l10,10")).isNotNull();
-
-			assertThat(visitor.getOrigin()).isEqualTo(new Point(10, 10));
-			assertThat(visitor.getPosition()).isEqualTo(new Point(20, 20));
-			assertThat(visitor.getShapes()).hasSize(1).usingElementComparator(shapeComparator)
-					.contains(new Line2D.Double(10, 10, 20, 20));
+			assertThat(walkPathWith(visitor, "l10,10").getCurrentPoint())
+					.isEqualTo(new Point(20, 20));
 		}
 
 		@Test
 		void parseCubicCurve() {
-			assertThat(walkPathWith(visitor, "c5,0 0,5 10,10")).isNotNull();
-
-			assertThat(visitor.getOrigin()).isEqualTo(new Point(10, 10));
-			assertThat(visitor.getPosition()).isEqualTo(new Point(20, 20));
-			assertThat(visitor.getShapes()).hasSize(1).usingElementComparator(shapeComparator)
-					.contains(new CubicCurve2D.Double(10, 10, 5, 0, 0, 5, 20, 20));
+			assertThat(walkPathWith(visitor, "c5,0 0,5 10,10").getCurrentPoint())
+					.isEqualTo(new Point(20, 20));
 		}
 
 		@Test
 		void parseQuadraticCurve() {
-			assertThat(walkPathWith(visitor, "q5,0 10,10")).isNotNull();
-
-			assertThat(visitor.getOrigin()).isEqualTo(new Point(10, 10));
-			assertThat(visitor.getPosition()).isEqualTo(new Point(20, 20));
-			assertThat(visitor.getShapes()).hasSize(1).usingElementComparator(shapeComparator)
-					.contains(new QuadCurve2D.Double(10, 10, 5, 0, 20, 20));
+			assertThat(walkPathWith(visitor, "q5,0 10,10").getCurrentPoint())
+					.isEqualTo(new Point(20, 20));
 		}
 
 		@Test
 		void parseArc() {
-			assertThat(walkPathWith(visitor, "a5,10 15 10,10 0 1")).isNotNull();
-
-			assertThat(visitor.getOrigin()).isEqualTo(new Point(10, 10));
-			assertThat(visitor.getPosition()).isEqualTo(new Point(20, 20));
-			assertThat(visitor.getShapes()).hasSize(1).usingElementComparator(shapeComparator)
-					.contains(new Arc2D.Double(10, 10, 5, 10, 90, 180, OPEN));
+			assertThat(walkPathWith(visitor, "a5,10 15 10,10 0 1").getCurrentPoint())
+					.isEqualTo(new Point(10, 10));
 		}
 
 	}

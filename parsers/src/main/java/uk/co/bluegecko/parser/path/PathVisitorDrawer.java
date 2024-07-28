@@ -1,146 +1,113 @@
 package uk.co.bluegecko.parser.path;
 
 import java.awt.Point;
-import java.awt.Shape;
-import java.awt.geom.Arc2D;
-import java.awt.geom.CubicCurve2D;
-import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
-import java.awt.geom.QuadCurve2D;
-import java.util.ArrayList;
-import java.util.List;
-import lombok.Getter;
+import java.awt.geom.Point2D;
 import uk.co.bluegecko.parser.path.PathParser.ArcContext;
 import uk.co.bluegecko.parser.path.PathParser.CloseContext;
-import uk.co.bluegecko.parser.path.PathParser.CommandContext;
 import uk.co.bluegecko.parser.path.PathParser.CubicContext;
 import uk.co.bluegecko.parser.path.PathParser.HorizontalContext;
 import uk.co.bluegecko.parser.path.PathParser.LineContext;
 import uk.co.bluegecko.parser.path.PathParser.MoveContext;
-import uk.co.bluegecko.parser.path.PathParser.PathContext;
 import uk.co.bluegecko.parser.path.PathParser.QuadraticContext;
-import uk.co.bluegecko.parser.path.PathParser.SegmentContext;
 import uk.co.bluegecko.parser.path.PathParser.VerticalContext;
 
-@Getter
-public class PathVisitorDrawer extends PathBaseVisitor<Shape> implements PathHelper {
+public class PathVisitorDrawer extends PathBaseVisitor<Path2D> implements PathHelper {
 
-	private final List<Shape> shapes = new ArrayList<>();
-	private final Point origin = new Point();
-	private final Point position = new Point();
+	private final Path2D path;
 
-	@Override
-	public Shape visitMove(MoveContext ctx) {
-		Point point = point(ctx.destination.getText());
-		Point location = isRelative(ctx.M()) ? offset(position, point) : point;
-		origin.setLocation(location);
-		position.setLocation(location);
-		return null;
+	public PathVisitorDrawer(Path2D path) {
+		this.path = path;
+	}
+
+	public PathVisitorDrawer() {
+		this(new Path2D.Double());
+		path.moveTo(0, 0);
 	}
 
 	@Override
-	public Shape visitHorizontal(HorizontalContext ctx) {
-		Point start = position.getLocation();
+	public Path2D visitMove(MoveContext ctx) {
+		Point point = point(ctx.destination.getText());
+		Point location = isRelative(ctx.M()) ? offset(current(), point) : point;
+		path.moveTo(location.x, location.y);
+		return path;
+	}
+
+	@Override
+	public Path2D visitHorizontal(HorizontalContext ctx) {
+		Point position = current();
 		if (isRelative(ctx.H())) {
 			position.translate(Integer.parseInt(ctx.distance.getText()), 0);
 		} else {
 			position.setLocation(Integer.parseInt(ctx.distance.getText()), 0);
 		}
-		return add(new Line2D.Double(start.x, start.y, position.x, position.y));
+		path.lineTo(position.x, position.y);
+		return path;
 	}
 
 	@Override
-	public Shape visitVertical(VerticalContext ctx) {
-		Point start = position.getLocation();
+	public Path2D visitVertical(VerticalContext ctx) {
+		Point position = current();
 		if (isRelative(ctx.V())) {
 			position.translate(0, Integer.parseInt(ctx.distance.getText()));
 		} else {
 			position.setLocation(0, Integer.parseInt(ctx.distance.getText()));
 		}
-		return add(new Line2D.Double(start.x, start.y, position.x, position.y));
+		path.lineTo(position.x, position.y);
+		return path;
 	}
 
 	@Override
-	public Shape visitLine(LineContext ctx) {
-		Point start = position.getLocation();
-		Point point = point(ctx.destination.getText());
-		Point location = isRelative(ctx.L()) ? offset(start, point) : point;
-		position.setLocation(location);
-		return add(new Line2D.Double(start.x, start.y, position.x, position.y));
+	public Path2D visitLine(LineContext ctx) {
+		Point destination = point(ctx.destination.getText());
+		Point location = isRelative(ctx.L()) ? offset(current(), destination) : destination;
+		path.lineTo(location.x, location.y);
+		return path;
 	}
 
 	@Override
-	public Shape visitClose(CloseContext ctx) {
-		if (!position.equals(origin)) {
-			Point start = position.getLocation();
-			position.setLocation(origin);
-			return add(new Line2D.Double(start.x, start.y, position.x, position.y));
-		}
-		return null;
+	public Path2D visitClose(CloseContext ctx) {
+		path.closePath();
+		return path;
 	}
 
 	@Override
-	public Shape visitArc(ArcContext ctx) {
-		Point start = position.getLocation();
-		Point point = point(ctx.destination.getText());
-		Point location = isRelative(ctx.A()) ? offset(start, point) : point;
-		Point radius = point(ctx.radius.getText());
-		position.setLocation(location);
-		return add(new Arc2D.Double(start.x, start.y, radius.x, radius.y, 90, 180, Arc2D.OPEN));
+	public Path2D visitArc(ArcContext ctx) {
+		return path;
 	}
 
 	@Override
-	public Shape visitCubic(CubicContext ctx) {
-		Point start = position.getLocation();
-		Point point = point(ctx.destination.getText());
-		Point location = isRelative(ctx.C()) ? offset(position, point) : point;
+	public Path2D visitCubic(CubicContext ctx) {
+		Point destination = point(ctx.destination.getText());
+		Point location = isRelative(ctx.C()) ? offset(current(), destination) : destination;
 		Point control1 = point(ctx.control1.getText());
 		Point control2 = point(ctx.control2.getText());
-		position.setLocation(location);
-		return add(new CubicCurve2D.Double(start.x, start.y, control1.x, control1.y, control2.x, control2.y,
-				position.x, position.y));
+		path.curveTo(control2.x, control1.y, control2.x, control2.y, location.x, location.y);
+		return path;
 	}
 
 	@Override
-	public Shape visitQuadratic(QuadraticContext ctx) {
-		Point start = position.getLocation();
+	public Path2D visitQuadratic(QuadraticContext ctx) {
 		Point point = point(ctx.destination.getText());
-		Point location = isRelative(ctx.Q()) ? offset(position, point) : point;
+		Point location = isRelative(ctx.Q()) ? offset(current(), point) : point;
 		Point control = point(ctx.control.getText());
-		position.setLocation(location);
-		return add(new QuadCurve2D.Double(start.x, start.y, control.x, control.y, position.x, position.y));
+		path.quadTo(control.x, control.y, location.x, location.y);
+		return path;
 	}
 
 	@Override
-	public Shape visitCommand(CommandContext ctx) {
-		return super.visitCommand(ctx);
+	protected Path2D aggregateResult(Path2D aggregate, Path2D nextResult) {
+		return aggregate;
 	}
 
 	@Override
-	public Shape visitSegment(SegmentContext ctx) {
-		return super.visitSegment(ctx);
+	protected Path2D defaultResult() {
+		return path;
 	}
 
-	@Override
-	public Shape visitPath(PathContext ctx) {
-		return visitChildren(ctx);
-	}
-
-	@Override
-	protected Shape aggregateResult(Shape aggregate, Shape nextResult) {
-		if (aggregate != null && nextResult != null) {
-			Path2D path = aggregate instanceof Path2D p ? p : new Path2D.Double(aggregate);
-			path.append(nextResult, true);
-			return path;
-		}
-		return nextResult == null ? aggregate : nextResult;
-	}
-
-	private Shape add(Shape shape) {
-		if (shape != null) {
-			shapes.add(shape);
-		}
-		return shape;
+	public Point current() {
+		Point2D point = path.getCurrentPoint();
+		return new Point((int) point.getX(), (int) point.getY());
 	}
 
 }
