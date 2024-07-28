@@ -21,5 +21,4 @@ public interface PathHelper {
 		return new Point(Integer.parseInt(parts[0].trim()), Integer.parseInt(parts[1].trim()));
 	}
 
-
 }

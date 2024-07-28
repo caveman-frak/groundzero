@@ -8,7 +8,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Path2D;
-import java.awt.geom.Path2D.Double;
 import java.awt.geom.PathIterator;
 import java.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
@@ -138,7 +137,7 @@ class PathVisitorDrawerTest extends AbstractPathTest {
 
 		@BeforeEach
 		void setUpRelative() {
-			Path2D p = new Double();
+			Path2D p = new Path2D.Double();
 			p.moveTo(10, 10);
 			visitor = new PathVisitorDrawer(p);
 		}
