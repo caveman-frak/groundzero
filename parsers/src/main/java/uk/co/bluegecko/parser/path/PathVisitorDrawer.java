@@ -5,17 +5,21 @@ import java.awt.Shape;
 import java.awt.geom.Arc2D;
 import java.awt.geom.CubicCurve2D;
 import java.awt.geom.Line2D;
+import java.awt.geom.Path2D;
 import java.awt.geom.QuadCurve2D;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import uk.co.bluegecko.parser.path.PathParser.ArcContext;
 import uk.co.bluegecko.parser.path.PathParser.CloseContext;
+import uk.co.bluegecko.parser.path.PathParser.CommandContext;
 import uk.co.bluegecko.parser.path.PathParser.CubicContext;
 import uk.co.bluegecko.parser.path.PathParser.HorizontalContext;
 import uk.co.bluegecko.parser.path.PathParser.LineContext;
 import uk.co.bluegecko.parser.path.PathParser.MoveContext;
+import uk.co.bluegecko.parser.path.PathParser.PathContext;
 import uk.co.bluegecko.parser.path.PathParser.QuadraticContext;
+import uk.co.bluegecko.parser.path.PathParser.SegmentContext;
 import uk.co.bluegecko.parser.path.PathParser.VerticalContext;
 
 @Getter
@@ -42,8 +46,7 @@ public class PathVisitorDrawer extends PathBaseVisitor<Shape> implements PathHel
 		} else {
 			position.setLocation(Integer.parseInt(ctx.distance.getText()), 0);
 		}
-		shapes.add(new Line2D.Double(start.x, start.y, position.x, position.y));
-		return super.visitHorizontal(ctx);
+		return add(new Line2D.Double(start.x, start.y, position.x, position.y));
 	}
 
 	@Override
@@ -54,8 +57,7 @@ public class PathVisitorDrawer extends PathBaseVisitor<Shape> implements PathHel
 		} else {
 			position.setLocation(0, Integer.parseInt(ctx.distance.getText()));
 		}
-		shapes.add(new Line2D.Double(start.x, start.y, position.x, position.y));
-		return super.visitVertical(ctx);
+		return add(new Line2D.Double(start.x, start.y, position.x, position.y));
 	}
 
 	@Override
@@ -64,8 +66,7 @@ public class PathVisitorDrawer extends PathBaseVisitor<Shape> implements PathHel
 		Point point = point(ctx.destination.getText());
 		Point location = isRelative(ctx.L()) ? offset(start, point) : point;
 		position.setLocation(location);
-		shapes.add(new Line2D.Double(start.x, start.y, position.x, position.y));
-		return super.visitLine(ctx);
+		return add(new Line2D.Double(start.x, start.y, position.x, position.y));
 	}
 
 	@Override
@@ -73,9 +74,7 @@ public class PathVisitorDrawer extends PathBaseVisitor<Shape> implements PathHel
 		if (!position.equals(origin)) {
 			Point start = position.getLocation();
 			position.setLocation(origin);
-			Shape shape = new Line2D.Double(start.x, start.y, position.x, position.y);
-			shapes.add(shape);
-			return shape;
+			return add(new Line2D.Double(start.x, start.y, position.x, position.y));
 		}
 		return null;
 	}
@@ -87,8 +86,7 @@ public class PathVisitorDrawer extends PathBaseVisitor<Shape> implements PathHel
 		Point location = isRelative(ctx.A()) ? offset(start, point) : point;
 		Point radius = point(ctx.radius.getText());
 		position.setLocation(location);
-		shapes.add(new Arc2D.Double(start.x, start.y, radius.x, radius.y, 90, 180, Arc2D.OPEN));
-		return super.visitArc(ctx);
+		return add(new Arc2D.Double(start.x, start.y, radius.x, radius.y, 90, 180, Arc2D.OPEN));
 	}
 
 	@Override
@@ -99,9 +97,8 @@ public class PathVisitorDrawer extends PathBaseVisitor<Shape> implements PathHel
 		Point control1 = point(ctx.control1.getText());
 		Point control2 = point(ctx.control2.getText());
 		position.setLocation(location);
-		shapes.add(new CubicCurve2D.Double(start.x, start.y, control1.x, control1.y, control2.x, control2.y,
+		return add(new CubicCurve2D.Double(start.x, start.y, control1.x, control1.y, control2.x, control2.y,
 				position.x, position.y));
-		return super.visitCubic(ctx);
 	}
 
 	@Override
@@ -111,8 +108,39 @@ public class PathVisitorDrawer extends PathBaseVisitor<Shape> implements PathHel
 		Point location = isRelative(ctx.Q()) ? offset(position, point) : point;
 		Point control = point(ctx.control.getText());
 		position.setLocation(location);
-		shapes.add(new QuadCurve2D.Double(start.x, start.y, control.x, control.y, position.x, position.y));
-		return super.visitQuadratic(ctx);
+		return add(new QuadCurve2D.Double(start.x, start.y, control.x, control.y, position.x, position.y));
+	}
+
+	@Override
+	public Shape visitCommand(CommandContext ctx) {
+		return super.visitCommand(ctx);
+	}
+
+	@Override
+	public Shape visitSegment(SegmentContext ctx) {
+		return super.visitSegment(ctx);
+	}
+
+	@Override
+	public Shape visitPath(PathContext ctx) {
+		return visitChildren(ctx);
+	}
+
+	@Override
+	protected Shape aggregateResult(Shape aggregate, Shape nextResult) {
+		if (aggregate != null && nextResult != null) {
+			Path2D path = aggregate instanceof Path2D p ? p : new Path2D.Double(aggregate);
+			path.append(nextResult, true);
+			return path;
+		}
+		return nextResult == null ? aggregate : nextResult;
+	}
+
+	private Shape add(Shape shape) {
+		if (shape != null) {
+			shapes.add(shape);
+		}
+		return shape;
 	}
 
 }

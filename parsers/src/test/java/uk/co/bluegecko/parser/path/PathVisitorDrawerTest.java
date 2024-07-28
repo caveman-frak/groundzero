@@ -30,7 +30,7 @@ class PathVisitorDrawerTest extends AbstractPathTest {
 
 	@Test
 	void parseMoveAbsolute() {
-		walkPathWith(visitor, "M10,10\nM10,10");
+		assertThat(walkPathWith(visitor, "M10,10\nM10,10")).isNull();
 
 		assertThat(visitor.getOrigin()).isEqualTo(new Point(10, 10));
 		assertThat(visitor.getPosition()).isEqualTo(new Point(10, 10));
@@ -39,7 +39,7 @@ class PathVisitorDrawerTest extends AbstractPathTest {
 
 	@Test
 	void parseMoveRelative() {
-		walkPathWith(visitor, "M10,10\nm10,10");
+		assertThat(walkPathWith(visitor, "M10,10\nm10,10")).isNull();
 
 		assertThat(visitor.getOrigin()).isEqualTo(new Point(20, 20));
 		assertThat(visitor.getPosition()).isEqualTo(new Point(20, 20));
@@ -48,7 +48,7 @@ class PathVisitorDrawerTest extends AbstractPathTest {
 
 	@Test
 	void parseCloseNoMove() {
-		walkPathWith(visitor, "Z");
+		assertThat(walkPathWith(visitor, "Z")).isNotNull();
 
 		assertThat(visitor.getOrigin()).isEqualTo(new Point(0, 0));
 		assertThat(visitor.getPosition()).isEqualTo(new Point(0, 0));
@@ -57,7 +57,8 @@ class PathVisitorDrawerTest extends AbstractPathTest {
 
 	@Test
 	void parseCloseWithLines() {
-		walkPathWith(visitor, "h10\nv10\nZ");
+		assertThat(walkPathWith(visitor, "h10\nv10\nZ")).isNotNull()
+				.isInstanceOf(Line2D.class);
 
 		assertThat(visitor.getOrigin()).isEqualTo(new Point(0, 0));
 		assertThat(visitor.getPosition()).isEqualTo(new Point(0, 0));
@@ -69,7 +70,8 @@ class PathVisitorDrawerTest extends AbstractPathTest {
 
 	@Test
 	void parseCloseWithMoveAndLines() {
-		walkPathWith(visitor, "M10,10\nh10\nv10\nZ");
+		assertThat(walkPathWith(visitor, "M10,10\nh10\nv10\nZ")).isNotNull()
+				.isInstanceOf(Line2D.class);
 
 		assertThat(visitor.getOrigin()).isEqualTo(new Point(10, 10));
 		assertThat(visitor.getPosition()).isEqualTo(new Point(10, 10));
@@ -84,7 +86,7 @@ class PathVisitorDrawerTest extends AbstractPathTest {
 
 		@Test
 		void parseMove() {
-			walkPathWith(visitor, "M10,10");
+			assertThat(walkPathWith(visitor, "M10,10")).isNull();
 
 			assertThat(visitor.getOrigin()).isEqualTo(new Point(10, 10));
 			assertThat(visitor.getPosition()).isEqualTo(new Point(10, 10));
@@ -93,7 +95,7 @@ class PathVisitorDrawerTest extends AbstractPathTest {
 
 		@Test
 		void parseHorizontal() {
-			walkPathWith(visitor, "H10");
+			assertThat(walkPathWith(visitor, "H10")).isNotNull();
 
 			assertThat(visitor.getOrigin()).isEqualTo(new Point(0, 0));
 			assertThat(visitor.getPosition()).isEqualTo(new Point(10, 0));
@@ -103,7 +105,7 @@ class PathVisitorDrawerTest extends AbstractPathTest {
 
 		@Test
 		void parseVertical() {
-			walkPathWith(visitor, "V10");
+			assertThat(walkPathWith(visitor, "V10")).isNotNull();
 
 			assertThat(visitor.getOrigin()).isEqualTo(new Point(0, 0));
 			assertThat(visitor.getPosition()).isEqualTo(new Point(0, 10));
@@ -113,7 +115,7 @@ class PathVisitorDrawerTest extends AbstractPathTest {
 
 		@Test
 		void parseLine() {
-			walkPathWith(visitor, "L10,10");
+			assertThat(walkPathWith(visitor, "L10,10")).isNotNull();
 
 			assertThat(visitor.getOrigin()).isEqualTo(new Point(0, 0));
 			assertThat(visitor.getPosition()).isEqualTo(new Point(10, 10));
@@ -123,7 +125,7 @@ class PathVisitorDrawerTest extends AbstractPathTest {
 
 		@Test
 		void parseCubicCurve() {
-			walkPathWith(visitor, "C5,0 0,5 10,10");
+			assertThat(walkPathWith(visitor, "C5,0 0,5 10,10")).isNotNull();
 
 			assertThat(visitor.getOrigin()).isEqualTo(new Point(0, 0));
 			assertThat(visitor.getPosition()).isEqualTo(new Point(10, 10));
@@ -133,7 +135,7 @@ class PathVisitorDrawerTest extends AbstractPathTest {
 
 		@Test
 		void parseQuadraticCurve() {
-			walkPathWith(visitor, "Q5,0 10,10");
+			assertThat(walkPathWith(visitor, "Q5,0 10,10")).isNotNull();
 
 			assertThat(visitor.getOrigin()).isEqualTo(new Point(0, 0));
 			assertThat(visitor.getPosition()).isEqualTo(new Point(10, 10));
@@ -143,7 +145,7 @@ class PathVisitorDrawerTest extends AbstractPathTest {
 
 		@Test
 		void parseArc() {
-			walkPathWith(visitor, "A5,10 15 10,10 0 1");
+			assertThat(walkPathWith(visitor, "A5,10 15 10,10 0 1")).isNotNull();
 
 			assertThat(visitor.getOrigin()).isEqualTo(new Point(0, 0));
 			assertThat(visitor.getPosition()).isEqualTo(new Point(10, 10));
@@ -163,7 +165,7 @@ class PathVisitorDrawerTest extends AbstractPathTest {
 
 		@Test
 		void parseMoveRelative() {
-			walkPathWith(visitor, "m10,10");
+			assertThat(walkPathWith(visitor, "m10,10")).isNull();
 
 			assertThat(visitor.getOrigin()).isEqualTo(new Point(20, 20));
 			assertThat(visitor.getPosition()).isEqualTo(new Point(20, 20));
@@ -172,7 +174,7 @@ class PathVisitorDrawerTest extends AbstractPathTest {
 
 		@Test
 		void parseHorizontal() {
-			walkPathWith(visitor, "h10");
+			assertThat(walkPathWith(visitor, "h10")).isNotNull();
 
 			assertThat(visitor.getOrigin()).isEqualTo(new Point(10, 10));
 			assertThat(visitor.getPosition()).isEqualTo(new Point(20, 10));
@@ -182,7 +184,7 @@ class PathVisitorDrawerTest extends AbstractPathTest {
 
 		@Test
 		void parseVertical() {
-			walkPathWith(visitor, "v10");
+			assertThat(walkPathWith(visitor, "v10")).isNotNull();
 
 			assertThat(visitor.getOrigin()).isEqualTo(new Point(10, 10));
 			assertThat(visitor.getPosition()).isEqualTo(new Point(10, 20));
@@ -192,7 +194,7 @@ class PathVisitorDrawerTest extends AbstractPathTest {
 
 		@Test
 		void parseLine() {
-			walkPathWith(visitor, "l10,10");
+			assertThat(walkPathWith(visitor, "l10,10")).isNotNull();
 
 			assertThat(visitor.getOrigin()).isEqualTo(new Point(10, 10));
 			assertThat(visitor.getPosition()).isEqualTo(new Point(20, 20));
@@ -202,7 +204,7 @@ class PathVisitorDrawerTest extends AbstractPathTest {
 
 		@Test
 		void parseCubicCurve() {
-			walkPathWith(visitor, "c5,0 0,5 10,10");
+			assertThat(walkPathWith(visitor, "c5,0 0,5 10,10")).isNotNull();
 
 			assertThat(visitor.getOrigin()).isEqualTo(new Point(10, 10));
 			assertThat(visitor.getPosition()).isEqualTo(new Point(20, 20));
@@ -212,7 +214,7 @@ class PathVisitorDrawerTest extends AbstractPathTest {
 
 		@Test
 		void parseQuadraticCurve() {
-			walkPathWith(visitor, "q5,0 10,10");
+			assertThat(walkPathWith(visitor, "q5,0 10,10")).isNotNull();
 
 			assertThat(visitor.getOrigin()).isEqualTo(new Point(10, 10));
 			assertThat(visitor.getPosition()).isEqualTo(new Point(20, 20));
@@ -222,7 +224,7 @@ class PathVisitorDrawerTest extends AbstractPathTest {
 
 		@Test
 		void parseArc() {
-			walkPathWith(visitor, "a5,10 15 10,10 0 1");
+			assertThat(walkPathWith(visitor, "a5,10 15 10,10 0 1")).isNotNull();
 
 			assertThat(visitor.getOrigin()).isEqualTo(new Point(10, 10));
 			assertThat(visitor.getPosition()).isEqualTo(new Point(20, 20));
