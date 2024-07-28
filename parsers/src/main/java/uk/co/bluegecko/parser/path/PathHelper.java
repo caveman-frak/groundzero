@@ -1,8 +1,6 @@
 package uk.co.bluegecko.parser.path;
 
 import java.awt.Point;
-import java.awt.geom.Path2D;
-import java.awt.geom.Point2D;
 import java.nio.charset.StandardCharsets;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
