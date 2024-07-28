@@ -91,7 +91,6 @@ class PathVisitorDrawerTest extends AbstractPathTest {
 			assertThat(visitor.getShapes()).isEmpty();
 		}
 
-
 		@Test
 		void parseHorizontal() {
 			walkPathWith(visitor, "H10");
