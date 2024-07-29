@@ -1,4 +1,4 @@
-package uk.co.bluegecko.ui.geometry.javafx;
+package uk.co.bluegecko.ui.geometry.javafx.shape;
 
 import javafx.application.Application;
 import javafx.application.Platform;

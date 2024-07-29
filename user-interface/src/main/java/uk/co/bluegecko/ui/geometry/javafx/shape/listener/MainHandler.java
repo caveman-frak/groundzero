@@ -1,4 +1,4 @@
-package uk.co.bluegecko.ui.geometry.javafx.listener;
+package uk.co.bluegecko.ui.geometry.javafx.shape.listener;
 
 import java.util.ResourceBundle;
 import javafx.scene.Node;
@@ -8,9 +8,10 @@ import javafx.stage.Stage;
 import net.rgielen.fxweaver.core.FxControllerAndView;
 import net.rgielen.fxweaver.core.FxWeaver;
 import org.springframework.stereotype.Component;
-import uk.co.bluegecko.ui.geometry.javafx.controller.ControlsController;
-import uk.co.bluegecko.ui.geometry.javafx.controller.GraphicsController;
-import uk.co.bluegecko.ui.geometry.javafx.controller.StatusController;
+import uk.co.bluegecko.ui.geometry.javafx.listener.PrimaryStageHandler;
+import uk.co.bluegecko.ui.geometry.javafx.shape.controller.ControlsController;
+import uk.co.bluegecko.ui.geometry.javafx.shape.controller.GraphicsController;
+import uk.co.bluegecko.ui.geometry.javafx.shape.controller.StatusController;
 
 @Component
 public class MainHandler extends PrimaryStageHandler {

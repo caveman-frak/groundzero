@@ -1,4 +1,4 @@
-package uk.co.bluegecko.ui.geometry.javafx.controller;
+package uk.co.bluegecko.ui.geometry.javafx.shape.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -32,7 +32,7 @@ public class StatusController {
 	}
 
 	public void status(String message, Object... args) {
-		this.status.setText(String.format(message, args));
+		status.setText(String.format(message, args));
 	}
 
 }

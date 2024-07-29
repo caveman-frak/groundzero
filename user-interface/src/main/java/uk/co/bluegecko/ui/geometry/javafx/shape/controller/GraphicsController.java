@@ -1,4 +1,6 @@
-package uk.co.bluegecko.ui.geometry.javafx.controller;
+package uk.co.bluegecko.ui.geometry.javafx.shape.controller;
+
+import static java.lang.Math.abs;
 
 import java.awt.Point;
 import java.awt.geom.Line2D;
@@ -10,11 +12,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javafx.beans.property.ReadOnlyDoubleProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
@@ -39,27 +45,57 @@ public class GraphicsController implements Initializable {
 	private static final String SHAPE = "shape";
 	private static final String POINTS = "points";
 	private static final String MARKER = "markers";
+	private static final String GRID = "grid";
 
 	private ResourceBundle rb;
 
 	@FXML
 	private Pane canvas;
+	private final AtomicReference<Bounds> canvasBounds = new AtomicReference<>();
 
 	@Setter
 	private StatusController statusController;
 
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		rb = resources;
+		canvas.widthProperty().addListener(sizeListener());
+		canvas.heightProperty().addListener(sizeListener());
+	}
+
 	public void drawGrid() {
-		Group grid = new Group();
-		grid.setId("grid");
-		double width = canvas.getWidth() - 10;
-		double height = canvas.getHeight() - 10;
+		drawGrid(canvas.getBoundsInLocal());
+	}
+
+	private void drawGrid(Bounds bounds) {
+		ObservableList<Node> grid = getOrAdd(canvas, GRID);
+		grid.clear();
+		double width = bounds.getWidth() - 10;
+		double height = bounds.getHeight() - 10;
 		for (int i = 0; i <= width / SPACING; i++) {
-			grid.getChildren().add(line(5 + i * SPACING, 5, 5 + i * SPACING, (int) (height - 5)));
+			grid.add(line(5 + i * SPACING, 5, 5 + i * SPACING, (int) (height - 5)));
 		}
 		for (int i = 0; i <= height / SPACING; i++) {
-			grid.getChildren().add(line(5, 5 + i * SPACING, (int) (width - 5), 5 + i * SPACING));
+			grid.add(line(5, 5 + i * SPACING, (int) (width - 5), 5 + i * SPACING));
 		}
-		canvas.getChildren().add(grid);
+	}
+
+	public ChangeListener<Number> sizeListener() {
+		return (observable, _, _) -> {
+			if (exceedsThreshold((ReadOnlyDoubleProperty) observable, 10.0)) {
+				drawGrid(canvasBounds.getAndSet(null));
+			}
+		};
+	}
+
+	private boolean exceedsThreshold(ReadOnlyDoubleProperty property, Double threshold) {
+		canvasBounds.compareAndSet(null, ((Pane) property.getBean()).getBoundsInLocal());
+		if ("height".equals(property.getName())) {
+			return abs(canvasBounds.get().getHeight() - property.getValue()) > threshold;
+		} else if ("width".equals(property.getName())) {
+			return abs(canvasBounds.get().getWidth() - property.getValue()) > threshold;
+		}
+		return false;
 	}
 
 	public void drawShape(Shape shape) {
@@ -135,11 +171,6 @@ public class GraphicsController implements Initializable {
 		line.setStroke(Color.gray(0.5, 0.5));
 		line.setStrokeWidth(1.0);
 		return line;
-	}
-
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		this.rb = resources;
 	}
 
 	private static class ShowPointsOverTime extends PeriodicPulse {

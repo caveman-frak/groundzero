@@ -1,4 +1,4 @@
-package uk.co.bluegecko.ui.geometry.javafx.controller;
+package uk.co.bluegecko.ui.geometry.javafx.shape.controller;
 
 import java.awt.Point;
 import java.net.URL;
