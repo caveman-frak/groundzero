@@ -2,6 +2,7 @@ package uk.co.bluegecko.parser.path;
 
 import java.awt.Point;
 import java.awt.geom.Path2D;
+import java.awt.geom.Path2D.Double;
 import java.awt.geom.Point2D;
 import uk.co.bluegecko.parser.path.PathParser.ArcContext;
 import uk.co.bluegecko.parser.path.PathParser.CloseContext;
@@ -20,9 +21,14 @@ public class PathVisitorDrawer extends PathBaseVisitor<Path2D> implements PathHe
 		this.path = path;
 	}
 
+	public PathVisitorDrawer(int x, int y) {
+		Double path = new Double();
+		path.moveTo(x, y);
+		this(path);
+	}
+
 	public PathVisitorDrawer() {
-		this(new Path2D.Double());
-		path.moveTo(0, 0);
+		this(0, 0);
 	}
 
 	@Override

@@ -58,22 +58,27 @@ class PathVisitorDrawerTest extends AbstractPathTest {
 		double[] coordinates = new double[]{-1, -1, -1, -1, -1, -1};
 		PathIterator iterator = walkPathWith(visitor, "h10\nv10\nZ").getPathIterator(null);
 
+		// initial move
 		assertThat(iterator.currentSegment(coordinates)).as("move 0,0").isEqualTo(SEG_MOVETO);
 		assertThat(coordinates).as("0").hasSize(6).containsExactly(0, 0, -1, -1, -1, -1);
 		iterator.next();
 		Arrays.fill(coordinates, -1);
+		// horizontal line
 		assertThat(iterator.currentSegment(coordinates)).as("horizontal 10").isEqualTo(SEG_LINETO);
 		assertThat(coordinates).as("1").hasSize(6).containsExactly(10, 0, -1, -1, -1, -1);
 		iterator.next();
 		Arrays.fill(coordinates, -1);
+		// vertical line
 		assertThat(iterator.currentSegment(coordinates)).as("vertical 10").isEqualTo(SEG_LINETO);
 		assertThat(coordinates).as("2").hasSize(6).containsExactly(10, 10, -1, -1, -1, -1);
 		iterator.next();
 		Arrays.fill(coordinates, -1);
+		// close
 		assertThat(iterator.currentSegment(coordinates)).as("close").isEqualTo(SEG_CLOSE);
 		assertThat(coordinates).as("3").hasSize(6).containsExactly(-1, -1, -1, -1, -1, -1);
 		iterator.next();
 		Arrays.fill(coordinates, -1);
+		// close move
 		assertThat(iterator.currentSegment(coordinates)).as("return 0, 0").isEqualTo(SEG_MOVETO);
 		assertThat(coordinates).as("4").hasSize(6).containsExactly(0, 0, -1, -1, -1, -1);
 		assertThat(iterator.isDone()).isTrue();
@@ -137,9 +142,7 @@ class PathVisitorDrawerTest extends AbstractPathTest {
 
 		@BeforeEach
 		void setUpRelative() {
-			Path2D p = new Path2D.Double();
-			p.moveTo(10, 10);
-			visitor = new PathVisitorDrawer(p);
+			visitor = new PathVisitorDrawer(10, 10);
 		}
 
 		@Test
