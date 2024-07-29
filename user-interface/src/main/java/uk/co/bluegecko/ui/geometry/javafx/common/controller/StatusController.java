@@ -1,4 +1,4 @@
-package uk.co.bluegecko.ui.geometry.javafx.shape.controller;
+package uk.co.bluegecko.ui.geometry.javafx.common.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

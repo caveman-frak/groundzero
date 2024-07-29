@@ -1,17 +1,19 @@
-package uk.co.bluegecko.ui.geometry.javafx.shape.listener;
+package uk.co.bluegecko.ui.geometry.javafx.path.listener;
 
 import java.util.ResourceBundle;
-import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import net.rgielen.fxweaver.core.FxControllerAndView;
 import net.rgielen.fxweaver.core.FxWeaver;
 import org.springframework.stereotype.Component;
 import uk.co.bluegecko.ui.geometry.javafx.common.controller.StatusController;
 import uk.co.bluegecko.ui.geometry.javafx.listener.PrimaryStageHandler;
-import uk.co.bluegecko.ui.geometry.javafx.shape.controller.ControlsController;
-import uk.co.bluegecko.ui.geometry.javafx.shape.controller.GraphicsController;
+import uk.co.bluegecko.ui.geometry.javafx.path.controller.GraphicsController;
+import uk.co.bluegecko.ui.geometry.javafx.path.controller.PathController;
 
 @Component
 public class MainHandler extends PrimaryStageHandler {
@@ -28,16 +30,17 @@ public class MainHandler extends PrimaryStageHandler {
 				"/images/geometry-icon-32.png",
 				"/images/geometry-icon-64.png");
 
-		FxControllerAndView<GraphicsController, Node> graphicsLoader = fxWeaver.load(GraphicsController.class, rb);
-		FxControllerAndView<ControlsController, Node> controlsLoader = fxWeaver.load(ControlsController.class, rb);
-		FxControllerAndView<StatusController, Node> statusLoader = fxWeaver.load(StatusController.class, rb);
+		FxControllerAndView<PathController, AnchorPane> pathLoader = fxWeaver.load(PathController.class, rb);
+		FxControllerAndView<GraphicsController, Pane> graphicsLoader = fxWeaver.load(GraphicsController.class,
+				rb);
+		FxControllerAndView<StatusController, HBox> statusLoader = fxWeaver.load(StatusController.class, rb);
 		BorderPane root = new BorderPane();
+		pathLoader.getView().ifPresent(root::setTop);
 		graphicsLoader.getView().ifPresent(root::setCenter);
-		controlsLoader.getView().ifPresent(root::setTop);
 		statusLoader.getView().ifPresent(root::setBottom);
 
 		graphicsLoader.getController().setStatusController(statusLoader.getController());
-		controlsLoader.getController().setGraphicsController(graphicsLoader.getController());
+		pathLoader.getController().setGraphicsController(graphicsLoader.getController());
 
 		Scene scene = new Scene(root);
 		scene.getStylesheets().add(getClass().getResource("/styles/styles.css").toExternalForm());

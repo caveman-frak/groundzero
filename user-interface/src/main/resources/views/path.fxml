@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Text?>
+<AnchorPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+  fx:controller="uk.co.bluegecko.ui.geometry.javafx.path.controller.PathController"
+  prefHeight="200.0" prefWidth="600.0">
+
+  <Text text="%heading" id="title-text" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0"/>
+  <Label text="%path" AnchorPane.topAnchor="40.0" AnchorPane.leftAnchor="10.0"/>
+  <TextArea fx:id="pathText" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0"
+    AnchorPane.topAnchor="60.0" AnchorPane.bottomAnchor="40.0"/>
+  <HBox spacing="10" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0">
+    <Button text="%draw" onAction="#drawPath"/>
+    <Button text="%animate" onAction="#animatePath"/>
+    <Button text="%clear" onAction="#clearGraphics"/>
+  </HBox>
+</AnchorPane>

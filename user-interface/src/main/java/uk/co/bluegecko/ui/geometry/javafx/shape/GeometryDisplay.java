@@ -9,10 +9,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import uk.co.bluegecko.ui.geometry.calc.GeometryCalculator;
+import uk.co.bluegecko.ui.geometry.javafx.common.CommonPackage;
 import uk.co.bluegecko.ui.geometry.javafx.event.StageReadyEvent;
 
 @Slf4j
-@SpringBootApplication
+@SpringBootApplication(scanBasePackageClasses = {GeometryDisplay.class, CommonPackage.class})
 public class GeometryDisplay extends Application {
 
 	private ConfigurableApplicationContext context;
@@ -21,8 +22,8 @@ public class GeometryDisplay extends Application {
 	public void init() {
 		log.info("Initialising application");
 		context = new SpringApplicationBuilder()
-				.web(WebApplicationType.NONE)
 				.sources(GeometryDisplay.class, GeometryCalculator.class)
+				.web(WebApplicationType.NONE)
 				.run(getParameters().getRaw().toArray(new String[0]));
 	}
 
