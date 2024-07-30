@@ -10,7 +10,7 @@ import uk.co.bluegecko.ui.geometry.javafx.common.controller.BaseGraphicsControll
 
 @Slf4j
 @Component
-@FxmlView("/views/path-graphics.fxml")
+@FxmlView("/views/graphics.fxml")
 public class GraphicsController extends BaseGraphicsController implements Initializable {
 
 	private static final String SHAPE = "shape";
@@ -28,12 +28,12 @@ public class GraphicsController extends BaseGraphicsController implements Initia
 		path.setFill(Color.TRANSPARENT);
 		path.setStroke(Color.BLACK);
 		path.setContent(text);
-		statusController.status("Drawing path ...");
+		statusController.status(rb.getString("drawing-path"));
 		getOrAdd(canvas, PATH).add(path);
 	}
 
 	public void animatePath() {
-		statusController.status("Animating along path ...");
+		statusController.status(rb.getString("animating-path"));
 	}
 
 }

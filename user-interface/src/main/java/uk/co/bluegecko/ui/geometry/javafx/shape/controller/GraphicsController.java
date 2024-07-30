@@ -61,7 +61,7 @@ public class GraphicsController extends BaseGraphicsController implements Initia
 	}
 
 	public void showLength(ControlsController.Shape shape, double length) {
-		statusController.status("%s has a length of %1.2f", shape, length);
+		statusController.status(rb.getString("length"), shape, length);
 	}
 
 	@NotNull
@@ -77,7 +77,7 @@ public class GraphicsController extends BaseGraphicsController implements Initia
 	}
 
 	private void showTangent(MouseEvent e) {
-		statusController.status("Clicked at [%1.1f,%1.1f] on %s", e.getX(), e.getY(), e.getSource());
+		statusController.status(rb.getString("clicked"), e.getX(), e.getY(), e.getSource());
 	}
 
 	@Override
@@ -90,14 +90,14 @@ public class GraphicsController extends BaseGraphicsController implements Initia
 
 	private static class ShowPointsOverTime extends PeriodicPulse {
 
-		private final ResourceBundle resourceBundle;
+		private final ResourceBundle rb;
 		private final List<? extends Shape> shapes;
 		private final ObservableList<Node> children;
 
-		public ShowPointsOverTime(ResourceBundle resourceBundle, Duration pause, int number,
+		public ShowPointsOverTime(ResourceBundle rb, Duration pause, int number,
 				List<? extends Shape> shapes, ObservableList<Node> children) {
 			super(pause, number);
-			this.resourceBundle = resourceBundle;
+			this.rb = rb;
 			this.shapes = shapes;
 			this.children = children;
 		}
@@ -105,7 +105,7 @@ public class GraphicsController extends BaseGraphicsController implements Initia
 		@Override
 		protected void run() {
 			int i = getTotal().get() - shapes.size();
-			updateMessage(resourceBundle.getString("drawing").formatted(i));
+			updateMessage(rb.getString("drawing").formatted(i));
 			updateProgress(i);
 			if (!shapes.isEmpty()) {
 				Shape point = shapes.removeFirst();

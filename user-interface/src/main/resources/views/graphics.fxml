@@ -2,5 +2,5 @@
 
 <?import javafx.scene.layout.Pane?>
 <Pane fx:id="canvas" id="graphics" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-  fx:controller="uk.co.bluegecko.ui.geometry.javafx.shape.controller.GraphicsController" minWidth="600"
+  fx:controller="uk.co.bluegecko.ui.geometry.javafx.common.controller.BaseGraphicsController" minWidth="600"
   minHeight="600"/>
