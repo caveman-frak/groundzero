@@ -26,11 +26,16 @@ public class PathController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		rb = resources;
+
+		pathText.setText("""
+				M 200 200
+				l 200 0
+				l 0 200
+				Z""");
 	}
 
 	public void drawPath(ActionEvent actionEvent) {
 		String text = pathText.getText();
-		log.info("Draw '{}'", text);
 		graphicsController.drawPath(text);
 	}
 
