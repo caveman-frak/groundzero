@@ -1,4 +1,4 @@
-package uk.co.bluegecko.ui.geometry.javafx.concurrent;
+package uk.co.bluegecko.ui.geometry.javafx.animation;
 
 import static javafx.application.Platform.isFxApplicationThread;
 import static javafx.application.Platform.runLater;
@@ -22,31 +22,39 @@ public abstract class PeriodicPulse extends AnimationTimer {
 	@Getter(AccessLevel.PROTECTED)
 	private long lastPulse;
 	private final Duration pause;
+	private final StringProperty status;
+	private final AtomicReference<String> statusUpdate;
+	private final StringProperty message;
+	private final AtomicReference<String> messageUpdate;
 	private final DoubleProperty progress;
 	private final AtomicInteger total;
 	private final AtomicInteger progressUpdate;
-	private final StringProperty message;
-	private final AtomicReference<String> messageUpdate;
 
 	public PeriodicPulse(Duration pause, int total) {
 		this.pause = pause;
-		this.lastPulse = 0;
+		lastPulse = 0;
+		status = new SimpleStringProperty(this, "status", "");
+		statusUpdate = new AtomicReference<>();
+		message = new SimpleStringProperty(this, "message", "");
+		messageUpdate = new AtomicReference<>();
 		this.total = new AtomicInteger(total);
 		progress = new SimpleDoubleProperty(this, "progress", -1);
 		progressUpdate = new AtomicInteger(0);
-		message = new SimpleStringProperty(this, "message", "");
-		messageUpdate = new AtomicReference<>();
 	}
 
 	@Override
 	public final void handle(long now) {
 		if (now - lastPulse > pause.toNanos()) {
 			lastPulse = now;
-			run();
+			pulse();
 		}
 	}
 
-	protected abstract void run();
+	protected abstract void pulse();
+
+	public final ReadOnlyStringProperty statusProperty() {
+		return status;
+	}
 
 	public final ReadOnlyStringProperty messageProperty() {
 		return message;
@@ -54,6 +62,19 @@ public abstract class PeriodicPulse extends AnimationTimer {
 
 	public final ReadOnlyDoubleProperty progressProperty() {
 		return progress;
+	}
+
+	protected final void updateStatus(String status) {
+		if (isFxApplicationThread()) {
+			this.status.set(status);
+		} else {
+			if (statusUpdate.getAndSet(status) == null) {
+				runLater(() -> {
+					final String message1 = statusUpdate.getAndSet(null);
+					PeriodicPulse.this.status.set(message1);
+				});
+			}
+		}
 	}
 
 	protected final void updateMessage(String message) {

@@ -102,4 +102,11 @@ public abstract class BaseGraphicsController implements Initializable {
 		}
 	}
 
+	protected Optional<ObservableList<Node>> get(Pane parent, String name) {
+		return parent.getChildren().stream().filter(n -> name.equals(n.getId()))
+				.filter(n -> n instanceof Group)
+				.map(n -> (Group) n)
+				.map(Group::getChildren).findFirst();
+	}
+
 }

@@ -18,15 +18,12 @@ public class PathController implements Initializable {
 
 	@FXML
 	private TextArea pathText;
-
-	private ResourceBundle rb;
 	@Setter
 	private GraphicsController graphicsController;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		rb = resources;
-
+		log.info("Initialising. URL = {}, Bundle = {}", location, resources);
 		pathText.setText("""
 				M 200 200
 				l 200 0
@@ -34,16 +31,15 @@ public class PathController implements Initializable {
 				Z""");
 	}
 
-	public void drawPath(ActionEvent actionEvent) {
-		String text = pathText.getText();
-		graphicsController.drawPath(text);
+	public void drawPath(ActionEvent e) {
+		graphicsController.drawPath(pathText.getText());
 	}
 
-	public void clearGraphics(ActionEvent actionEvent) {
+	public void clearGraphics(ActionEvent e) {
 		graphicsController.clearGraphics();
 	}
 
-	public void animatePath(ActionEvent actionEvent) {
+	public void animatePath(ActionEvent e) {
 		graphicsController.animatePath();
 	}
 }

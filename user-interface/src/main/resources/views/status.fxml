@@ -8,6 +8,6 @@
   styleClass="status-bar" spacing="5">
 
   <Label fx:id="status" maxWidth="Infinity" minWidth="100" HBox.hgrow="ALWAYS"/>
-  <Label fx:id="action" prefWidth="100" minWidth="150" maxWidth="150"/>
+  <Label fx:id="message" prefWidth="100" minWidth="150" maxWidth="150"/>
   <ProgressBar fx:id="progress" prefWidth="200" minWidth="200" maxWidth="200" progress="0.0"/>
 </HBox>

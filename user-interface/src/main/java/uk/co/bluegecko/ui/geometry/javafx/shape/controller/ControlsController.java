@@ -58,9 +58,14 @@ public class ControlsController implements Initializable {
 	private NumericField points;
 	@FXML
 	private ToggleGroup shapeSelect;
-
 	@Setter
 	private GraphicsController graphicsController;
+
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		log.info("Initialising. URL = {}, Bundle = {}", location, resources);
+		controlDefaults();
+	}
 
 	@FXML
 	protected void drawShape(ActionEvent e) {
@@ -87,6 +92,18 @@ public class ControlsController implements Initializable {
 		} else {
 			drawPoints();
 		}
+	}
+
+	@FXML
+	protected void clearGraphics(ActionEvent e) {
+		log.info("Clearing canvas");
+		graphicsController.clearGraphics();
+	}
+
+	@FXML
+	protected void resetControls(ActionEvent e) {
+		log.info("Resetting control state");
+		controlDefaults();
 	}
 
 	private void drawLines() {
@@ -132,24 +149,6 @@ public class ControlsController implements Initializable {
 					case LINE -> calculator.calculateLengthOfLine(start(), end());
 					default -> 0.0;
 				});
-	}
-
-	@FXML
-	protected void clearGraphics(ActionEvent e) {
-		log.info("Clearing canvas");
-		graphicsController.clearGraphics();
-	}
-
-	@FXML
-	protected void resetControls(ActionEvent e) {
-		log.info("Resetting control state");
-		controlDefaults();
-	}
-
-	@Override
-	public void initialize(URL url, ResourceBundle rb) {
-		log.info("Initialising. URL = {}, Bundle = {}", url, rb);
-		controlDefaults();
 	}
 
 	private void controlDefaults() {

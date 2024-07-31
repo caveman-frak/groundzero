@@ -7,7 +7,6 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javafx.collections.ObservableList;
@@ -22,8 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
+import uk.co.bluegecko.ui.geometry.javafx.animation.PeriodicPulse;
 import uk.co.bluegecko.ui.geometry.javafx.common.controller.BaseGraphicsController;
-import uk.co.bluegecko.ui.geometry.javafx.concurrent.PeriodicPulse;
 
 @Slf4j
 @Component
@@ -86,37 +85,6 @@ public class GraphicsController extends BaseGraphicsController implements Initia
 		canvas.getChildren().removeIf(n -> MARKER.equals(n.getId()));
 		canvas.getChildren().removeIf(n -> SHAPE.equals(n.getId()));
 		canvas.getChildren().removeIf(n -> POINTS.equals(n.getId()));
-	}
-
-	private static class ShowPointsOverTime extends PeriodicPulse {
-
-		private final ResourceBundle rb;
-		private final List<? extends Shape> shapes;
-		private final ObservableList<Node> children;
-
-		public ShowPointsOverTime(ResourceBundle rb, Duration pause, int number,
-				List<? extends Shape> shapes, ObservableList<Node> children) {
-			super(pause, number);
-			this.rb = rb;
-			this.shapes = shapes;
-			this.children = children;
-		}
-
-		@Override
-		protected void run() {
-			int i = getTotal().get() - shapes.size();
-			updateMessage(rb.getString("drawing").formatted(i));
-			updateProgress(i);
-			if (!shapes.isEmpty()) {
-				Shape point = shapes.removeFirst();
-				children.add(point);
-			} else {
-				updateMessage("");
-				updateProgress(0);
-				stop();
-			}
-		}
-
 	}
 
 }
