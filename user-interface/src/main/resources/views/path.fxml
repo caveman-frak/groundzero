@@ -15,6 +15,7 @@
   <TextArea fx:id="pathText" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0"
     AnchorPane.topAnchor="60.0" AnchorPane.bottomAnchor="40.0"/>
   <HBox spacing="10" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0">
+    <Button text="%spiral" onAction="#defineSpiral"/>
     <Button text="%draw" onAction="#drawPath"/>
     <Button text="%animate" onAction="#animatePath"/>
     <Button text="%clear" onAction="#clearGraphics"/>
