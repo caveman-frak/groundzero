@@ -82,9 +82,9 @@ public class GraphicsController extends BaseGraphicsController implements Initia
 	@Override
 	public void clearGraphics() {
 		super.clearGraphics();
-		canvas.getChildren().removeIf(n -> MARKER.equals(n.getId()));
-		canvas.getChildren().removeIf(n -> SHAPE.equals(n.getId()));
-		canvas.getChildren().removeIf(n -> POINTS.equals(n.getId()));
+		get(canvas, MARKER).ifPresent(List::clear);
+		get(canvas, SHAPE).ifPresent(List::clear);
+		get(canvas, POINTS).ifPresent(List::clear);
 	}
 
 }

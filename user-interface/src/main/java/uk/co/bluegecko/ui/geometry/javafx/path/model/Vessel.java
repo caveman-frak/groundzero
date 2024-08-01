@@ -9,8 +9,8 @@ public class Vessel extends Polygon {
 
 	private final StringProperty tooltipText;
 
-	public Vessel(Tooltip tooltip, double... points) {
-		super(points);
+	public Vessel(Tooltip tooltip, VesselShape shape) {
+		super(shape.outline());
 		tooltipText = tooltip.textProperty();
 		updateTooltip();
 	}

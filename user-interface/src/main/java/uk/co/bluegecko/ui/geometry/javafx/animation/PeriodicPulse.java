@@ -16,7 +16,6 @@ import javafx.beans.property.StringProperty;
 import lombok.AccessLevel;
 import lombok.Getter;
 
-@Getter
 public abstract class PeriodicPulse extends AnimationTimer {
 
 	@Getter(AccessLevel.PROTECTED)
@@ -27,6 +26,7 @@ public abstract class PeriodicPulse extends AnimationTimer {
 	private final StringProperty message;
 	private final AtomicReference<String> messageUpdate;
 	private final DoubleProperty progress;
+	@Getter(AccessLevel.PROTECTED)
 	private final AtomicInteger total;
 	private final AtomicInteger progressUpdate;
 

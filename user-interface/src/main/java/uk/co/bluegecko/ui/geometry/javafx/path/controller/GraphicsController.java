@@ -1,6 +1,7 @@
 package uk.co.bluegecko.ui.geometry.javafx.path.controller;
 
 import java.net.URL;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.ResourceBundle;
@@ -54,8 +55,10 @@ public class GraphicsController extends BaseGraphicsController {
 	@Override
 	public void clearGraphics() {
 		super.clearGraphics();
-		canvas.getChildren().removeIf(n -> VESSEL.equals(n.getId()));
-		canvas.getChildren().removeIf(n -> PATH.equals(n.getId()));
+
+		get(canvas, VESSEL).ifPresent(List::clear);
+		get(canvas, PATH).ifPresent(List::clear);
+
 		path.set(null);
 		Optional.ofNullable(transition.getAndSet(null)).ifPresent(Animation::stop);
 	}
@@ -64,6 +67,7 @@ public class GraphicsController extends BaseGraphicsController {
 		SVGPath path = new SVGPath();
 		path.setFill(Color.TRANSPARENT);
 		path.setStroke(Color.BLACK);
+		path.getStrokeDashArray().addAll(2.0, 10.0);
 		path.setContent(text);
 		statusController.status(rb.getString("drawing-path"));
 		getOrAdd(canvas, PATH).add(path);
@@ -72,20 +76,25 @@ public class GraphicsController extends BaseGraphicsController {
 
 	public void animatePath() {
 		if (path.get() != null) {
-			if (transition.get() == null) {
+			Animation t = transition.get();
+			if (t == null) {
 				Shape vessel = drawVessel();
 				PathTransition animation = new PathTransition(Duration.seconds(30.0), path.get(), vessel);
 				animation.setOrientation(OrientationType.ORTHOGONAL_TO_TANGENT);
-				animation.setCycleCount(1);
+				animation.setCycleCount(2);
+				animation.setAutoReverse(true);
 				transition.set(animation);
 				animation.setOnFinished(this::stopUpdater);
 				statusController.bindProgress(vesselUpdater);
-				vesselUpdater.start();
 				animation.play();
-			} else if (transition.get().getStatus() == Status.RUNNING) {
-				transition.get().pause();
-			} else if (transition.get().getStatus() == Status.PAUSED) {
-				transition.get().play();
+			} else if (t.getStatus() == Status.RUNNING) {
+				t.pause();
+			} else if (t.getStatus() == Status.PAUSED) {
+				t.play();
+			} else if (t.getStatus() == Status.STOPPED) {
+				statusController.bindProgress(vesselUpdater);
+				vesselUpdater.start();
+				t.play();
 			}
 		} else {
 			statusController.status("No path defined!");
@@ -97,15 +106,15 @@ public class GraphicsController extends BaseGraphicsController {
 		statusController.clearProgress();
 	}
 
-
 	private Vessel drawVessel() {
 		VesselShape vesselShape = randomVessel(randomGenerator);
 		Tooltip tooltip = new Tooltip();
 		tooltip.setShowDelay(Duration.millis(100));
-		Vessel vessel = new Vessel(tooltip, vesselShape.outline());
+		Vessel vessel = new Vessel(tooltip, vesselShape);
 		vessel.setFill(Color.LIGHTBLUE);
 		vessel.setStroke(Color.BLUE);
 		getOrAdd(canvas, VESSEL).add(vessel);
+		vessel.getParent().toFront();
 		Tooltip.install(vessel, tooltip);
 		return vessel;
 	}
