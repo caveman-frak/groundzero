@@ -1,6 +1,6 @@
 package uk.co.bluegecko.ui.geometry.javafx.path.controller;
 
-import static uk.co.bluegecko.ui.geometry.javafx.path.spiral.SpiralDefinition.asString;
+import static uk.co.bluegecko.ui.geometry.javafx.path.spiral.Element.asString;
 
 import java.net.URL;
 import java.util.ResourceBundle;

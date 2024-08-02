@@ -21,8 +21,8 @@
       <NumericField fx:id="segments" prefWidth="100"
         GridPane.rowIndex="3" GridPane.columnIndex="2" GridPane.columnSpan="2"/>
       <Label text="Skew" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
-      <DecimalField fx:id="skew" prefWidth="100"
-        GridPane.rowIndex="4" GridPane.columnIndex="2" GridPane.columnSpan="2"/>
+      <DecimalField fx:id="skew1" prefWidth="50" GridPane.rowIndex="4" GridPane.columnIndex="2"/>
+      <DecimalField fx:id="skew2" prefWidth="50" GridPane.rowIndex="4" GridPane.columnIndex="3"/>
       <CheckBox fx:id="clockwise" selected="true" text="Clockwise"
         GridPane.rowIndex="5" GridPane.columnIndex="2" GridPane.columnSpan="2"/>
     </GridPane>
