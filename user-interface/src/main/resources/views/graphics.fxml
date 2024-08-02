@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.Pane?>
-<Pane fx:id="canvas" id="graphics" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.Cursor?>
+<?import uk.co.bluegecko.ui.geometry.javafx.control.XYCanvas?>
+<XYCanvas fx:id="canvas" id="graphics" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
   fx:controller="uk.co.bluegecko.ui.geometry.javafx.common.controller.BaseGraphicsController"
-  minWidth="800" minHeight="800"/>
+  minWidth="300" minHeight="300" prefWidth="800" prefHeight="800">
+  <xAxis>
+    <NumberAxis autoRanging="false" lowerBound="-400" side="BOTTOM" tickUnit="50" upperBound="400"/>
+  </xAxis>
+  <yAxis>
+    <NumberAxis autoRanging="false" lowerBound="-400" side="LEFT" tickUnit="50" upperBound="400"/>
+  </yAxis>
+  <cursor>
+    <Cursor fx:constant="CROSSHAIR"/>
+  </cursor>
+</XYCanvas>

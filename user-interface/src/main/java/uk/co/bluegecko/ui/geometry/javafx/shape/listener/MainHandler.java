@@ -43,7 +43,6 @@ public class MainHandler extends PrimaryStageHandler {
 		scene.getStylesheets().add(getClass().getResource("/styles/styles.css").toExternalForm());
 
 		stage.setScene(scene);
-		stage.setOnShown(_ -> graphicsLoader.getController().drawGrid());
 		stage.show();
 	}
 }

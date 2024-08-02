@@ -15,15 +15,12 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import uk.co.bluegecko.ui.geometry.javafx.control.XYCanvas;
 
+@Slf4j
 public abstract class BaseGraphicsController implements Initializable {
-
-	private static final int SPACING = 20;
-	private static final String GRID = "grid";
 
 	protected ResourceBundle rb;
 	private final AtomicReference<Bounds> canvasBounds = new AtomicReference<>();
@@ -32,7 +29,7 @@ public abstract class BaseGraphicsController implements Initializable {
 	protected StatusController statusController;
 
 	@FXML
-	protected Pane canvas;
+	protected XYCanvas<Double, Double> canvas;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -41,21 +38,9 @@ public abstract class BaseGraphicsController implements Initializable {
 		canvas.heightProperty().addListener(resizeListener());
 	}
 
-	public void drawGrid() {
-		drawGrid(canvas.getBoundsInLocal());
-	}
-
 	private void drawGrid(Bounds bounds) {
-		ObservableList<Node> grid = getOrAdd(canvas, GRID);
-		grid.clear();
-		double width = bounds.getWidth() - 10;
-		double height = bounds.getHeight() - 10;
-		for (int i = 0; i <= width / SPACING; i++) {
-			grid.add(line(5 + i * SPACING, 5, 5 + i * SPACING, (int) (height - 5)));
-		}
-		for (int i = 0; i <= height / SPACING; i++) {
-			grid.add(line(5, 5 + i * SPACING, (int) (width - 5), 5 + i * SPACING));
-		}
+		log.info("Bounds: {},{}/{},{}, Center: {},{}", bounds.getMinX(), bounds.getMinY(), bounds.getMaxX(),
+				bounds.getMaxY(), bounds.getCenterX(), bounds.getCenterY());
 	}
 
 	public void clearGraphics() {
@@ -71,7 +56,7 @@ public abstract class BaseGraphicsController implements Initializable {
 	}
 
 	protected boolean exceedsThreshold(ReadOnlyDoubleProperty property, Double threshold) {
-		canvasBounds.compareAndSet(null, ((Pane) property.getBean()).getBoundsInLocal());
+		canvasBounds.compareAndSet(null, ((XYCanvas<?, ?>) property.getBean()).getBoundsInLocal());
 		if ("height".equals(property.getName())) {
 			return abs(canvasBounds.get().getHeight() - property.getValue()) > threshold;
 		} else if ("width".equals(property.getName())) {
@@ -80,14 +65,7 @@ public abstract class BaseGraphicsController implements Initializable {
 		return false;
 	}
 
-	private Line line(int x1, int y1, int x2, int y2) {
-		Line line = new Line(x1, y1, x2, y2);
-		line.setStroke(Color.gray(0.5, 0.5));
-		line.setStrokeWidth(1.0);
-		return line;
-	}
-
-	protected ObservableList<Node> getOrAdd(Pane parent, String name) {
+	protected ObservableList<Node> getOrAdd(XYCanvas<?, ?> parent, String name) {
 		ObservableList<Node> children = parent.getChildren();
 		Optional<Node> group = children.filtered(n -> name.equals(n.getId()))
 				.filtered(n -> n instanceof Group)
@@ -102,7 +80,7 @@ public abstract class BaseGraphicsController implements Initializable {
 		}
 	}
 
-	protected Optional<ObservableList<Node>> get(Pane parent, String name) {
+	protected Optional<ObservableList<Node>> get(XYCanvas<?, ?> parent, String name) {
 		return parent.getChildren().stream().filter(n -> name.equals(n.getId()))
 				.filter(n -> n instanceof Group)
 				.map(n -> (Group) n)
