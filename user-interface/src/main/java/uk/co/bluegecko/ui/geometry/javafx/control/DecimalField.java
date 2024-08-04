@@ -1,32 +1,18 @@
 package uk.co.bluegecko.ui.geometry.javafx.control;
 
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
+import java.util.regex.Pattern;
 import javafx.util.converter.DoubleStringConverter;
 
-public class DecimalField extends TextField {
+public class DecimalField extends RestrictedField<Double> {
+
+	private static final Pattern PATTERN = Pattern.compile("[+-]?\\d*\\.?\\d*");
 
 	public DecimalField(double defaultValue) {
-		super();
-
-		setTextFormatter(new TextFormatter<>(new DoubleStringConverter(), defaultValue, change -> {
-			if (!change.getText().matches("\\d*\\.?\\d*")) {
-				change.setText(""); //else make no change
-				change.setRange(    //don't remove any selected text either.
-						change.getRangeStart(),
-						change.getRangeStart()
-				);
-			}
-			return change;
-		}));
+		super(new DoubleStringConverter(), defaultValue, change -> matchesPattern(PATTERN, change));
 	}
 
 	public DecimalField() {
 		this(0);
-	}
-
-	public double value() {
-		return (double) getTextFormatter().getValue();
 	}
 
 }

@@ -34,13 +34,11 @@ public class PathController implements Initializable {
 
 		log.info("Initialising. URL = {}, Bundle = {}", location, resourceBundle);
 		pathText.setText("""
-				M 500 500
-				c75 0 50 100 0 100
-				c-150 0 -100 -200 0 -200
-				c 225 0 150 300 0 300
-				c-300 0 -200 -400 0 -400
-				c375 0 250 500 0 500
-				c-450 0 -300 -600 0 -600""");
+				M 0 0
+				l 200 0
+				l 0 200
+				l -200 0
+				Z""");
 	}
 
 	public void drawPath(ActionEvent e) {

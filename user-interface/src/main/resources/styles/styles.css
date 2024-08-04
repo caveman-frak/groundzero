@@ -11,9 +11,8 @@
    -fx-effect: innershadow( three-pass-box , rgba(0,0,0,0.7) , 6, 0.0 , 0 , 2 );
 }
 #graphics {
-  -fx-background-color: white;
-  -fx-border-insets: 5;
-  -fx-border-color: black;
+}
+.axis {
 }
 .status-bar {
   -fx-padding: 5;

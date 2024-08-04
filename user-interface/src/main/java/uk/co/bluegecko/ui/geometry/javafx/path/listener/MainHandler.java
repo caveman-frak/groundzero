@@ -31,7 +31,7 @@ public class MainHandler extends PrimaryStageHandler {
 				"/images/geometry-icon-64.png");
 
 		FxControllerAndView<PathController, AnchorPane> pathLoader = fxWeaver.load(PathController.class, rb);
-		FxControllerAndView<GraphicsController, XYCanvas<?, ?>> graphicsLoader = fxWeaver.load(GraphicsController.class,
+		FxControllerAndView<GraphicsController, XYCanvas> graphicsLoader = fxWeaver.load(GraphicsController.class,
 				rb);
 		FxControllerAndView<StatusController, HBox> statusLoader = fxWeaver.load(StatusController.class, rb);
 		BorderPane root = new BorderPane();
