@@ -2,10 +2,8 @@ package uk.co.bluegecko.ui.geometry.javafx.common.controller;
 
 
 import java.net.URL;
-import java.util.Collection;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.function.Supplier;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
