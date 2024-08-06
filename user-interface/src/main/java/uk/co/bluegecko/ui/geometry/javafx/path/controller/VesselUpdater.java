@@ -32,12 +32,12 @@ class VesselUpdater extends PeriodicPulse {
 	@Override
 	protected void pulse() {
 		children.stream().filter(n -> n instanceof Vessel).map(n -> (Vessel) n)
-				.peek(Vessel::updateTooltip)
+				.peek(v -> v.updateTooltip(getPause()))
 				.findFirst().ifPresent(this::updateVessel);
 	}
 
 	private void updateVessel(Vessel vessel) {
-		updateStatus(vessel.getPosition());
+		updateStatus(vessel.getPositionAndSpeed(getPause()));
 		updateMessage(vessel.getBearing());
 	}
 

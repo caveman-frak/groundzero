@@ -28,8 +28,12 @@ import org.jetbrains.annotations.NotNull;
 @Slf4j
 public class XYCanvas extends XYChart<Number, Number> {
 
-	private static final String ANCHOR = "-fx-anchor-";
 	private static final int ANCHOR_RADIUS = 100;
+	private static final String ANCHOR = "-fx-anchor-";
+	private static final String BOTTOM_LEFT = "bottom-left";
+	private static final String TOP_LEFT = "top-left";
+	private static final String BOTTOM_RIGHT = "bottom-right";
+	private static final String TOP_RIGHT = "top-right";
 
 	private final Pane contentPane;
 	private final Group contentGroup;
@@ -42,7 +46,7 @@ public class XYCanvas extends XYChart<Number, Number> {
 		setData(FXCollections.observableArrayList());
 
 		anchorColorProperty = new SimpleStyleableObjectProperty<>(
-				StyleableProperties.ANCHOR_COLOR_CSS_META_DATA, this, "color", Color.TRANSPARENT);
+				StyleableProperties.ANCHOR_COLOR_CSS_META_DATA, this, "anchorColor", Color.TRANSPARENT);
 		circleColorProperty = new SimpleStyleableObjectProperty<>(
 				StyleableProperties.CIRCLE_COLOR_CSS_META_DATA, this, "circleColor", Color.rgb(128, 0, 0, 0.5));
 		circleRadiusProperty = new SimpleStyleableIntegerProperty(
@@ -69,10 +73,10 @@ public class XYCanvas extends XYChart<Number, Number> {
 				.filter(n -> n.getId() != null)
 				.noneMatch(n -> n.getId().startsWith(ANCHOR))) {
 			getContentChildren().addAll(
-					createAnchor(getXAxis().getLowerBound(), getYAxis().getLowerBound(), "bottom-left", color),
-					createAnchor(getXAxis().getLowerBound(), getYAxis().getUpperBound(), "top-left", color),
-					createAnchor(getXAxis().getUpperBound(), getYAxis().getLowerBound(), "bottom-right", color),
-					createAnchor(getXAxis().getUpperBound(), getYAxis().getUpperBound(), "top-right", color));
+					createAnchor(getXAxis().getLowerBound(), getYAxis().getLowerBound(), BOTTOM_LEFT, color),
+					createAnchor(getXAxis().getLowerBound(), getYAxis().getUpperBound(), TOP_LEFT, color),
+					createAnchor(getXAxis().getUpperBound(), getYAxis().getLowerBound(), BOTTOM_RIGHT, color),
+					createAnchor(getXAxis().getUpperBound(), getYAxis().getUpperBound(), TOP_RIGHT, color));
 		}
 	}
 

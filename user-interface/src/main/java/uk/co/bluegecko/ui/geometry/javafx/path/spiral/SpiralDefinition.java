@@ -23,7 +23,7 @@ public class SpiralDefinition {
 	private boolean clockwise;
 
 	public SpiralDefinition() {
-		this(new Point2D(400, 400), 100, 6, 1.5, 1.0, true);
+		this(new Point2D(0, 0), 100, 6, 1.5, 1.0, true);
 	}
 
 	public Stream<Element> generateSpiral() {

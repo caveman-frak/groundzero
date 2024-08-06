@@ -34,7 +34,7 @@ public class PathController implements Initializable {
 
 		log.info("Initialising. URL = {}, Bundle = {}", location, resourceBundle);
 		pathText.setText("""
-				M 0 0
+				M -100 -100
 				l 200 0
 				l 0 200
 				l -200 0

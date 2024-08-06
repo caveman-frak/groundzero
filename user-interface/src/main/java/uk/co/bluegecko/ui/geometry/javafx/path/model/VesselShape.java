@@ -16,35 +16,36 @@ public enum VesselShape {
 			190, 205,
 			205, 205,
 			210, 200,
-			205, 195}, false),
+			205, 195}, "Slow Vessel", false),
 	SLOW_TAG(new double[]{
 			190, 195,
 			195, 200,
 			190, 205,
 			205, 205,
 			210, 200,
-			205, 195}, true),
+			205, 195}, "Slow Vessel", true),
 	FAST(new double[]{
 			190, 195,
 			190, 205,
-			210, 200}, false),
+			210, 200}, "Fast Vessel", false),
 	FAST_TAG(new double[]{
 			190, 195,
 			195, 200,
 			190, 205,
-			210, 200}, true),
+			210, 200}, "Fast Vessel", true),
 	TANKER(new double[]{
 			190, 195,
 			190, 205,
 			210, 205,
-			210, 195}, false),
+			210, 195}, "Tanker", false),
 	TANKER_TAG(new double[]{
 			190, 195,
 			195, 200,
 			190, 205,
 			210, 205,
-			210, 195}, true);
+			210, 195}, "Tanker", true);
 
 	double[] outline;
+	String type;
 	boolean tagged;
 }

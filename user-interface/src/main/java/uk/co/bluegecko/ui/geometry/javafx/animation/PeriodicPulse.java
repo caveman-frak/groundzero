@@ -20,6 +20,7 @@ public abstract class PeriodicPulse extends AnimationTimer {
 
 	@Getter(AccessLevel.PROTECTED)
 	private long lastPulse;
+	@Getter(AccessLevel.PROTECTED)
 	private final Duration pause;
 	private final StringProperty status;
 	private final AtomicReference<String> statusUpdate;
