@@ -28,7 +28,9 @@ import org.jetbrains.annotations.NotNull;
 @Slf4j
 public class XYCanvas extends XYChart<Number, Number> {
 
-	public static final String ANCHOR = "-fx-anchor-";
+	private static final String ANCHOR = "-fx-anchor-";
+	private static final int ANCHOR_RADIUS = 100;
+
 	private final Pane contentPane;
 	private final Group contentGroup;
 	private final ObjectProperty<Color> anchorColorProperty;
@@ -63,21 +65,20 @@ public class XYCanvas extends XYChart<Number, Number> {
 	}
 
 	private void anchorContent(Color color) {
-		boolean needsAnchors = getContentChildren().stream()
+		if (getContentChildren().stream()
 				.filter(n -> n.getId() != null)
-				.noneMatch(n -> n.getId().startsWith(ANCHOR));
-		if (needsAnchors) {
+				.noneMatch(n -> n.getId().startsWith(ANCHOR))) {
 			getContentChildren().addAll(
-					createAnchor(-400, -400, "bottom-left", color),
-					createAnchor(-400, 400, "top-left", color),
-					createAnchor(400, -400, "bottom-right", color),
-					createAnchor(400, 400, "top-right", color));
+					createAnchor(getXAxis().getLowerBound(), getYAxis().getLowerBound(), "bottom-left", color),
+					createAnchor(getXAxis().getLowerBound(), getYAxis().getUpperBound(), "top-left", color),
+					createAnchor(getXAxis().getUpperBound(), getYAxis().getLowerBound(), "bottom-right", color),
+					createAnchor(getXAxis().getUpperBound(), getYAxis().getUpperBound(), "top-right", color));
 		}
 	}
 
 	@NotNull
-	private static Circle createAnchor(int centerX, int centerY, String id, Color color) {
-		Circle circle = new Circle(centerX, centerY, 100, color);
+	private static Circle createAnchor(double centerX, double centerY, String id, Color color) {
+		Circle circle = new Circle(centerX, centerY, ANCHOR_RADIUS, color);
 		circle.setId(ANCHOR + id);
 		return circle;
 	}
@@ -89,8 +90,8 @@ public class XYCanvas extends XYChart<Number, Number> {
 		contentPane.resizeRelocate(0, 0, getXAxis().getWidth(), getYAxis().getHeight());
 		contentGroup.setLayoutX(getXAxis().getDisplayPosition(0.0));
 		contentGroup.setLayoutY(getYAxis().getDisplayPosition(0.0));
-		contentGroup.setScaleX(((NumberAxis) getXAxis()).getScale());
-		contentGroup.setScaleY(((NumberAxis) getYAxis()).getScale());
+		contentGroup.setScaleX(getXAxis().getScale());
+		contentGroup.setScaleY(getYAxis().getScale());
 	}
 
 	public final ObjectProperty<Color> anchorColorProperty() {
@@ -131,6 +132,16 @@ public class XYCanvas extends XYChart<Number, Number> {
 
 	public ObservableList<Node> getContentChildren() {
 		return contentGroup.getChildren();
+	}
+
+	@Override
+	public NumberAxis getXAxis() {
+		return (NumberAxis) super.getXAxis();
+	}
+
+	@Override
+	public NumberAxis getYAxis() {
+		return (NumberAxis) super.getYAxis();
 	}
 
 	@Override
