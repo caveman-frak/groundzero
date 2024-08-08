@@ -54,20 +54,20 @@ public class XYCanvas extends XYChart<Number, Number> {
 
 	protected EventHandler<MouseEvent> drawCircle() {
 		return e -> {
-			double x = atContent(e.getPickResult()).getX();
-			double y = atContent(e.getPickResult()).getY();
+			double x = resultToLocal(e.getPickResult()).getX();
+			double y = resultToLocal(e.getPickResult()).getY();
 			getContentChildren().addAll(
 					new Circle(x, y, circleRadiusProperty.get(), circleColorProperty.get()),
 					new Text(x - 30, y + 7, String.format("%03.0f, %03.0f", x, y)));
 		};
 	}
 
-	public Point3D atContent(PickResult pick) {
-		Point3D intersectedPoint = pick.getIntersectedPoint();
-		if (pick.getIntersectedNode() == contentPane) {
+	public Point3D resultToLocal(PickResult result) {
+		Point3D intersectedPoint = result.getIntersectedPoint();
+		if (result.getIntersectedNode() == contentPane) {
 			return intersectedPoint;
 		} else {
-			Point3D pointAtScene = pick.getIntersectedNode().localToScene(intersectedPoint);
+			Point3D pointAtScene = result.getIntersectedNode().localToScene(intersectedPoint);
 			return contentPane.sceneToLocal(pointAtScene);
 		}
 	}

@@ -11,6 +11,7 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import uk.co.bluegecko.ui.geometry.javafx.control.XYCanvas;
 
 @Slf4j
@@ -35,24 +36,25 @@ public abstract class BaseGraphicsController implements Initializable {
 
 	protected ObservableList<Node> getOrAdd(XYCanvas parent, String groupId) {
 		ObservableList<Node> children = parent.getContentChildren();
-		Optional<Node> group = children.filtered(n -> groupId.equals(n.getId()))
-				.filtered(n -> n instanceof Group)
-				.stream().findFirst();
-		if (group.isPresent()) {
-			return ((Group) group.get()).getChildren();
-		} else {
+		return groupChildren(children, groupId).orElseGet(() -> {
 			Group node = new Group();
 			node.setId(groupId);
 			children.add(node);
 			return node.getChildren();
-		}
+		});
 	}
 
 	protected Optional<ObservableList<Node>> get(XYCanvas parent, String groupId) {
-		return parent.getContentChildren().stream().filter(n -> groupId.equals(n.getId()))
-				.filter(n -> n instanceof Group)
-				.map(n -> (Group) n)
-				.map(Group::getChildren).findFirst();
+		return groupChildren(parent.getContentChildren(), groupId);
+	}
+
+	@NotNull
+	private static Optional<ObservableList<Node>> groupChildren(ObservableList<Node> children, String groupId) {
+		return children.stream()
+				.filter(n -> groupId.equals(n.getId()))
+				.filter(n -> n instanceof Group).map(n -> (Group) n)
+				.map(Group::getChildren)
+				.findFirst();
 	}
 
 }
