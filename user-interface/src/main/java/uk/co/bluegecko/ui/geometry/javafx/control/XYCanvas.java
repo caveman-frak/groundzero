@@ -1,5 +1,7 @@
 package uk.co.bluegecko.ui.geometry.javafx.control;
 
+import static java.lang.Math.abs;
+
 import java.util.List;
 import java.util.stream.Stream;
 import javafx.beans.NamedArg;
@@ -24,6 +26,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -43,16 +46,19 @@ public class XYCanvas extends XYChart<Number, Number> {
 				StyleableProperties.CIRCLE_RADIUS_CSS_META_DATA, this, "circleRadius", 40);
 
 		contentPane = new Pane();
-		contentPane.getStyleClass().setAll("content-pane");
+		contentPane.setManaged(false);
+		contentPane.getStyleClass().setAll("chart-content");
 		getPlotChildren().add(contentPane);
-		setOnMouseClicked(drawCircleHandler());
+		setOnMouseClicked(drawCircle());
 	}
 
-	protected EventHandler<MouseEvent> drawCircleHandler() {
+	protected EventHandler<MouseEvent> drawCircle() {
 		return e -> {
-			getContentChildren().add(
-					new Circle(atContent(e.getPickResult()).getX(), atContent(e.getPickResult()).getY(),
-							circleRadiusProperty.get(), circleColorProperty.get()));
+			double x = atContent(e.getPickResult()).getX();
+			double y = atContent(e.getPickResult()).getY();
+			getContentChildren().addAll(
+					new Circle(x, y, circleRadiusProperty.get(), circleColorProperty.get()),
+					new Text(x - 30, y + 7, String.format("%03.0f, %03.0f", x, y)));
 		};
 	}
 
@@ -75,8 +81,8 @@ public class XYCanvas extends XYChart<Number, Number> {
 				yz.getUpperBound() - getYAxis().getLowerBound()));
 		contentPane.setLayoutX(xa.getDisplayPosition(0.0));
 		contentPane.setLayoutY(yz.getDisplayPosition(0.0));
-		contentPane.setScaleX(xa.getScale());
-		contentPane.setScaleY(yz.getScale());
+		contentPane.setScaleX(abs(xa.getScale()));
+		contentPane.setScaleY(abs(yz.getScale()));
 	}
 
 	public final ObjectProperty<Color> circleColorProperty() {
