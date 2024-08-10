@@ -49,15 +49,15 @@ public class GraphicsController extends BaseGraphicsController {
 	public void initialize(URL location, ResourceBundle resources) {
 		super.initialize(location, resources);
 
-		vesselUpdater = new VesselUpdater(getOrAdd(canvas, VESSEL));
+		vesselUpdater = new VesselUpdater(getOrAddGroup(canvas.getContentChildren(), VESSEL));
 	}
 
 	@Override
 	public void clearGraphics() {
 		super.clearGraphics();
 
-		get(canvas, VESSEL).ifPresent(List::clear);
-		get(canvas, PATH).ifPresent(List::clear);
+		getGroup(canvas.getContentChildren(), VESSEL).ifPresent(List::clear);
+		getGroup(canvas.getContentChildren(), PATH).ifPresent(List::clear);
 
 		path.set(null);
 		Optional.ofNullable(transition.getAndSet(null)).ifPresent(Animation::stop);
@@ -70,7 +70,7 @@ public class GraphicsController extends BaseGraphicsController {
 		path.getStrokeDashArray().addAll(2.0, 10.0);
 		path.setContent(text);
 		statusController.status(rb.getString("drawing-path"));
-		getOrAdd(canvas, PATH).add(path);
+		getOrAddGroup(canvas.getContentChildren(), PATH).add(path);
 		this.path.set(path);
 	}
 
@@ -113,7 +113,7 @@ public class GraphicsController extends BaseGraphicsController {
 		Vessel vessel = new Vessel(tooltip, vesselShape);
 		vessel.setFill(Color.LIGHTBLUE);
 		vessel.setStroke(Color.BLUE);
-		getOrAdd(canvas, VESSEL).add(vessel);
+		getOrAddGroup(canvas.getContentChildren(), VESSEL).add(vessel);
 		vessel.getParent().toFront();
 		Tooltip.install(vessel, tooltip);
 		return vessel;

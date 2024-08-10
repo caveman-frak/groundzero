@@ -32,30 +32,30 @@
     <RadioButton text="%rectangle" id="rect" toggleGroup="$shapeSelect"/>
   </VBox>
 
-  <Label text="%start" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+  <Label text="%start" GridPane.columnIndex="2" GridPane.rowIndex="1" labelFor="$startPointX" mnemonicParsing="true"/>
   <NumericField fx:id="startPointX" prefWidth="50" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
   <NumericField fx:id="startPointY" prefWidth="50" GridPane.columnIndex="4" GridPane.rowIndex="1"/>
 
-  <Label text="%end" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+  <Label text="%end" GridPane.columnIndex="2" GridPane.rowIndex="2" labelFor="$endPointX" mnemonicParsing="true"/>
   <NumericField fx:id="endPointX" prefWidth="50" GridPane.columnIndex="3" GridPane.rowIndex="2"/>
   <NumericField fx:id="endPointY" prefWidth="50" GridPane.columnIndex="4" GridPane.rowIndex="2"/>
 
-  <Label text="%control1" GridPane.columnIndex="5" GridPane.rowIndex="1"/>
+  <Label text="%control1" GridPane.columnIndex="5" GridPane.rowIndex="1" labelFor="$control1X" mnemonicParsing="true"/>
   <NumericField fx:id="control1X" prefWidth="50" GridPane.columnIndex="6" GridPane.rowIndex="1"/>
   <NumericField fx:id="control1Y" prefWidth="50" GridPane.columnIndex="7" GridPane.rowIndex="1"/>
 
-  <Label text="%control2" GridPane.columnIndex="5" GridPane.rowIndex="2"/>
+  <Label text="%control2" GridPane.columnIndex="5" GridPane.rowIndex="2" labelFor="$control2X" mnemonicParsing="true"/>
   <NumericField fx:id="control2X" prefWidth="50" GridPane.columnIndex="6" GridPane.rowIndex="2"/>
   <NumericField fx:id="control2Y" prefWidth="50" GridPane.columnIndex="7" GridPane.rowIndex="2"/>
 
   <CheckBox fx:id="showLines" text="%showlines" GridPane.columnIndex="6" GridPane.rowIndex="3" GridPane.columnSpan="2"/>
 
   <Label text="%delay" GridPane.halignment="RIGHT" GridPane.columnIndex="4" GridPane.rowIndex="4"
-    GridPane.columnSpan="2"/>
+    GridPane.columnSpan="2" labelFor="$duration" mnemonicParsing="true"/>
   <NumericField fx:id="duration" prefWidth="80" GridPane.columnIndex="6" GridPane.rowIndex="4" GridPane.columnSpan="2"/>
 
   <Label text="%points" GridPane.halignment="RIGHT" GridPane.columnIndex="4" GridPane.rowIndex="5"
-    GridPane.columnSpan="2"/>
+    GridPane.columnSpan="2" labelFor="$points" mnemonicParsing="true"/>
   <NumericField fx:id="points" prefWidth="80" GridPane.columnIndex="6" GridPane.rowIndex="5" GridPane.columnSpan="2"/>
 
   <FlowPane columnHalignment="RIGHT" hgap="10" GridPane.halignment="RIGHT" GridPane.columnIndex="3"

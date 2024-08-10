@@ -36,16 +36,18 @@ public class GraphicsController extends BaseGraphicsController implements Initia
 	public void drawShape(Shape shape) {
 		shape.setFill(Color.TRANSPARENT);
 		shape.setStroke(Color.BLACK);
-		getOrAdd(canvas, SHAPE).add(shape);
+		getOrAddGroup(canvas.getContentChildren(), SHAPE).add(shape);
 	}
 
 	public void drawMarkers(Stream<Point> points) {
-		getOrAdd(canvas, MARKER).addAll(points.map(p -> new Circle(p.x, p.y, 2, Color.RED)).toList());
+		getOrAddGroup(canvas.getContentChildren(), MARKER).addAll(
+				points.map(p -> new Circle(p.x, p.y, 2, Color.RED)).toList());
 	}
 
 	public void drawPoints(Stream<Point2D> points, Duration duration) {
 		Stream<Circle> shapes = points.map(p -> new Circle(p.getX(), p.getY(), 2, Color.BLUE));
-		PeriodicPulse showPoints = drawPointsOverTime(shapes, duration, getOrAdd(canvas, POINTS));
+		PeriodicPulse showPoints = drawPointsOverTime(shapes, duration,
+				getOrAddGroup(canvas.getContentChildren(), POINTS));
 		statusController.bindProgress(showPoints);
 		showPoints.start();
 	}
@@ -54,7 +56,8 @@ public class GraphicsController extends BaseGraphicsController implements Initia
 		Stream<Shape> shapes = lines.map(p -> new Shape[]{new Circle(p.getX1(), p.getY1(), 2, Color.BLUE),
 						new Line(p.getX1(), p.getY1(), p.getX2(), p.getY2())})
 				.flatMap(Arrays::stream);
-		PeriodicPulse showPoints = drawPointsOverTime(shapes, duration, getOrAdd(canvas, POINTS));
+		PeriodicPulse showPoints = drawPointsOverTime(shapes, duration,
+				getOrAddGroup(canvas.getContentChildren(), POINTS));
 		statusController.bindProgress(showPoints);
 		showPoints.start();
 	}
@@ -82,9 +85,9 @@ public class GraphicsController extends BaseGraphicsController implements Initia
 	@Override
 	public void clearGraphics() {
 		super.clearGraphics();
-		get(canvas, MARKER).ifPresent(List::clear);
-		get(canvas, SHAPE).ifPresent(List::clear);
-		get(canvas, POINTS).ifPresent(List::clear);
+		getGroup(canvas.getContentChildren(), MARKER).ifPresent(List::clear);
+		getGroup(canvas.getContentChildren(), SHAPE).ifPresent(List::clear);
+		getGroup(canvas.getContentChildren(), POINTS).ifPresent(List::clear);
 	}
 
 }
