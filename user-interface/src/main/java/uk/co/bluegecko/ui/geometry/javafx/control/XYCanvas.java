@@ -3,6 +3,8 @@ package uk.co.bluegecko.ui.geometry.javafx.control;
 import static java.lang.Math.abs;
 
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import javafx.beans.NamedArg;
 import javafx.beans.property.IntegerProperty;
@@ -28,9 +30,15 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
+import uk.co.bluegecko.ui.geometry.javafx.common.input.DragMove;
+import uk.co.bluegecko.ui.geometry.javafx.common.input.ScrollZoom;
 
 @Slf4j
 public class XYCanvas extends XYChart<Number, Number> {
+
+	private static final int ZOOM_ROUNDING = 5;
+	private static final int MOVE_ROUNDING = 10;
 
 	private final Pane contentPane;
 	private final ObjectProperty<Color> circleColorProperty;
@@ -50,39 +58,91 @@ public class XYCanvas extends XYChart<Number, Number> {
 		contentPane.getStyleClass().setAll("chart-content");
 		getPlotChildren().add(contentPane);
 		setOnMouseClicked(drawCircle());
+		drawMarkerPoints();
+		DragMove.dragMove(this, dragHandler(), "/images/move-icon-32.png");
+		ScrollZoom.scrollZoom(this, zoomHandler());
 	}
+
+	@NotNull
+	private Consumer<Point3D> dragHandler() {
+		return v -> {
+			double x = (double) ((int) v.getX() / MOVE_ROUNDING) * MOVE_ROUNDING;
+			double y = (double) ((int) v.getY() / MOVE_ROUNDING) * MOVE_ROUNDING;
+			if (x != 0) {
+				NumberAxis xa = getXAxis();
+				xa.setLowerBound(xa.getLowerBound() - x);
+				xa.setUpperBound(xa.getUpperBound() - x);
+			}
+			if (y != 0) {
+				NumberAxis ya = getYAxis();
+				ya.setLowerBound(ya.getLowerBound() + y);
+				ya.setUpperBound(ya.getUpperBound() + y);
+			}
+		};
+	}
+
+	@NotNull
+	private Consumer<Double> zoomHandler() {
+		return d -> {
+			NumberAxis xa = getXAxis();
+			NumberAxis ya = getYAxis();
+			double x = (1.0 - d) / (xa.getUpperBound() - xa.getLowerBound());
+			double y = (1.0 - d) / (ya.getUpperBound() - ya.getLowerBound());
+			xa.setLowerBound(roundedZoomBounds(x, xa.getLowerBound()));
+			xa.setUpperBound(roundedZoomBounds(x, xa.getUpperBound()));
+			ya.setLowerBound(roundedZoomBounds(y, ya.getLowerBound()));
+			ya.setUpperBound(roundedZoomBounds(y, ya.getUpperBound()));
+		};
+	}
+
+	private double roundedZoomBounds(double value, double bound) {
+		return (double) ((int) (bound * (1.0 + value) / ZOOM_ROUNDING)) * ZOOM_ROUNDING;
+	}
+
+	private void drawMarkerPoints() {
+		IntStream.range(1, 10).map(i -> i * 100).forEach(i -> getContentChildren().addAll(
+				new Circle(-i, -i, 5, Color.GREEN),
+				new Circle(i, -i, 5, Color.GREEN),
+				new Circle(-i, i, 5, Color.GREEN),
+				new Circle(i, i, 5, Color.GREEN)
+		));
+	}
+
 
 	protected EventHandler<MouseEvent> drawCircle() {
 		return e -> {
-			double x = resultToLocal(e.getPickResult()).getX();
-			double y = resultToLocal(e.getPickResult()).getY();
+			double x = relocatePoint(e.getPickResult()).getX();
+			double y = relocatePoint(e.getPickResult()).getY();
 			getContentChildren().addAll(
 					new Circle(x, y, circleRadiusProperty.get(), circleColorProperty.get()),
 					new Text(x - 30, y + 7, String.format("%03.0f, %03.0f", x, y)));
 		};
 	}
 
-	public Point3D resultToLocal(PickResult result) {
-		Point3D intersectedPoint = result.getIntersectedPoint();
-		if (result.getIntersectedNode() == contentPane) {
-			return intersectedPoint;
+	public Point3D relocatePoint(PickResult result) {
+		return relocatePoint(result.getIntersectedPoint(), result.getIntersectedNode(), contentPane);
+	}
+
+	public static Point3D relocatePoint(Point3D point, Node origin, Node destination) {
+		if (origin == destination) {
+			return point;
 		} else {
-			Point3D pointAtScene = result.getIntersectedNode().localToScene(intersectedPoint);
-			return contentPane.sceneToLocal(pointAtScene);
+			Point3D pointAtScene = origin.localToScene(point);
+			return destination.sceneToLocal(pointAtScene);
 		}
 	}
 
 	@Override
 	protected void layoutPlotChildren() {
 		NumberAxis xa = getXAxis();
-		NumberAxis yz = getYAxis();
-		contentPane.setClip(new Rectangle(xa.getLowerBound(), yz.getLowerBound(),
+		NumberAxis ya = getYAxis();
+		contentPane.setClip(new Rectangle(xa.getLowerBound(), ya.getLowerBound(),
 				xa.getUpperBound() - xa.getLowerBound(),
-				yz.getUpperBound() - getYAxis().getLowerBound()));
+				ya.getUpperBound() - getYAxis().getLowerBound()));
 		contentPane.setLayoutX(xa.getDisplayPosition(0.0));
-		contentPane.setLayoutY(yz.getDisplayPosition(0.0));
+		contentPane.setLayoutY(ya.getDisplayPosition(0.0));
 		contentPane.setScaleX(abs(xa.getScale()));
-		contentPane.setScaleY(abs(yz.getScale()));
+		contentPane.setScaleY(abs(ya.getScale()));
 	}
 
 	public final ObjectProperty<Color> circleColorProperty() {
