@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 @Slf4j
 public record DragMove(Consumer<Point3D> consumer, String cursorLocation) {
 
-	public static DragMove dragMove(Node node, Consumer<Point3D> consumer, String cursorLocation) {
+	public static void registerDragMove(Node node, Consumer<Point3D> consumer, String cursorLocation) {
 		DragMove dragMove = new DragMove(consumer, cursorLocation);
 		node.setOnDragDetected(dragMove.dragDetected());
 		node.setOnDragDropped(dragMove.dragDropped());
@@ -30,7 +30,6 @@ public record DragMove(Consumer<Point3D> consumer, String cursorLocation) {
 		node.setOnDragOver(dragMove.dragOver());
 		node.setOnDragEntered(dragMove.dragEntered());
 		node.setOnDragExited(dragMove.dragExited());
-		return dragMove;
 	}
 
 	@NotNull

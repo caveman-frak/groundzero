@@ -10,10 +10,9 @@ import org.jetbrains.annotations.NotNull;
 @Slf4j
 public record ScrollZoom(Consumer<Double> consumer) {
 
-	public static ScrollZoom scrollZoom(Node node, Consumer<Double> consumer) {
+	public static void registerScrollZoom(Node node, Consumer<Double> consumer) {
 		ScrollZoom scrollZoom = new ScrollZoom(consumer);
 		node.setOnScroll(scrollZoom.scroll());
-		return scrollZoom;
 	}
 
 	@NotNull

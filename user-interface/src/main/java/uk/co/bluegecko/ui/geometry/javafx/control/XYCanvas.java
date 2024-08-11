@@ -1,9 +1,13 @@
 package uk.co.bluegecko.ui.geometry.javafx.control;
 
 import static java.lang.Math.abs;
+import static uk.co.bluegecko.ui.geometry.javafx.common.input.DragMove.registerDragMove;
+import static uk.co.bluegecko.ui.geometry.javafx.common.input.ScrollZoom.registerScrollZoom;
 
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import javafx.beans.NamedArg;
@@ -31,8 +35,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import uk.co.bluegecko.ui.geometry.javafx.common.input.DragMove;
-import uk.co.bluegecko.ui.geometry.javafx.common.input.ScrollZoom;
 
 @Slf4j
 public class XYCanvas extends XYChart<Number, Number> {
@@ -48,19 +50,17 @@ public class XYCanvas extends XYChart<Number, Number> {
 		super(xAxis, yAxis);
 		setData(FXCollections.observableArrayList());
 
-		circleColorProperty = new SimpleStyleableObjectProperty<>(
-				StyleableProperties.CIRCLE_COLOR_CSS_META_DATA, this, "circleColor", Color.rgb(128, 0, 0, 0.5));
-		circleRadiusProperty = new SimpleStyleableIntegerProperty(
-				StyleableProperties.CIRCLE_RADIUS_CSS_META_DATA, this, "circleRadius", 40);
+		circleColorProperty = StyleableProperties.createCircleColorProperty(this);
+		circleRadiusProperty = StyleableProperties.createCircleRadiusProperty(this);
 
 		contentPane = new Pane();
 		contentPane.setManaged(false);
 		contentPane.getStyleClass().setAll("chart-content");
 		getPlotChildren().add(contentPane);
-		setOnMouseClicked(drawCircle());
+		registerDragMove(this, dragHandler(), "/images/move-icon-32.png");
+		registerScrollZoom(this, zoomHandler());
 		drawMarkerPoints();
-		DragMove.dragMove(this, dragHandler(), "/images/move-icon-32.png");
-		ScrollZoom.scrollZoom(this, zoomHandler());
+		setOnMouseClicked(drawCircle());
 	}
 
 	@NotNull
@@ -83,44 +83,36 @@ public class XYCanvas extends XYChart<Number, Number> {
 
 	@NotNull
 	private Consumer<Double> zoomHandler() {
+		BiFunction<Double, Double, Double> calcZoom = (value, bound) ->
+				(double) ((int) (bound * (1.0 + value) / ZOOM_ROUNDING)) * ZOOM_ROUNDING;
 		return d -> {
 			NumberAxis xa = getXAxis();
 			NumberAxis ya = getYAxis();
 			double x = (1.0 - d) / (xa.getUpperBound() - xa.getLowerBound());
 			double y = (1.0 - d) / (ya.getUpperBound() - ya.getLowerBound());
-			xa.setLowerBound(roundedZoomBounds(x, xa.getLowerBound()));
-			xa.setUpperBound(roundedZoomBounds(x, xa.getUpperBound()));
-			ya.setLowerBound(roundedZoomBounds(y, ya.getLowerBound()));
-			ya.setUpperBound(roundedZoomBounds(y, ya.getUpperBound()));
+			xa.setLowerBound(calcZoom.apply(x, xa.getLowerBound()));
+			xa.setUpperBound(calcZoom.apply(x, xa.getUpperBound()));
+			ya.setLowerBound(calcZoom.apply(y, ya.getLowerBound()));
+			ya.setUpperBound(calcZoom.apply(y, ya.getUpperBound()));
 		};
 	}
 
-	private double roundedZoomBounds(double value, double bound) {
-		return (double) ((int) (bound * (1.0 + value) / ZOOM_ROUNDING)) * ZOOM_ROUNDING;
-	}
-
 	private void drawMarkerPoints() {
-		IntStream.range(1, 10).map(i -> i * 100).forEach(i -> getContentChildren().addAll(
-				new Circle(-i, -i, 5, Color.GREEN),
-				new Circle(i, -i, 5, Color.GREEN),
-				new Circle(-i, i, 5, Color.GREEN),
-				new Circle(i, i, 5, Color.GREEN)
-		));
+		IntStream.range(1, 10).map(i -> i * 100).boxed().flatMap(i -> Stream.of(
+						new double[]{-i, -i}, new double[]{-i, i}, new double[]{i, -i}, new double[]{i, i}))
+				.forEach(a -> getContentChildren().add(new Circle(a[0], a[1], 5, Color.GREEN)));
 	}
-
 
 	protected EventHandler<MouseEvent> drawCircle() {
+		Function<PickResult, Point3D> relocatePoint = result ->
+				relocatePoint(result.getIntersectedPoint(), result.getIntersectedNode(), contentPane);
 		return e -> {
-			double x = relocatePoint(e.getPickResult()).getX();
-			double y = relocatePoint(e.getPickResult()).getY();
+			double x = relocatePoint.apply(e.getPickResult()).getX();
+			double y = relocatePoint.apply(e.getPickResult()).getY();
 			getContentChildren().addAll(
 					new Circle(x, y, circleRadiusProperty.get(), circleColorProperty.get()),
 					new Text(x - 30, y + 7, String.format("%03.0f, %03.0f", x, y)));
 		};
-	}
-
-	public Point3D relocatePoint(PickResult result) {
-		return relocatePoint(result.getIntersectedPoint(), result.getIntersectedNode(), contentPane);
 	}
 
 	public static Point3D relocatePoint(Point3D point, Node origin, Node destination) {
@@ -245,6 +237,16 @@ public class XYCanvas extends XYChart<Number, Number> {
 				Stream.concat(XYChart.getClassCssMetaData().stream(), Stream.of(
 						CIRCLE_COLOR_CSS_META_DATA,
 						CIRCLE_RADIUS_CSS_META_DATA)).toList();
+
+		public static ObjectProperty<Color> createCircleColorProperty(XYCanvas node) {
+			return new SimpleStyleableObjectProperty<>(CIRCLE_COLOR_CSS_META_DATA, node, "circleColor",
+					CIRCLE_COLOR_CSS_META_DATA.getInitialValue(node));
+		}
+
+		public static IntegerProperty createCircleRadiusProperty(XYCanvas node) {
+			return new SimpleStyleableIntegerProperty(CIRCLE_RADIUS_CSS_META_DATA, node, "circleRadius",
+					CIRCLE_RADIUS_CSS_META_DATA.getInitialValue(node).intValue());
+		}
 
 	}
 
