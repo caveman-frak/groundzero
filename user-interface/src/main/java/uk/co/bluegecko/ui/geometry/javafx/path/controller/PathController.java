@@ -8,7 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextArea;
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
@@ -17,13 +17,14 @@ import uk.co.bluegecko.ui.geometry.javafx.path.spiral.SpiralDefinition;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 @FxmlView("/views/path.fxml")
 public class PathController implements Initializable {
-
+ 
 	@FXML
 	private TextArea pathText;
-	@Setter
-	private GraphicsController graphicsController;
+
+	private final GraphicsController graphicsController;
 
 	private ResourceBundle resourceBundle;
 	private SpiralDefinition definition;
@@ -63,4 +64,5 @@ public class PathController implements Initializable {
 		});
 
 	}
+
 }

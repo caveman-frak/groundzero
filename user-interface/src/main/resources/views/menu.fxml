@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<MenuBar xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+  fx:controller="uk.co.bluegecko.ui.geometry.javafx.path.controller.MenuController">
+
+  <Menu text="%file">
+    <MenuItem text="%draw" onAction="#drawPath" accelerator="%shortcut-draw"/>
+    <MenuItem text="%animate" onAction="#animatePath" accelerator="%shortcut-animate"/>
+    <MenuItem text="%clear" onAction="#clearGraphics" accelerator="%shortcut-clear"/>
+    <MenuItem text="%spiral" onAction="#defineSpiral" accelerator="%shortcut-spiral"/>
+    <SeparatorMenuItem/>
+    <MenuItem text="%exit" onAction="#exit" accelerator="%shortcut-exit"/>
+  </Menu>
+</MenuBar>

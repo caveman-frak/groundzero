@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
 import uk.co.bluegecko.ui.geometry.javafx.common.controller.BaseGraphicsController;
+import uk.co.bluegecko.ui.geometry.javafx.common.controller.StatusController;
 import uk.co.bluegecko.ui.geometry.javafx.path.model.Vessel;
 import uk.co.bluegecko.ui.geometry.javafx.path.model.VesselShape;
 
@@ -37,8 +38,8 @@ public class GraphicsController extends BaseGraphicsController {
 	private final AtomicReference<Animation> transition;
 	private VesselUpdater vesselUpdater;
 
-	public GraphicsController() {
-		super();
+	public GraphicsController(StatusController statusController) {
+		super(statusController);
 
 		randomGenerator = new Random();
 		path = new AtomicReference<>();

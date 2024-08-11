@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import uk.co.bluegecko.ui.geometry.javafx.animation.PeriodicPulse;
 import uk.co.bluegecko.ui.geometry.javafx.common.controller.BaseGraphicsController;
+import uk.co.bluegecko.ui.geometry.javafx.common.controller.StatusController;
 
 @Slf4j
 @Component
@@ -32,6 +33,10 @@ public class GraphicsController extends BaseGraphicsController implements Initia
 	private static final String SHAPE = "shape";
 	private static final String POINTS = "points";
 	private static final String MARKER = "markers";
+
+	protected GraphicsController(StatusController statusController) {
+		super(statusController);
+	}
 
 	public void drawShape(Shape shape) {
 		shape.setFill(Color.TRANSPARENT);

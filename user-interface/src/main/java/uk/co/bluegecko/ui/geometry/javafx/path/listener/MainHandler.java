@@ -1,10 +1,13 @@
 package uk.co.bluegecko.ui.geometry.javafx.path.listener;
 
 import java.util.ResourceBundle;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.MenuBar;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import net.rgielen.fxweaver.core.FxControllerAndView;
 import net.rgielen.fxweaver.core.FxWeaver;
@@ -13,6 +16,7 @@ import uk.co.bluegecko.ui.geometry.javafx.common.controller.StatusController;
 import uk.co.bluegecko.ui.geometry.javafx.control.XYCanvas;
 import uk.co.bluegecko.ui.geometry.javafx.listener.PrimaryStageHandler;
 import uk.co.bluegecko.ui.geometry.javafx.path.controller.GraphicsController;
+import uk.co.bluegecko.ui.geometry.javafx.path.controller.MenuController;
 import uk.co.bluegecko.ui.geometry.javafx.path.controller.PathController;
 
 @Component
@@ -34,15 +38,16 @@ public class MainHandler extends PrimaryStageHandler {
 		FxControllerAndView<GraphicsController, XYCanvas> graphicsLoader = fxWeaver.load(GraphicsController.class,
 				rb);
 		FxControllerAndView<StatusController, HBox> statusLoader = fxWeaver.load(StatusController.class, rb);
-		BorderPane root = new BorderPane();
-		pathLoader.getView().ifPresent(root::setTop);
-		graphicsLoader.getView().ifPresent(root::setCenter);
-		statusLoader.getView().ifPresent(root::setBottom);
+		FxControllerAndView<MenuController, MenuBar> menuLoader = fxWeaver.load(MenuController.class, rb);
+		BorderPane border = new BorderPane();
+		pathLoader.getView().ifPresent(border::setTop);
+		graphicsLoader.getView().ifPresent(border::setCenter);
+		statusLoader.getView().ifPresent(border::setBottom);
 
-		graphicsLoader.getController().setStatusController(statusLoader.getController());
-		pathLoader.getController().setGraphicsController(graphicsLoader.getController());
+		Scene scene = new Scene(
+				menuLoader.getView().map(m -> (Parent) new VBox(m, border))
+						.orElse(border));
 
-		Scene scene = new Scene(root);
 		scene.getStylesheets().add(getClass().getResource("/styles/styles.css").toExternalForm());
 
 		stage.setScene(scene);

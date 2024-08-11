@@ -9,7 +9,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import uk.co.bluegecko.ui.geometry.javafx.control.XYCanvas;
 
@@ -18,11 +17,14 @@ public abstract class BaseGraphicsController implements Initializable {
 
 	protected ResourceBundle rb;
 
-	@Setter
-	protected StatusController statusController;
+	protected final StatusController statusController;
 
 	@FXML
 	protected XYCanvas canvas;
+
+	protected BaseGraphicsController(StatusController statusController) {
+		this.statusController = statusController;
+	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {

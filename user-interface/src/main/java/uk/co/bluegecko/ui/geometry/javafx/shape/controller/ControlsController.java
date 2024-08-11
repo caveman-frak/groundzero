@@ -18,7 +18,6 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.QuadCurve;
 import javafx.scene.shape.Rectangle;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
@@ -58,8 +57,8 @@ public class ControlsController implements Initializable {
 	private NumericField points;
 	@FXML
 	private ToggleGroup shapeSelect;
-	@Setter
-	private GraphicsController graphicsController;
+
+	private final GraphicsController graphicsController;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {

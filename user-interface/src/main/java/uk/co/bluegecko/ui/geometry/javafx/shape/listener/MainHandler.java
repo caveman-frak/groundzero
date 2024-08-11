@@ -36,9 +36,6 @@ public class MainHandler extends PrimaryStageHandler {
 		controlsLoader.getView().ifPresent(root::setTop);
 		statusLoader.getView().ifPresent(root::setBottom);
 
-		graphicsLoader.getController().setStatusController(statusLoader.getController());
-		controlsLoader.getController().setGraphicsController(graphicsLoader.getController());
-
 		Scene scene = new Scene(root);
 		scene.getStylesheets().add(getClass().getResource("/styles/styles.css").toExternalForm());
 
