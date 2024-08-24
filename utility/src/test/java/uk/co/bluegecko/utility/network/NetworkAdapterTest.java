@@ -23,7 +23,7 @@ class NetworkAdapterTest {
 	}
 
 	@Test
-	void loopBack() throws UnknownHostException {
+	void loopBack() {
 		assertThat(InetAddress.getLoopbackAddress().getAddress()).isEqualTo(new byte[]{127, 0, 0, 1});
 		assertThat(InetAddress.getLoopbackAddress().getHostName()).isEqualTo("localhost");
 	}

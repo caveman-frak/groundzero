@@ -1,8 +1,8 @@
 package uk.co.bluegecko.rabbit.in;
 
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Import;
 import uk.co.bluegecko.rabbit.config.RabbitConfiguration;
 import uk.co.bluegecko.rabbit.config.RabbitDefinition;
@@ -13,7 +13,8 @@ import uk.co.bluegecko.rabbit.config.RabbitDefinition;
 public class Incoming {
 
 	public static void main(String[] args) {
-		SpringApplication.run(Incoming.class, args);
+		new SpringApplicationBuilder(Incoming.class)
+				.properties("spring.application.name=rabbit-incoming").run(args);
 	}
 
 }

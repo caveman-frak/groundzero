@@ -1,9 +1,13 @@
 package uk.co.bluegecko.rabbit.out;
 
 import java.time.Clock;
+import java.time.Duration;
+import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -17,11 +21,25 @@ public class Sender implements CommandLineRunner {
 	private final RabbitTemplate rabbitTemplate;
 
 	@Override
-	public void run(String... args) throws Exception {
+	public void run(String... args) throws InterruptedException {
 		Trace trace = Trace.builder().vesselId(new UUID(0, 10)).timestamp(Clock.systemUTC().instant())
 				.latitude(40.0).longitude(-20.0).bearing(30.0).speed(10.0).rateOfTurn(0.0).build();
+		send(trace);
+		Thread.sleep(Duration.ofSeconds(5));
+		send(trace.withRateOfTurn(-1.5));
+	}
+
+	private void send(Trace trace) {
 		log.info("Sending message...{}", trace);
-		rabbitTemplate.convertAndSend("foo-exchange", "foo.bar.baz", trace);
+		rabbitTemplate.convertAndSend("foo-exchange", "foo.bar.baz", trace, addHeaders(Map.of("instance", "client")));
+	}
+
+	@NotNull
+	private MessagePostProcessor addHeaders(Map<String, String> headers) {
+		return m -> {
+			m.getMessageProperties().getHeaders().putAll(headers);
+			return m;
+		};
 	}
 
 }

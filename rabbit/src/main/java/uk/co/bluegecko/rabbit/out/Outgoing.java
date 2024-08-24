@@ -12,7 +12,10 @@ import uk.co.bluegecko.rabbit.config.RabbitDefinition;
 public class Outgoing {
 
 	public static void main(String[] args) {
-		new SpringApplicationBuilder(Outgoing.class).web(WebApplicationType.NONE).run(args).close();
+		new SpringApplicationBuilder(Outgoing.class)
+				.web(WebApplicationType.NONE)
+				.properties("spring.application.name=rabbit-outgoing")
+				.run(args).close();
 	}
 
 }

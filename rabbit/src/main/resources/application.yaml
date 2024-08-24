@@ -1,6 +1,4 @@
 spring:
-  application:
-    name: rabbit-app
   rabbitmq:
     username: guest
     password: guest

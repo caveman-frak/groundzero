@@ -7,11 +7,13 @@ import java.time.Instant;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.Value;
+import lombok.With;
 import lombok.extern.jackson.Jacksonized;
 import org.hibernate.validator.constraints.Range;
 
 @Value
-@Builder
+@Builder(toBuilder = true)
+@With
 @Jacksonized
 public class Trace {
 
