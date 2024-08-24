@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: rabbit-app
+  rabbitmq:
+    username: guest
+    password: guest
+    host: grey-dragon.local
+    port: 5672
+    virtualhost: /test
