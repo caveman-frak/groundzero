@@ -49,7 +49,13 @@ public class Receiver {
 				message.getMessageProperties());
 	}
 
-	private void reply(String exchange, String routingKey, String message, Duration delay) {
+	@RabbitListener(queues = "Dead Letter Queue")
+	public void receiveMessageDLQ(Trace trace) {
+		log.info("Resubmitting from DLQ <{}>", trace);
+		reply("foo-exchange", "foo.bar.resub", trace, Duration.ofSeconds(2));
+	}
+
+	private void reply(String exchange, String routingKey, Object message, Duration delay) {
 		timer.schedule(new ReplyTask(exchange, routingKey, message), delay.toMillis());
 	}
 
@@ -58,7 +64,7 @@ public class Receiver {
 
 		private final String exchange;
 		private final String routingKey;
-		private final String message;
+		private final Object message;
 
 		@Override
 		public void run() {

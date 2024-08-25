@@ -31,7 +31,7 @@ public class Sender implements CommandLineRunner {
 		Trace trace = Trace.builder().vesselId(new UUID(0, 10)).timestamp(Clock.systemUTC().instant())
 				.latitude(40.0).longitude(-20.0).bearing(30.0).speed(10.0).rateOfTurn(0.0).build();
 		send(trace);
-		Thread.sleep(Duration.ofSeconds(5));
+		Thread.sleep(Duration.ofSeconds(15));
 		send(trace.withRateOfTurn(-1.5));
 	}
 

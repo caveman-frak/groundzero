@@ -7,3 +7,5 @@ spring:
     virtualhost: /test
     stream:
       host: grey-dragon.local
+    publisher-confirm-type: CORRELATED
+    publisher-returns: true
