@@ -8,8 +8,8 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-amqp")
-    compileOnly("org.springframework.amqp:spring-rabbit-stream")
-    compileOnly("com.rabbitmq:stream-client:0.16.0")
+    implementation("org.springframework.amqp:spring-rabbit-stream")
+    implementation("com.rabbitmq:stream-client:0.16.0")
 }
 
 springBoot {

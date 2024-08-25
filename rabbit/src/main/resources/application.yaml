@@ -5,3 +5,5 @@ spring:
     host: grey-dragon.local
     port: 5672
     virtualhost: /test
+    stream:
+      host: grey-dragon.local

@@ -1,5 +1,6 @@
 package uk.co.bluegecko.rabbit.in;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -35,6 +36,17 @@ public class Receiver {
 	@RabbitListener(queues = "bar2-queue")
 	public void receiveMessageBar2(String message) {
 		log.info("Received from Bar2 <{}>", message);
+	}
+
+	@RabbitListener(queues = "bar3-stream")
+	public void receiveMessageBar3(String message) {
+		log.info("Received from Bar3 <{}>", message);
+	}
+
+	@RabbitListener(queues = "Dead Letter Queue")
+	public void receiveMessageDLQ(Message message) {
+		log.info("Received from DLQ <{}> with \n{}", new String(message.getBody(), StandardCharsets.UTF_8),
+				message.getMessageProperties());
 	}
 
 	private void reply(String exchange, String routingKey, String message, Duration delay) {
