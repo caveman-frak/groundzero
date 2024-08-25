@@ -10,18 +10,13 @@ import java.util.function.Consumer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.config.ContainerCustomizer;
-import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
-import org.springframework.amqp.rabbit.connection.CachingConnectionFactory.ConfirmType;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionNameStrategy;
-import org.springframework.amqp.rabbit.connection.SimplePropertyValueConnectionNameStrategy;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.listener.AbstractMessageListenerContainer;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.amqp.CachingConnectionFactoryConfigurer;
-import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.rabbit.stream.support.StreamAdmin;
@@ -49,25 +44,13 @@ public class RabbitConfiguration {
 
 	@Bean
 	public ConnectionNameStrategy connectionNamingStrategy() {
-		return new SimplePropertyValueConnectionNameStrategy("spring.application.name");
+		return new GroundZeroConnectionNamingStrategy();
 	}
 
 	@Bean
 	public ContainerCustomizer<? extends AbstractMessageListenerContainer> containerCustomizer(
 			@Value("${spring.application.name}") String applicationName) {
 		return c -> c.setConsumerTagStrategy(q -> "%s_%s_%s".formatted(applicationName, q, UUID.randomUUID()));
-	}
-
-	@Bean
-	public CachingConnectionFactoryConfigurer connectionFactoryConfigurer(RabbitProperties properties) {
-		return new CachingConnectionFactoryConfigurer(properties) {
-			@Override
-			public void configure(CachingConnectionFactory connectionFactory, RabbitProperties rabbitProperties) {
-				super.configure(connectionFactory, rabbitProperties);
-				connectionFactory.setPublisherReturns(true);
-				connectionFactory.setPublisherConfirmType(ConfirmType.CORRELATED);
-			}
-		};
 	}
 
 	@Bean
