@@ -25,7 +25,7 @@ public class Receiver {
 	public void receiveMessageFoo(Trace trace, Message message) {
 		log.info("Received from Foo <{}> {}", trace, message.getMessageProperties());
 		reply("bar-exchange", "",
-				"Vessel: " + trace.getVesselId().toString() + " sighted", Duration.ofSeconds(2));
+				"Vessel: %s sighted".formatted(trace.getVesselId()), Duration.ofSeconds(2));
 	}
 
 	@RabbitListener(queues = "bar1-queue")
