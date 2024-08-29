@@ -1,5 +1,6 @@
 package uk.co.bluegecko.rabbit.in;
 
+import com.rabbitmq.stream.OffsetSpecification;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Timer;
@@ -10,6 +11,10 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitMessagingTemplate;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.rabbit.stream.listener.ConsumerCustomizer;
+import org.springframework.rabbit.stream.producer.ProducerCustomizer;
 import org.springframework.stereotype.Component;
 import uk.co.bluegecko.rabbit.model.Trace;
 
@@ -38,7 +43,7 @@ public class Receiver {
 		log.info("Received from Bar2 <{}>", message);
 	}
 
-	@RabbitListener(queues = "bar3-stream")
+	@RabbitListener(queues = "bar3-stream", containerFactory = "streamListenerFactory")
 	public void receiveMessageBar3(String message) {
 		log.info("Received from Bar3 <{}>", message);
 	}
@@ -77,6 +82,30 @@ public class Receiver {
 	@Bean
 	public static Timer timer() {
 		return new Timer("reply-timer");
+	}
+
+	@Configuration
+	public static class StreamConfiguration {
+
+		@Bean
+		@Primary
+		public ConsumerCustomizer consumerCustomizer() {
+			return (_, builder) -> builder.name("bar3-consumer")
+					.offset(OffsetSpecification.first())
+					.autoTrackingStrategy();
+		}
+
+		@Bean
+		@Primary
+		public ProducerCustomizer producerCustomizer() {
+			return (_, builder) -> builder.name("bar3-producer");
+		}
+
+		@Bean
+		@Primary
+		public String streamName() {
+			return "bar3-stream";
+		}
 	}
 
 }

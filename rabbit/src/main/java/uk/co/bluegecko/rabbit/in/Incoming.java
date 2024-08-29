@@ -3,13 +3,10 @@ package uk.co.bluegecko.rabbit.in;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.context.annotation.Import;
-import uk.co.bluegecko.rabbit.config.RabbitConfiguration;
-import uk.co.bluegecko.rabbit.config.RabbitDefinition;
+import uk.co.bluegecko.rabbit.config.ConfigurationPackage;
 
 @EnableRabbit
-@Import({RabbitConfiguration.class, RabbitDefinition.class})
-@SpringBootApplication
+@SpringBootApplication(scanBasePackageClasses = {Incoming.class, ConfigurationPackage.class})
 public class Incoming {
 
 	public static void main(String[] args) {
