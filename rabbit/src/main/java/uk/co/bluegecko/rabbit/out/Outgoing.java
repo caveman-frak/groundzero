@@ -3,14 +3,11 @@ package uk.co.bluegecko.rabbit.out;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableAsync;
-import uk.co.bluegecko.rabbit.config.RabbitConfiguration;
-import uk.co.bluegecko.rabbit.config.RabbitDefinition;
+import uk.co.bluegecko.rabbit.common.CommonPackage;
 
 @EnableAsync
-@Import({RabbitConfiguration.class, RabbitDefinition.class})
-@SpringBootApplication
+@SpringBootApplication(scanBasePackageClasses = {Outgoing.class, CommonPackage.class})
 public class Outgoing {
 
 	public static void main(String[] args) {

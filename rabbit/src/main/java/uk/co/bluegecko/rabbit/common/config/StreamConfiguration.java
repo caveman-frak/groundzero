@@ -1,4 +1,4 @@
-package uk.co.bluegecko.rabbit.config;
+package uk.co.bluegecko.rabbit.common.config;
 
 import com.rabbitmq.stream.Address;
 import com.rabbitmq.stream.Environment;

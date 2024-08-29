@@ -1,4 +1,4 @@
-package uk.co.bluegecko.rabbit.config;
+package uk.co.bluegecko.rabbit.common.config;
 
 import com.rabbitmq.stream.ByteCapacity;
 import java.time.Duration;
@@ -90,7 +90,8 @@ public class RabbitDefinition {
 		return QueueBuilder.durable("bar3-stream")
 				.stream()
 				.withArgument("x-max-age", String.format("%ds", Duration.ofDays(1).toSeconds()))
-				.withArgument("x-max-length-bytes", ByteCapacity.MB(10).toBytes())
+				.withArgument("x-max-length-bytes", ByteCapacity.MB(1).toBytes())
+				.withArgument("x-stream-max-segment-size-bytes", ByteCapacity.kB(10).toBytes())
 				.withArgument("x-queue-leader-location", "least-leaders")
 				.build();
 	}

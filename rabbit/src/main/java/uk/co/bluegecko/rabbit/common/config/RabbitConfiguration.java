@@ -1,4 +1,4 @@
-package uk.co.bluegecko.rabbit.config;
+package uk.co.bluegecko.rabbit.common.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;

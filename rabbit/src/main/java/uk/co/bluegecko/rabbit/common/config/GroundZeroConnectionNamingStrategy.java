@@ -1,4 +1,4 @@
-package uk.co.bluegecko.rabbit.config;
+package uk.co.bluegecko.rabbit.common.config;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
