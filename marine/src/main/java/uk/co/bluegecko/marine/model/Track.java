@@ -24,15 +24,16 @@ public class Track {
 	@Getter(lazy = true)
 	Instant earliest = traces.stream().map(Trace::getTimestamp).sorted().findFirst().orElse(null);
 
-	private Track(Bucket bucket, List<Trace> traces) {
-		this(bucket.id(), bucket.h3Cell(), bucket.epochHours(), traces);
+	private Track(Map.Entry<Bucket, List<Trace>> entry) {
+		Bucket bucket = entry.getKey();
+		this(bucket.id(), bucket.h3Cell(), bucket.epochHours(), entry.getValue());
 	}
 
 	public static List<Track> tracks(Collection<Trace> traces) {
-		Map<Bucket, List<Trace>> buckets = new HashMap<>();
-		traces.forEach(t -> buckets.compute(t.bucket(), (_, v) -> (v == null ? new ArrayList<>() : v)).add(t));
-
-		return buckets.entrySet().stream().map(e -> new Track(e.getKey(), e.getValue())).toList();
+		return traces.stream().collect(() -> new HashMap<Bucket, List<Trace>>(),
+						(r, t) -> r.compute(t.bucket(), (_, v) -> (v == null ? new ArrayList<>() : v)).add(t),
+						Map::putAll)
+				.entrySet().stream().map(Track::new).toList();
 	}
 
 }
