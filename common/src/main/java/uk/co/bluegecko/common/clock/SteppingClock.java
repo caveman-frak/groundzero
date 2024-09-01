@@ -6,6 +6,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.concurrent.atomic.AtomicReference;
@@ -24,8 +25,16 @@ public class SteppingClock extends Clock {
 		return instant.getAndSet(instant().plus(tick));
 	}
 
+	public Instant tock(Period tick) {
+		return instant.getAndSet(instant().plus(tick));
+	}
+
 	public Instant tick() {
 		return tick(Duration.ofSeconds(1));
+	}
+
+	public Instant tock() {
+		return tock(Period.ofDays(1));
 	}
 
 	@Override
@@ -73,7 +82,7 @@ public class SteppingClock extends Clock {
 	}
 
 	public static SteppingClock stepping(LocalDate date, LocalTime time, ZoneOffset zone) {
-		return new SteppingClock(LocalDateTime.of(date,time).toInstant(zone), zone);
+		return new SteppingClock(LocalDateTime.of(date, time).toInstant(zone), zone);
 	}
 
 	public static SteppingClock stepping(LocalDate date, LocalTime time) {

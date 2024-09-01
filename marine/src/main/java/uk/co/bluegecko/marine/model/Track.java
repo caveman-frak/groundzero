@@ -1,5 +1,6 @@
 package uk.co.bluegecko.marine.model;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -7,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import uk.co.bluegecko.marine.model.Resolution.Bucket;
@@ -19,6 +21,8 @@ public class Track {
 	long h3Cell;
 	long epochHours;
 	List<Trace> traces;
+	@Getter(lazy = true)
+	Instant earliest = traces.stream().map(Trace::getTimestamp).sorted().findFirst().orElse(null);
 
 	private Track(Bucket bucket, List<Trace> traces) {
 		this(bucket.id(), bucket.h3Cell(), bucket.epochHours(), traces);

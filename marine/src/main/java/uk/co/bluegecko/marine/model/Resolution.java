@@ -1,6 +1,7 @@
 package uk.co.bluegecko.marine.model;
 
 import com.uber.h3core.H3Core;
+import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -17,8 +18,9 @@ public interface Resolution {
 	static H3Core h3Core() {
 		try {
 			return H3Core.newInstance();
-		} catch (Exception ex) {
-			ex.printStackTrace();
+		} catch (IOException ex) {
+			System.err.printf("Error creating H3Core, caused by %s : %s",
+					ex.getClass().getSimpleName(), ex.getMessage());
 			throw new RuntimeException(ex);
 		}
 	}
