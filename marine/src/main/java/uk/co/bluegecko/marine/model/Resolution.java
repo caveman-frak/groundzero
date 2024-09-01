@@ -1,7 +1,5 @@
 package uk.co.bluegecko.marine.model;
 
-import com.uber.h3core.H3Core;
-import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -13,45 +11,19 @@ public interface Resolution {
 
 	int H3_RESOLUTION = 7;
 
-	H3Core H3_CORE = h3Core();
-
-	static H3Core h3Core() {
-		try {
-			return H3Core.newInstance();
-		} catch (IOException ex) {
-			System.err.printf("Error creating H3Core, caused by %s : %s",
-					ex.getClass().getSimpleName(), ex.getMessage());
-			throw new RuntimeException(ex);
-		}
-	}
-
-	UUID getVesselId();
-
-	long getH3Cell();
-
-	long getEpochHours();
-
-	default Bucket bucket() {
-		return new Bucket(getVesselId(), getEpochHours(), getH3Cell());
-	}
-
-	default long toEpochHours(Instant timestamp) {
-		return timestamp.toEpochMilli() / MILLIS_IN_HOUR;
-	}
-
-	default long h3Cell(double latitude, double longitude) {
-		return H3_CORE.latLngToCell(latitude, longitude, H3_RESOLUTION);
-	}
-
 	static Instant start(long epochHours) {
 		return Instant.EPOCH.plus(epochHours, ChronoUnit.HOURS);
 	}
 
-	static Instant end(long epochHours) {
-		return start(epochHours).plus(Duration.ofHours(1));
+	static Duration duration() {
+		return Duration.ofHours(1);
 	}
 
-	record Bucket(UUID id, long epochHours, long h3Cell) {
+	static Instant end(long epochHours) {
+		return start(epochHours).plus(duration());
+	}
+
+	record Partition(UUID id, long epochHours, long h3Cell) {
 
 	}
 
