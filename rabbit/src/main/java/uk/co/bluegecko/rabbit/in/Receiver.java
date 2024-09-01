@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.rabbit.stream.listener.ConsumerCustomizer;
 import org.springframework.rabbit.stream.producer.ProducerCustomizer;
 import org.springframework.stereotype.Component;
-import uk.co.bluegecko.rabbit.model.Trace;
+import uk.co.bluegecko.marine.model.Trace;
 
 @Slf4j
 @RequiredArgsConstructor

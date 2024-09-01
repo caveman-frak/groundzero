@@ -18,7 +18,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import uk.co.bluegecko.rabbit.model.Trace;
+import uk.co.bluegecko.marine.model.Trace;
 
 @Slf4j
 @Component
