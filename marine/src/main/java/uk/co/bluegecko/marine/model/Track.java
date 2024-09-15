@@ -17,18 +17,18 @@ import uk.co.bluegecko.marine.model.Resolution.Partition;
 @Value
 public class Track {
 
+	Resolution resolution;
 	UUID vesselId;
 	long h3Cell;
 	long epochDivision;
 	List<Trace> traces;
 	Instant earliest;
-	Resolution resolution;
 
 	private Track(Map.Entry<Partition, List<Trace>> entry) {
 		Partition partition = entry.getKey();
 		List<Trace> traces = entry.getValue();
 		Instant earliest = traces.stream().map(Trace::getTimestamp).sorted().findFirst().orElse(null);
-		this(partition.id(), partition.h3Cell(), partition.epochHours(), traces, earliest, partition.resolution());
+		this(partition.resolution(), partition.id(), partition.h3Cell(), partition.epochHours(), traces, earliest);
 	}
 
 	public static List<Track> tracks(H3Core h3Core, Resolution resolution, Collection<Trace> traces) {
