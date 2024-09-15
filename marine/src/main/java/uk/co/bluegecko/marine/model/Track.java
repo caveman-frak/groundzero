@@ -19,30 +19,24 @@ public class Track {
 
 	UUID vesselId;
 	long h3Cell;
-	long epochHours;
+	long epochDivision;
 	List<Trace> traces;
 	Instant earliest;
+	Resolution resolution;
 
 	private Track(Map.Entry<Partition, List<Trace>> entry) {
 		Partition partition = entry.getKey();
 		List<Trace> traces = entry.getValue();
 		Instant earliest = traces.stream().map(Trace::getTimestamp).sorted().findFirst().orElse(null);
-		this(partition.id(), partition.h3Cell(), partition.epochHours(), traces, earliest);
+		this(partition.id(), partition.h3Cell(), partition.epochHours(), traces, earliest, partition.resolution());
 	}
 
-	public static List<Track> tracks(H3Core h3Core, Collection<Trace> traces) {
+	public static List<Track> tracks(H3Core h3Core, Resolution resolution, Collection<Trace> traces) {
 		return traces.stream().collect(() -> new HashMap<Partition, List<Trace>>(),
-						(r, t) -> r.compute(calcPartition(h3Core, t), (_, v) -> (v == null ? new ArrayList<>() : v)).add(t),
+						(r, t) -> r.compute(resolution.partition(h3Core, t),
+								(_, v) -> (v == null ? new ArrayList<>() : v)).add(t),
 						Map::putAll)
 				.entrySet().stream().map(Track::new).toList();
 	}
-
-	static Partition calcPartition(H3Core h3Core, Trace trace) {
-		long h3Cell = h3Core.latLngToCell(trace.getLatitude(), trace.getLongitude(), Resolution.H3_RESOLUTION);
-		long epochHours = trace.getTimestamp().toEpochMilli() / Resolution.MILLIS_IN_HOUR;
-
-		return new Partition(trace.getVesselId(), epochHours, h3Cell);
-	}
-
 
 }

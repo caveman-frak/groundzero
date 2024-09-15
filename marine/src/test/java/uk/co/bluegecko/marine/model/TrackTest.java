@@ -55,13 +55,14 @@ class TrackTest extends AbstractTest {
 
 	@Test
 	void calcPartition() {
-		Partition partition = Track.calcPartition(h3Core, traces.get(1));
+		Resolution resolution = Resolution.MEDIUM;
+		Partition partition = resolution.partition(h3Core, traces.get(1));
 		long epochHours = partition.epochHours();
 		assertThat(Instant.EPOCH.plus(epochHours, ChronoUnit.HOURS)).isEqualTo(
 				LocalDateTime.of(2020, Month.JANUARY, 1, 12, 0).toInstant(ZoneOffset.UTC));
-		assertThat(Resolution.start(epochHours)).isEqualTo(
+		assertThat(resolution.start(epochHours)).isEqualTo(
 				LocalDateTime.of(2020, Month.JANUARY, 1, 12, 0).toInstant(ZoneOffset.UTC));
-		assertThat(Resolution.end(epochHours)).isEqualTo(
+		assertThat(resolution.end(epochHours)).isEqualTo(
 				LocalDateTime.of(2020, Month.JANUARY, 1, 13, 0).toInstant(ZoneOffset.UTC));
 		long h3Cell = partition.h3Cell();
 		assertThat(h3Cell).isEqualTo(610049622659825663L);
@@ -70,17 +71,50 @@ class TrackTest extends AbstractTest {
 	}
 
 	@Test
-	void tracks() {
-		List<Track> tracks = Track.tracks(h3Core, traces);
+	void tracksFine() {
+		List<Track> tracks = Track.tracks(h3Core, Resolution.FINE, traces);
+		assertThat(tracks).hasSize(11)
+				.extracting(Track::getH3Cell)
+				.containsExactlyInAnyOrder(619056821909585919L, 619056821901197311L, 619056559524937727L,
+						619056821840379903L, 619056559532277759L, 619056821900148735L, 619056559523889151L,
+						619056821900935167L, 619056822403727359L, 619056821909061631L, 619056821910110207L);
+		assertThat(tracks).extracting(Track::getEpochDivision)
+				.containsExactlyInAnyOrder(1753204L, 1753202L, 1753205L, 1753200L, 1753206L, 1753201L, 1753204L,
+						1753200L, 1753206L, 1753202L, 1753203L);
+		assertThat(tracks).extracting(Track::getTraces).extracting(Collection::size)
+				.containsExactly(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+		assertThat(tracks).extracting(Track::getEarliest).extracting(Instant::toString)
+				.containsExactlyInAnyOrder("2020-01-01T13:00:00Z", "2020-01-01T12:30:00Z", "2020-01-01T13:20:00Z",
+						"2020-01-01T12:00:00Z", "2020-01-01T13:40:00Z", "2020-01-01T12:20:00Z", "2020-01-01T13:10:00Z",
+						"2020-01-01T12:10:00Z", "2020-01-01T13:30:00Z", "2020-01-01T12:40:00Z", "2020-01-01T12:50:00Z");
+	}
+
+	@Test
+	void tracksMedium() {
+		List<Track> tracks = Track.tracks(h3Core, Resolution.MEDIUM, traces);
 		assertThat(tracks).hasSize(3)
 				.extracting(Track::getH3Cell)
-				.containsExactly(610049622659825663L, 610049622659825663L, 610049360280944639L);
-		assertThat(tracks).extracting(Track::getEpochHours)
-				.containsExactly(438300L, 438301L, 438301L);
+				.containsExactlyInAnyOrder(610049622659825663L, 610049622659825663L, 610049360280944639L);
+		assertThat(tracks).extracting(Track::getEpochDivision)
+				.containsExactlyInAnyOrder(438300L, 438301L, 438301L);
 		assertThat(tracks).extracting(Track::getTraces).extracting(Collection::size)
-				.containsExactly(6, 1, 4);
+				.containsExactlyInAnyOrder(6, 1, 4);
 		assertThat(tracks).extracting(Track::getEarliest).extracting(Instant::toString)
-				.containsExactly("2020-01-01T12:00:00Z", "2020-01-01T13:00:00Z", "2020-01-01T13:10:00Z");
+				.containsExactlyInAnyOrder("2020-01-01T12:00:00Z", "2020-01-01T13:00:00Z", "2020-01-01T13:10:00Z");
+	}
+
+	@Test
+	void tracksCoarse() {
+		List<Track> tracks = Track.tracks(h3Core, Resolution.COARSE, traces);
+		assertThat(tracks).hasSize(1)
+				.extracting(Track::getH3Cell)
+				.containsExactly(601042424243945471L);
+		assertThat(tracks).extracting(Track::getEpochDivision)
+				.containsExactly(73050L);
+		assertThat(tracks).extracting(Track::getTraces).extracting(Collection::size)
+				.containsExactly(11);
+		assertThat(tracks).extracting(Track::getEarliest).extracting(Instant::toString)
+				.containsExactly("2020-01-01T12:00:00Z");
 	}
 
 }

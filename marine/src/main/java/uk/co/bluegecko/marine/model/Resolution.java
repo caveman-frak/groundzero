@@ -1,29 +1,49 @@
 package uk.co.bluegecko.marine.model;
 
+import com.uber.h3core.H3Core;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.Accessors;
+import lombok.experimental.FieldDefaults;
 
-public interface Resolution {
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+@Getter
+@Accessors(fluent = true)
+public enum Resolution {
 
-	long MILLIS_IN_HOUR = Duration.ofHours(1).toMillis();
+	FINE(9, Duration.ofMinutes(15)),
+	MEDIUM(7, Duration.ofHours(1)),
+	COARSE(5, Duration.ofHours(6));
 
-	int H3_RESOLUTION = 7;
+	int h3;
+	Duration duration;
 
-	static Instant start(long epochHours) {
+	public long millis() {
+		return duration.toMillis();
+	}
+
+	public Instant start(long epochHours) {
 		return Instant.EPOCH.plus(epochHours, ChronoUnit.HOURS);
 	}
 
-	static Duration duration() {
-		return Duration.ofHours(1);
-	}
-
-	static Instant end(long epochHours) {
+	public Instant end(long epochHours) {
 		return start(epochHours).plus(duration());
 	}
 
-	record Partition(UUID id, long epochHours, long h3Cell) {
+	public Partition partition(H3Core h3Core, Trace trace) {
+		long h3Cell = h3Core.latLngToCell(trace.getLatitude(), trace.getLongitude(), h3());
+		long epochHours = trace.getTimestamp().toEpochMilli() / millis();
+
+		return new Partition(this, trace.getVesselId(), epochHours, h3Cell);
+	}
+
+	record Partition(Resolution resolution, UUID id, long epochHours, long h3Cell) {
 
 	}
 
