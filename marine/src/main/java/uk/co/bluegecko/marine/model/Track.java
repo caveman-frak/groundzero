@@ -20,7 +20,7 @@ public class Track {
 	Resolution resolution;
 	UUID vesselId;
 	long h3Cell;
-	long epochDivision;
+	long epochIntervals;
 	List<Trace> traces;
 	Instant earliest;
 
@@ -28,7 +28,7 @@ public class Track {
 		Partition partition = entry.getKey();
 		List<Trace> traces = entry.getValue();
 		Instant earliest = traces.stream().map(Trace::getTimestamp).sorted().findFirst().orElse(null);
-		this(partition.resolution(), partition.id(), partition.h3Cell(), partition.epochHours(), traces, earliest);
+		this(partition.resolution(), partition.id(), partition.h3Cell(), partition.epochIntervals(), traces, earliest);
 	}
 
 	public static List<Track> tracks(H3Core h3Core, Resolution resolution, Collection<Trace> traces) {

@@ -56,21 +56,21 @@ public enum Point {
 		return EnumSet.of(E, W);
 	}
 
-	public static Point nearest(ComparableQuantity<Angle> decimal, Set<Point> points) {
+	public static Point nearest(ComparableQuantity<Angle> bearing, Set<Point> points) {
 		Point before = null;
 		Point after = null;
 		for (Point compass : points) {
-			if (compass.bearing.isLessThanOrEqualTo(decimal)) {
+			if (compass.bearing.isLessThanOrEqualTo(bearing)) {
 				before = compass;
 			}
-			if (compass.bearing.isGreaterThan(decimal)) {
+			if (compass.bearing.isGreaterThan(bearing)) {
 				after = compass;
 				break;
 			}
 		}
 		if (before == null || after == null) {
 			return null;
-		} else if (decimal.subtract(before.bearing).isLessThanOrEqualTo(after.bearing.subtract(decimal))) {
+		} else if (bearing.subtract(before.bearing).isLessThanOrEqualTo(after.bearing.subtract(bearing))) {
 			return before;
 		} else {
 			return after;

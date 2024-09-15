@@ -26,7 +26,8 @@ public enum Limit {
 			EnumSet.of(Hemisphere.NORTH, Hemisphere.SOUTH)),
 	LONGITUDE(QuantityRange.of(
 			Quantities.getQuantity(-180, DEGREE), Quantities.getQuantity(180, DEGREE)),
-			EnumSet.of(Hemisphere.EAST, Hemisphere.WEST));
+			EnumSet.of(Hemisphere.EAST, Hemisphere.WEST)),
+	UNLIMITED(QuantityRange.of(null, null), EnumSet.noneOf(Hemisphere.class));
 
 	QuantityRange<Angle> range;
 	Set<Hemisphere> hemispheres;

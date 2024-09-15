@@ -50,6 +50,12 @@ public abstract class Compass implements Angle, ComparableQuantity<Angle> {
 	}
 
 	@Override
+	public <T extends Quantity<T>, E extends Quantity<E>> ComparableQuantity<E> divide(Quantity<T> that,
+			Class<E> asTypeQuantity) {
+		return angle.divide(that, asTypeQuantity);
+	}
+
+	@Override
 	public ComparableQuantity<?> multiply(Quantity<?> multiplicand) {
 		return angle.multiply(multiplicand);
 	}
@@ -60,6 +66,12 @@ public abstract class Compass implements Angle, ComparableQuantity<Angle> {
 	}
 
 	@Override
+	public <T extends Quantity<T>, E extends Quantity<E>> ComparableQuantity<E> multiply(Quantity<T> that,
+			Class<E> asTypeQuantity) {
+		return angle.multiply(that, asTypeQuantity);
+	}
+
+	@Override
 	public ComparableQuantity<Angle> to(Unit<Angle> unit) {
 		return angle.to(unit);
 	}
@@ -67,6 +79,11 @@ public abstract class Compass implements Angle, ComparableQuantity<Angle> {
 	@Override
 	public ComparableQuantity<?> inverse() {
 		return angle.inverse();
+	}
+
+	@Override
+	public <T extends Quantity<T>> ComparableQuantity<T> inverse(Class<T> quantityClass) {
+		return angle.inverse(quantityClass);
 	}
 
 	@Override
@@ -105,11 +122,6 @@ public abstract class Compass implements Angle, ComparableQuantity<Angle> {
 	}
 
 	@Override
-	public <T extends Quantity<T>> ComparableQuantity<T> inverse(Class<T> quantityClass) {
-		return angle.inverse(quantityClass);
-	}
-
-	@Override
 	public boolean isGreaterThan(Quantity<Angle> that) {
 		return angle.isGreaterThan(that);
 	}
@@ -127,18 +139,6 @@ public abstract class Compass implements Angle, ComparableQuantity<Angle> {
 	@Override
 	public boolean isLessThanOrEqualTo(Quantity<Angle> that) {
 		return angle.isLessThanOrEqualTo(that);
-	}
-
-	@Override
-	public <T extends Quantity<T>, E extends Quantity<E>> ComparableQuantity<E> divide(Quantity<T> that,
-			Class<E> asTypeQuantity) {
-		return angle.divide(that, asTypeQuantity);
-	}
-
-	@Override
-	public <T extends Quantity<T>, E extends Quantity<E>> ComparableQuantity<E> multiply(Quantity<T> that,
-			Class<E> asTypeQuantity) {
-		return angle.multiply(that, asTypeQuantity);
 	}
 
 	@Override

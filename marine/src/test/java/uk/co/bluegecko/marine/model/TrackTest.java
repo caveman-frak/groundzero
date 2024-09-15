@@ -57,12 +57,12 @@ class TrackTest extends AbstractTest {
 	void calcPartition() {
 		Resolution resolution = Resolution.MEDIUM;
 		Partition partition = resolution.partition(h3Core, traces.get(1));
-		long epochHours = partition.epochHours();
-		assertThat(Instant.EPOCH.plus(epochHours, ChronoUnit.HOURS)).isEqualTo(
+		long epochIntervals = partition.epochIntervals();
+		assertThat(Instant.EPOCH.plus(epochIntervals, ChronoUnit.HOURS)).isEqualTo(
 				LocalDateTime.of(2020, Month.JANUARY, 1, 12, 0).toInstant(ZoneOffset.UTC));
-		assertThat(resolution.start(epochHours)).isEqualTo(
+		assertThat(resolution.start(epochIntervals)).isEqualTo(
 				LocalDateTime.of(2020, Month.JANUARY, 1, 12, 0).toInstant(ZoneOffset.UTC));
-		assertThat(resolution.end(epochHours)).isEqualTo(
+		assertThat(resolution.end(epochIntervals)).isEqualTo(
 				LocalDateTime.of(2020, Month.JANUARY, 1, 13, 0).toInstant(ZoneOffset.UTC));
 		long h3Cell = partition.h3Cell();
 		assertThat(h3Cell).isEqualTo(610049622659825663L);
@@ -78,7 +78,7 @@ class TrackTest extends AbstractTest {
 				.containsExactlyInAnyOrder(619056821909585919L, 619056821901197311L, 619056559524937727L,
 						619056821840379903L, 619056559532277759L, 619056821900148735L, 619056559523889151L,
 						619056821900935167L, 619056822403727359L, 619056821909061631L, 619056821910110207L);
-		assertThat(tracks).extracting(Track::getEpochDivision)
+		assertThat(tracks).extracting(Track::getEpochIntervals)
 				.containsExactlyInAnyOrder(1753204L, 1753202L, 1753205L, 1753200L, 1753206L, 1753201L, 1753204L,
 						1753200L, 1753206L, 1753202L, 1753203L);
 		assertThat(tracks).extracting(Track::getTraces).extracting(Collection::size)
@@ -95,7 +95,7 @@ class TrackTest extends AbstractTest {
 		assertThat(tracks).hasSize(3)
 				.extracting(Track::getH3Cell)
 				.containsExactlyInAnyOrder(610049622659825663L, 610049622659825663L, 610049360280944639L);
-		assertThat(tracks).extracting(Track::getEpochDivision)
+		assertThat(tracks).extracting(Track::getEpochIntervals)
 				.containsExactlyInAnyOrder(438300L, 438301L, 438301L);
 		assertThat(tracks).extracting(Track::getTraces).extracting(Collection::size)
 				.containsExactlyInAnyOrder(6, 1, 4);
@@ -109,7 +109,7 @@ class TrackTest extends AbstractTest {
 		assertThat(tracks).hasSize(1)
 				.extracting(Track::getH3Cell)
 				.containsExactly(601042424243945471L);
-		assertThat(tracks).extracting(Track::getEpochDivision)
+		assertThat(tracks).extracting(Track::getEpochIntervals)
 				.containsExactly(73050L);
 		assertThat(tracks).extracting(Track::getTraces).extracting(Collection::size)
 				.containsExactly(11);
