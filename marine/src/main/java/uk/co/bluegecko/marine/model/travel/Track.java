@@ -1,4 +1,4 @@
-package uk.co.bluegecko.marine.model;
+package uk.co.bluegecko.marine.model.travel;
 
 import com.uber.h3core.H3Core;
 import java.time.Instant;
@@ -11,7 +11,7 @@ import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
-import uk.co.bluegecko.marine.model.Resolution.Partition;
+import uk.co.bluegecko.marine.model.travel.Resolution.Partition;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Value

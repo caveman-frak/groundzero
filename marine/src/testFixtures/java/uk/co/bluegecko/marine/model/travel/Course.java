@@ -1,4 +1,4 @@
-package uk.co.bluegecko.marine.model;
+package uk.co.bluegecko.marine.model.travel;
 
 import java.util.function.UnaryOperator;
 

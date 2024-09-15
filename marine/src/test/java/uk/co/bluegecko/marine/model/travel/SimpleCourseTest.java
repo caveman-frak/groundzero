@@ -1,4 +1,4 @@
-package uk.co.bluegecko.marine.model;
+package uk.co.bluegecko.marine.model.travel;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static uk.co.bluegecko.common.clock.SteppingClock.stepping;

@@ -1,4 +1,4 @@
-package uk.co.bluegecko.marine.model;
+package uk.co.bluegecko.marine.model.travel;
 
 import com.uber.h3core.util.LatLng;
 import jakarta.validation.constraints.Min;

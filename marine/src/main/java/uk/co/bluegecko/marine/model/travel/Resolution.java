@@ -1,4 +1,4 @@
-package uk.co.bluegecko.marine.model;
+package uk.co.bluegecko.marine.model.travel;
 
 import com.uber.h3core.H3Core;
 import java.time.Duration;

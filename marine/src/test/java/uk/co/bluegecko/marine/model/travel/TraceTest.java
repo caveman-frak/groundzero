@@ -1,10 +1,11 @@
-package uk.co.bluegecko.marine.model;
+package uk.co.bluegecko.marine.model.travel;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import uk.co.bluegecko.marine.model.AbstractTest;
 
 class TraceTest extends AbstractTest {
 

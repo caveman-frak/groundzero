@@ -1,4 +1,4 @@
-package uk.co.bluegecko.marine.model;
+package uk.co.bluegecko.marine.model.travel;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.offset;
@@ -19,7 +19,8 @@ import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import uk.co.bluegecko.marine.model.Resolution.Partition;
+import uk.co.bluegecko.marine.model.AbstractTest;
+import uk.co.bluegecko.marine.model.travel.Resolution.Partition;
 
 class TrackTest extends AbstractTest {
 

@@ -9,7 +9,8 @@ public class AbstractTest {
 
 	protected SteppingClock clock;
 
-	void setUpClock() {
+	protected void setUpClock() {
 		clock = SteppingClock.stepping(LocalDate.of(2020, Month.JANUARY, 1), LocalTime.of(12, 0));
 	}
+	
 }
