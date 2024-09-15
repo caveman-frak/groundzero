@@ -16,9 +16,9 @@ import lombok.experimental.FieldDefaults;
 @Accessors(fluent = true)
 public enum Resolution {
 
-	FINE(9, Duration.ofMinutes(15)),
-	MEDIUM(7, Duration.ofHours(1)),
-	COARSE(5, Duration.ofHours(6));
+	FINE(6, Duration.ofMinutes(10)),
+	MEDIUM(4, Duration.ofHours(1)),
+	COARSE(2, Duration.ofHours(6));
 
 	int h3;
 	Duration duration;
