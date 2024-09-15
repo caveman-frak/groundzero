@@ -43,7 +43,7 @@ public enum Resolution {
 		return new Partition(this, trace.getVesselId(), epochHours, h3Cell);
 	}
 
-	record Partition(Resolution resolution, UUID id, long epochHours, long h3Cell) {
+	public record Partition(Resolution resolution, UUID id, long epochHours, long h3Cell) {
 
 	}
 
