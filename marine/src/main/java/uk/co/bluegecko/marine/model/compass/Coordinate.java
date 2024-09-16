@@ -9,14 +9,25 @@ import tech.units.indriya.quantity.Quantities;
 
 public record Coordinate(Latitude latitude, Longitude longitude) {
 
+	public Coordinate(double latitude, double longitude) {
+		this(new Latitude(Quantities.getQuantity(latitude, DEGREE)),
+				new Longitude(Quantities.getQuantity(longitude, DEGREE)));
+	}
+
 	public Coordinate(Point2D point) {
-		this(new Latitude(Quantities.getQuantity(point.getY(), DEGREE)),
-				new Longitude(Quantities.getQuantity(point.getX(), DEGREE)));
+		this(point.getY(), point.getX());
 	}
 
 	public Coordinate(LatLng latLng) {
-		this(new Latitude(Quantities.getQuantity(latLng.lat, DEGREE)),
-				new Longitude(Quantities.getQuantity(latLng.lng, DEGREE)));
+		this(latLng.lat, latLng.lng);
+	}
+
+	public Coordinate with(Latitude latitude) {
+		return new Coordinate(latitude, longitude);
+	}
+
+	public Coordinate with(Longitude longitude) {
+		return new Coordinate(latitude, longitude);
 	}
 
 	public Point2D toPoint() {

@@ -1,6 +1,7 @@
 package uk.co.bluegecko.marine.model.compass;
 
 import static systems.uom.ucum.UCUM.DEGREE;
+import static systems.uom.ucum.UCUM.RADIAN;
 import static uk.co.bluegecko.marine.model.compass.Limit.LATITUDE;
 
 import java.util.Set;
@@ -15,8 +16,12 @@ public class Latitude extends Compass implements Spheriod {
 		super(angle, LATITUDE);
 	}
 
-	public Latitude(Number degrees) {
-		this(Quantities.getQuantity(degrees, DEGREE));
+	public static Latitude asDegrees(Number degrees) {
+		return new Latitude(Quantities.getQuantity(degrees, DEGREE));
+	}
+
+	public static Latitude asRadians(Number radians) {
+		return new Latitude(Quantities.getQuantity(radians, RADIAN));
 	}
 
 	@Override

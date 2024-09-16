@@ -1,6 +1,7 @@
 package uk.co.bluegecko.marine.model.compass;
 
 import static systems.uom.ucum.UCUM.DEGREE;
+import static systems.uom.ucum.UCUM.RADIAN;
 import static uk.co.bluegecko.marine.model.compass.Limit.BEARING;
 
 import javax.measure.quantity.Angle;
@@ -13,16 +14,20 @@ public class Bearing extends Compass {
 		super(angle, BEARING);
 	}
 
-	public Bearing(Number degrees) {
-		this(Quantities.getQuantity(degrees, DEGREE));
+	public static Bearing asDegrees(Number degrees) {
+		return new Bearing(Quantities.getQuantity(degrees, DEGREE));
 	}
 
-	public Bearing(int degrees, int minutes, double seconds) {
-		this(Quantities.getQuantity((double) degrees + ((double) minutes / 60) + seconds / 3600, DEGREE));
+	public static Bearing asRadians(Number radians) {
+		return new Bearing(Quantities.getQuantity(radians, RADIAN));
 	}
 
-	public Bearing(int degrees, int minutes) {
-		this(degrees, minutes, 0);
+	public static Bearing asDegreeMinuteSecond(int degrees, int minutes, double seconds) {
+		return asDegrees((double) degrees + ((double) minutes / 60) + seconds / 3600);
+	}
+
+	public static Bearing asDegreeMinute(int degrees, int minutes) {
+		return asDegreeMinuteSecond(degrees, minutes, 0);
 	}
 
 	@Override

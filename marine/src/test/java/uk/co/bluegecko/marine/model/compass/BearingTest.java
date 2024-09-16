@@ -2,6 +2,7 @@ package uk.co.bluegecko.marine.model.compass;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static systems.uom.ucum.UCUM.DEGREE;
+import static systems.uom.ucum.UCUM.RADIAN;
 
 import org.junit.jupiter.api.Test;
 import tech.units.indriya.quantity.Quantities;
@@ -19,28 +20,35 @@ class BearingTest {
 
 	@Test
 	void constructorDegrees() {
-		QuantityAssert.assertThat(new Bearing(10))
+		QuantityAssert.assertThat(Bearing.asDegrees(10))
 				.hasUnit(DEGREE)
 				.hasValue(10);
 	}
 
 	@Test
+	void constructorRadians() {
+		QuantityAssert.assertThat(Bearing.asRadians(Math.PI))
+				.hasUnit(RADIAN)
+				.hasValue(Math.PI);
+	}
+
+	@Test
 	void constructorDegreesAndMinutes() {
-		QuantityAssert.assertThat(new Bearing(10, 30))
+		QuantityAssert.assertThat(Bearing.asDegreeMinute(10, 30))
 				.hasUnit(DEGREE)
 				.hasValue(10.5);
 	}
 
 	@Test
 	void constructorDegreesMinutesAndSeconds() {
-		QuantityAssert.assertThat(new Bearing(10, 30, 30))
+		QuantityAssert.assertThat(Bearing.asDegreeMinuteSecond(10, 30, 30))
 				.hasUnit(DEGREE)
 				.hasValue(10.508333333333333);
 	}
 
 	@Test
 	void wrap() {
-		QuantityAssert.assertThat(new Bearing(10).wrap(Quantities.getQuantity(10, DEGREE)))
+		QuantityAssert.assertThat(Bearing.asDegrees(10).wrap(Quantities.getQuantity(10, DEGREE)))
 				.isInstanceOf(Bearing.class)
 				.hasUnit(DEGREE)
 				.hasValue(10);
@@ -48,12 +56,12 @@ class BearingTest {
 
 	@Test
 	void limit() {
-		assertThat(new Bearing(10).getLimit()).isEqualTo(Limit.BEARING);
+		assertThat(Bearing.asDegrees(10).getLimit()).isEqualTo(Limit.BEARING);
 	}
 
 	@Test
 	void isSpheriod() {
-		assertThat(new Bearing(10)).isNotInstanceOf(Spheriod.class);
+		assertThat(Bearing.asDegrees(10)).isNotInstanceOf(Spheriod.class);
 	}
 
 }

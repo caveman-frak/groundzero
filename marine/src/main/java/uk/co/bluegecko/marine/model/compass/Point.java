@@ -16,22 +16,22 @@ import tech.units.indriya.ComparableQuantity;
 @Accessors(fluent = true)
 public enum Point {
 
-	N(new Bearing(0), "North"),
-	NNE(new Bearing(22, 30), "North North East"),
-	NE(new Bearing(45), "North East"),
-	ENE(new Bearing(67, 30), "East North East"),
-	E(new Bearing(90), "East"),
-	ESE(new Bearing(112, 30), "East South East"),
-	SE(new Bearing(135), "South East"),
-	SSE(new Bearing(157, 30), "South South East"),
-	S(new Bearing(180), "South"),
-	SSW(new Bearing(202, 30), "South South West"),
-	SW(new Bearing(225), "South West"),
-	WSW(new Bearing(247, 30), "West South West"),
-	W(new Bearing(270), "West"),
-	WNW(new Bearing(292, 30), "West North West"),
-	NW(new Bearing(315), "North West"),
-	NNW(new Bearing(337, 30), "North North West");
+	N(Bearing.asDegreeMinute(0, 0), "North"),
+	NNE(Bearing.asDegreeMinute(22, 30), "North North East"),
+	NE(Bearing.asDegreeMinute(45, 0), "North East"),
+	ENE(Bearing.asDegreeMinute(67, 30), "East North East"),
+	E(Bearing.asDegreeMinute(90, 0), "East"),
+	ESE(Bearing.asDegreeMinute(112, 30), "East South East"),
+	SE(Bearing.asDegreeMinute(135, 0), "South East"),
+	SSE(Bearing.asDegreeMinute(157, 30), "South South East"),
+	S(Bearing.asDegreeMinute(180, 0), "South"),
+	SSW(Bearing.asDegreeMinute(202, 30), "South South West"),
+	SW(Bearing.asDegreeMinute(225, 0), "South West"),
+	WSW(Bearing.asDegreeMinute(247, 30), "West South West"),
+	W(Bearing.asDegreeMinute(270, 0), "West"),
+	WNW(Bearing.asDegreeMinute(292, 30), "West North West"),
+	NW(Bearing.asDegreeMinute(315, 0), "North West"),
+	NNW(Bearing.asDegreeMinute(337, 30), "North North West");
 
 	Bearing bearing;
 	String description;

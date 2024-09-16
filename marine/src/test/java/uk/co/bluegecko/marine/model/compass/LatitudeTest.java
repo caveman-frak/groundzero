@@ -19,7 +19,7 @@ class LatitudeTest {
 
 	@Test
 	void wrap() {
-		QuantityAssert.assertThat(new Latitude(10).wrap(Quantities.getQuantity(10, DEGREE)))
+		QuantityAssert.assertThat(Latitude.asDegrees(10).wrap(Quantities.getQuantity(10, DEGREE)))
 				.isInstanceOf(Latitude.class)
 				.hasUnit(DEGREE)
 				.hasValue(10);
@@ -27,12 +27,12 @@ class LatitudeTest {
 
 	@Test
 	void limit() {
-		assertThat(new Latitude(10).getLimit()).isEqualTo(Limit.LATITUDE);
+		assertThat(Latitude.asDegrees(10).getLimit()).isEqualTo(Limit.LATITUDE);
 	}
 
 	@Test
 	void isSpheriod() {
-		assertThat(new Latitude(10)).isInstanceOf(Spheriod.class);
+		assertThat(Latitude.asDegrees(10)).isInstanceOf(Spheriod.class);
 	}
 
 }

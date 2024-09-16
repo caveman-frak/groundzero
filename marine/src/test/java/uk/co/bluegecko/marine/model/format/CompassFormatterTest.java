@@ -25,19 +25,19 @@ class CompassFormatterTest {
 
 	@Test
 	void printBearing() {
-		assertThat(formatter.print(new Bearing(10.34168056), Locale.UK))
+		assertThat(formatter.print(Bearing.asDegrees(10.34168056), Locale.UK))
 				.isEqualTo("10°20'30.05\"");
 	}
 
 	@Test
 	void printLatitude() {
-		assertThat(formatter.print(new Latitude(10.34168056), Locale.UK))
+		assertThat(formatter.print(Latitude.asDegrees(10.34168056), Locale.UK))
 				.isEqualTo("10°20'30.05\"N");
 	}
 
 	@Test
 	void printLongitude() {
-		assertThat(formatter.print(new Longitude(-10.34168056), Locale.UK))
+		assertThat(formatter.print(Longitude.asDegrees(-10.34168056), Locale.UK))
 				.isEqualTo("10°20'30.05\"W");
 	}
 
