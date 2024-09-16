@@ -2,6 +2,7 @@ package uk.co.bluegecko.marine.model.compass;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static systems.uom.ucum.UCUM.DEGREE;
+import static systems.uom.ucum.UCUM.RADIAN;
 
 import org.junit.jupiter.api.Test;
 import tech.units.indriya.quantity.Quantities;
@@ -15,6 +16,22 @@ class LatitudeTest {
 		QuantityAssert.assertThat(new Latitude(Quantities.getQuantity(10, DEGREE)))
 				.hasUnit(DEGREE)
 				.hasValue(10);
+	}
+
+	@Test
+	void constructorDegrees() {
+		QuantityAssert.assertThat(Latitude.asDegrees(10))
+				.hasUnit(DEGREE)
+				.hasValue(10)
+				.isInstanceOf(Latitude.class);
+	}
+
+	@Test
+	void constructorRadians() {
+		QuantityAssert.assertThat(Latitude.asRadians(Math.PI / 4))
+				.hasUnit(RADIAN)
+				.hasValue(Math.PI / 4)
+				.isInstanceOf(Latitude.class);
 	}
 
 	@Test

@@ -22,28 +22,32 @@ class BearingTest {
 	void constructorDegrees() {
 		QuantityAssert.assertThat(Bearing.asDegrees(10))
 				.hasUnit(DEGREE)
-				.hasValue(10);
+				.hasValue(10)
+				.isInstanceOf(Bearing.class);
 	}
 
 	@Test
 	void constructorRadians() {
 		QuantityAssert.assertThat(Bearing.asRadians(Math.PI))
 				.hasUnit(RADIAN)
-				.hasValue(Math.PI);
+				.hasValue(Math.PI)
+				.isInstanceOf(Bearing.class);
 	}
 
 	@Test
 	void constructorDegreesAndMinutes() {
 		QuantityAssert.assertThat(Bearing.asDegreeMinute(10, 30))
 				.hasUnit(DEGREE)
-				.hasValue(10.5);
+				.hasValue(10.5)
+				.isInstanceOf(Bearing.class);
 	}
 
 	@Test
 	void constructorDegreesMinutesAndSeconds() {
 		QuantityAssert.assertThat(Bearing.asDegreeMinuteSecond(10, 30, 30))
 				.hasUnit(DEGREE)
-				.hasValue(10.508333333333333);
+				.hasValue(10.508333333333333)
+				.isInstanceOf(Bearing.class);
 	}
 
 	@Test

@@ -5,7 +5,7 @@ plugins {
 
 dependencies {
     implementation(project(":common"))
-    antlr("org.antlr:antlr4:4.13.1")
+    antlr("org.antlr:antlr4:4.13.2")
 }
 
 springBoot {
@@ -14,4 +14,9 @@ springBoot {
 
 tasks.generateGrammarSource {
     arguments = arguments + listOf("-listener", "-visitor", "-long-messages")
+}
+
+sourceSets.configureEach {
+    val generateGrammarSource = tasks.named(getTaskName("generate", "GrammarSource"))
+    java.srcDir(generateGrammarSource.map { files() })
 }
