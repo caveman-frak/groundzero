@@ -20,7 +20,6 @@ import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import uk.co.bluegecko.marine.model.AbstractTest;
-import uk.co.bluegecko.marine.model.compass.Coordinate;
 import uk.co.bluegecko.marine.model.travel.Resolution.Partition;
 
 class TrackTest extends AbstractTest {
@@ -36,7 +35,6 @@ class TrackTest extends AbstractTest {
 		Trace trace = Trace.builder()
 				.vesselId(new UUID(0, 0))
 				.timestamp(clock.instant())
-				.coordinate(new Coordinate(0.0, 0.0))
 				.build();
 
 		traces = new ArrayList<>(List.of(trace));

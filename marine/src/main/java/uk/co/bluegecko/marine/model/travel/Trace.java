@@ -49,4 +49,12 @@ public class Trace {
 		return coordinate.toLatLng();
 	}
 
+	public static class TraceBuilder {
+
+		public TraceBuilder coordinates(double latitude, double longitude) {
+			return coordinate(new Coordinate(latitude, longitude));
+		}
+
+	}
+
 }
