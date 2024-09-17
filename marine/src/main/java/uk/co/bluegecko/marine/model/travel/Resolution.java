@@ -36,7 +36,7 @@ public enum Resolution {
 	}
 
 	public Partition partition(H3Core h3Core, Trace trace) {
-		long h3Cell = h3Core.latLngToCell(trace.getLatitude(), trace.getLongitude(), h3());
+		long h3Cell = h3Core.latLngToCell(trace.latitude(), trace.longitude(), h3());
 		long epochIntervals = trace.getTimestamp().toEpochMilli() / millis();
 
 		return new Partition(this, trace.getVesselId(), epochIntervals, h3Cell);

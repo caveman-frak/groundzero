@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import uk.co.bluegecko.marine.model.AbstractTest;
+import uk.co.bluegecko.marine.model.compass.Coordinate;
 
 class TraceTest extends AbstractTest {
 
@@ -21,8 +22,7 @@ class TraceTest extends AbstractTest {
 				.timestamp(clock.instant())
 				.build();
 
-		assertThat(trace.getLatitude()).isEqualTo(0.0);
-		assertThat(trace.getLongitude()).isEqualTo(0.0);
+		assertThat(trace.getCoordinate()).isEqualTo(new Coordinate(0.0, 0.0));
 		assertThat(trace.getBearing()).isNull();
 		assertThat(trace.getSpeed()).isNull();
 		assertThat(trace.getRateOfTurn()).isNull();

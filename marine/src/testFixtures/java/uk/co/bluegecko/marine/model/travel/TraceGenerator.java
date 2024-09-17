@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import uk.co.bluegecko.common.generate.Generator;
+import uk.co.bluegecko.marine.model.compass.Coordinate;
 
 @RequiredArgsConstructor(staticName = "generator")
 public class TraceGenerator implements Generator<Trace> {
@@ -26,8 +27,7 @@ public class TraceGenerator implements Generator<Trace> {
 		return Trace.builder()
 				.vesselId(vessel)
 				.timestamp(clock.instant())
-				.latitude(bounds.getBounds().getCenterY())
-				.longitude(bounds.getBounds().getCenterX())
+				.coordinate(new Coordinate(bounds.getBounds().getCenterY(), bounds.getBounds().getCenterX()))
 				.build();
 	}
 

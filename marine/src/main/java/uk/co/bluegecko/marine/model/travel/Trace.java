@@ -8,10 +8,12 @@ import java.awt.geom.Point2D;
 import java.time.Instant;
 import java.util.UUID;
 import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.Value;
 import lombok.With;
 import lombok.extern.jackson.Jacksonized;
 import org.hibernate.validator.constraints.Range;
+import uk.co.bluegecko.marine.model.compass.Coordinate;
 
 @Value
 @Builder(toBuilder = true)
@@ -23,22 +25,28 @@ public class Trace {
 	UUID vesselId;
 	@PastOrPresent
 	Instant timestamp;
-	@Range(min = -90, max = +90)
-	double latitude;
-	@Range(min = -180, max = +180)
-	double longitude;
+	@Default
+	Coordinate coordinate = new Coordinate(0, 0);
 	@Range(max = 360)
 	Double bearing;
 	@Min(0)
 	Double speed;
 	Double rateOfTurn;
 
+	public double latitude() {
+		return coordinate.latitude().getValue().doubleValue();
+	}
+
+	public double longitude() {
+		return coordinate.longitude().getValue().doubleValue();
+	}
+
 	public Point2D position() {
-		return new Point2D.Double(longitude, latitude);
+		return coordinate.toPoint();
 	}
 
 	public LatLng latLng() {
-		return new LatLng(longitude, latitude);
+		return coordinate.toLatLng();
 	}
 
 }

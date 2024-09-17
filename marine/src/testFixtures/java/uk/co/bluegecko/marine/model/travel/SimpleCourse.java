@@ -7,6 +7,7 @@ import java.time.Instant;
 import java.util.function.UnaryOperator;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import uk.co.bluegecko.marine.model.compass.Coordinate;
 
 @Getter
 @RequiredArgsConstructor
@@ -26,8 +27,8 @@ public class SimpleCourse implements Course {
 			double seconds = (double) Duration.between(t.getTimestamp(), now).toMillis() / 1000;
 			return t.toBuilder()
 					.timestamp(now)
-					.latitude(t.getLatitude() + vector.getY() * seconds * speed)
-					.longitude(t.getLongitude() + vector.getX() * seconds * speed)
+					.coordinate(new Coordinate(t.latitude() + vector.getY() * seconds * speed,
+							t.longitude() + vector.getX() * seconds * speed))
 					.speed(speed)
 					.bearing(getBearing())
 					.build();

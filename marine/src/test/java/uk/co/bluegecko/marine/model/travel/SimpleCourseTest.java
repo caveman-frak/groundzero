@@ -11,6 +11,7 @@ import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import uk.co.bluegecko.common.clock.SteppingClock;
+import uk.co.bluegecko.marine.model.compass.Coordinate;
 
 class SimpleCourseTest {
 
@@ -52,26 +53,27 @@ class SimpleCourseTest {
 	@Test
 	void next() {
 		SimpleCourse course = new SimpleCourse(clock, 1.0, new Point(1, 1));
-		Trace trace = Trace.builder()
+		Trace traceInitial = Trace.builder()
 				.vesselId(new UUID(0, 0))
 				.timestamp(clock.instant())
-				.latitude(0)
-				.longitude(0)
+				.coordinate(new Coordinate(0, 0))
 				.build();
 
 		clock.tick();
-		trace = course.next().apply(trace);
-		assertThat(trace).isEqualTo(trace.toBuilder()
+		Trace traceOne = course.next().apply(traceInitial);
+		assertThat(traceOne).isEqualTo(traceInitial.toBuilder()
 				.timestamp(clock.instant())
-				.latitude(1.0)
-				.longitude(1.0)
+				.coordinate(new Coordinate(1.0, 1.0))
 				.speed(1.0)
 				.bearing(45.0)
 				.build());
 
 		clock.tick();
-		trace = course.next().apply(trace);
-		assertThat(trace).isEqualTo(trace.toBuilder().latitude(2.0).longitude(2.0).build());
+		Trace traceTwo = course.next().apply(traceOne);
+		assertThat(traceTwo).isEqualTo(traceOne.toBuilder()
+				.timestamp(clock.instant())
+				.coordinate(new Coordinate(2.0, 2.0))
+				.build());
 	}
 
 }
