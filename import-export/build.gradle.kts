@@ -3,6 +3,7 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":override"))
     implementation("com.github.beanio:beanio:3.1.0")
     implementation("com.opencsv:opencsv:5.9")
     implementation("org.apache.commons:commons-csv:1.11.0")

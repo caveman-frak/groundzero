@@ -82,7 +82,7 @@ public class BeanIoCsvCountryReadTest extends AbstractBeanIoCountryTest {
 		StreamFactory factory = StreamFactory.newInstance();
 		// create a stream builder to define the record and fields
 		factory.define(streamBuilder(new RecordBuilder(RECORD_NAME).type(CountryData.class),
-				FIELDS, (f, e) -> f));
+				FIELDS, (f, _) -> f));
 
 		assertThat(readCountriesFromCsv(factory, FILENAME))
 				.hasSize(250)
@@ -142,7 +142,7 @@ public class BeanIoCsvCountryReadTest extends AbstractBeanIoCountryTest {
 	 * fields.
 	 */
 	@Test
-	@Disabled("Annotation parser incorrectly types collection fields")
+//	@Disabled("Annotation parser incorrectly types collection fields")
 	void toAnnotatedWithBuilder() {
 		StreamFactory factory = StreamFactory.newInstance();
 
@@ -166,7 +166,7 @@ public class BeanIoCsvCountryReadTest extends AbstractBeanIoCountryTest {
 		StreamFactory factory = StreamFactory.newInstance();
 		// create a stream builder to define the record and fields
 		factory.define(streamBuilder(new RecordBuilder(RECORD_NAME).type(CountryData.class),
-				FIELDS, (f, e) -> f).parser(
+				FIELDS, (f, _) -> f).parser(
 				new CsvParserBuilder().delimiter(';').quote('\'').allowUnquotedWhitespace().enableMultiline()));
 
 		assertThat(readCountriesFromCsv(factory, FILENAME_NONSTANDARD))
@@ -193,7 +193,7 @@ public class BeanIoCsvCountryReadTest extends AbstractBeanIoCountryTest {
 	void toDataWithFieldError() throws Exception {
 		StreamFactory factory = StreamFactory.newInstance();
 		// create a stream builder to define the record and fields
-		factory.define(streamBuilder(new RecordBuilder(RECORD_NAME).type(CountryData.class), FIELDS, (f, e) -> f));
+		factory.define(streamBuilder(new RecordBuilder(RECORD_NAME).type(CountryData.class), FIELDS, (f, _) -> f));
 
 		Reader reader = new StringReader("""
 				id,code,name,nativeName,phones,continent,capital,currencies,languages
@@ -231,7 +231,7 @@ public class BeanIoCsvCountryReadTest extends AbstractBeanIoCountryTest {
 	@SuppressWarnings("unchecked")
 	private <T> List<T> readRawFromCsv(StreamFactory factory, Class<? extends T> clazz) throws IOException {
 		RecordBuilder recordBuilder = new RecordBuilder(RECORD_NAME).type(clazz);
-		FIELDS.forEach((k, v) -> recordBuilder.addField(new FieldBuilder(v)));
+		FIELDS.forEach((_, v) -> recordBuilder.addField(new FieldBuilder(v)));
 		factory.define(new StreamBuilder(STREAM_NAME).format(FORMAT_CSV).addRecord(recordBuilder));
 
 		List<T> countries = new ArrayList<>();
@@ -252,7 +252,7 @@ public class BeanIoCsvCountryReadTest extends AbstractBeanIoCountryTest {
 	private List<Country> readCountriesFromCsv(StreamFactory factory, String filename) {
 		try (InputStream in = getClass().getClassLoader().getResourceAsStream(filename)) {
 			assertThat(in).describedAs("Missing resource for '%s'", filename).isNotNull();
-			return readCountriesFromCsv(factory, new InputStreamReader(in), r -> {
+			return readCountriesFromCsv(factory, new InputStreamReader(in), _ -> {
 			});
 		} catch (IOException e) {
 			System.err.printf("ERROR: Unable to load '%s' due to %s\n", filename, e.getMessage());
