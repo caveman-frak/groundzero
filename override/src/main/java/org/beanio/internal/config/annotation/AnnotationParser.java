@@ -618,6 +618,8 @@ public class AnnotationParser {
 			}
 
 			collectionName = "array";
+//		} else {
+//        TODO: FIX -> added check to ensure that property type not equal to annotated type
 		} else if (!java.util.Objects.equals(propertyType, annotatedType)) {
 			Class collectionType;
 			ParameterizedType pt;

@@ -1,3 +1,3 @@
 rootProject.name = "groundzero"
 
-include("common", "import-export", "utility", "user-interface", "parsers", "rabbit", "marine", "override")
+include("common", "import-export", "utility", "user-interface", "parsers", "rabbit", "marine", "override", "scratchpad")
