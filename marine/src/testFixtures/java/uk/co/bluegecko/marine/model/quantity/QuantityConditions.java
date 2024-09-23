@@ -9,7 +9,7 @@ import org.assertj.core.api.Condition;
 import org.assertj.core.condition.AllOf;
 import org.assertj.core.data.Offset;
 import org.assertj.core.data.Percentage;
-import uk.co.bluegecko.marine.model.travel.Trace;
+import uk.co.bluegecko.marine.model.position.Trace;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class QuantityConditions {
@@ -112,5 +112,5 @@ public class QuantityConditions {
 	protected static <T> Condition<T> fail(Class<T> klass) {
 		return new Condition<>(_ -> false, "true");
 	}
-	
+
 }

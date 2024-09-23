@@ -1,7 +1,7 @@
 package uk.co.bluegecko.rabbit.out;
 
 import static si.uom.NonSI.KNOT;
-import static uk.co.bluegecko.marine.model.travel.Trace.DEGREE_PER_MINUTE;
+import static uk.co.bluegecko.marine.model.position.Trace.DEGREE_PER_MINUTE;
 
 import java.time.Clock;
 import java.time.Duration;
@@ -23,7 +23,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import tech.units.indriya.quantity.Quantities;
 import uk.co.bluegecko.marine.model.compass.Bearing;
-import uk.co.bluegecko.marine.model.travel.Trace;
+import uk.co.bluegecko.marine.model.position.Trace;
 
 @Slf4j
 @Component

@@ -1,14 +1,10 @@
-package uk.co.bluegecko.marine.model.travel;
+package uk.co.bluegecko.marine.model.position;
 
-import static javax.measure.MetricPrefix.KILO;
 import static systems.uom.ucum.UCUM.DEGREE;
-import static systems.uom.ucum.UCUM.METER;
 import static systems.uom.ucum.UCUM.RADIAN;
-import static systems.uom.ucum.UCUM.SECOND;
 
 import java.awt.geom.Point2D;
 import java.time.Clock;
-import java.time.Duration;
 import java.time.Instant;
 import java.util.function.UnaryOperator;
 import javax.measure.Quantity;
@@ -19,9 +15,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;
-import org.locationtech.spatial4j.context.SpatialContext;
-import org.locationtech.spatial4j.distance.DistanceUtils;
-import org.locationtech.spatial4j.shape.Point;
 import tech.units.indriya.quantity.Quantities;
 import uk.co.bluegecko.marine.model.compass.Bearing;
 import uk.co.bluegecko.marine.model.compass.Coordinate;
@@ -32,7 +25,7 @@ import uk.co.bluegecko.marine.model.compass.Coordinate;
 @Accessors(fluent = true)
 public class SimpleCourse implements Course {
 
-	SpatialContext ctx;
+	Calculator calculator;
 	Clock clock;
 	Quantity<Speed> speed;
 	Point2D vector;
@@ -45,17 +38,13 @@ public class SimpleCourse implements Course {
 	public UnaryOperator<Trace> next() {
 		return t -> {
 			Instant now = clock.instant();
-			double seconds = (double) Duration.between(t.getTimestamp(), now).toMillis() / 1000;
-			Quantity<Length> distance = speed().multiply(Quantities.getQuantity(seconds, SECOND))
-					.asType(Length.class);
-			double degrees = distance.to(KILO(METER)).getValue().doubleValue() * DistanceUtils.KM_TO_DEG;
-			Point destination = ctx().getDistCalc()
-					.pointOnBearing(t.getCoordinate().toPoint(ctx()), degrees,
-							bearing().to(DEGREE).getValue().doubleValue(), ctx(), null);
+			Quantity<Length> distance = calculator.distance(speed(), t.getTimestamp(), now);
+			Coordinate destination = calculator.pointOnBearing(t.getCoordinate(), distance, bearing());
+
 			return t.toBuilder()
 					.timestamp(now)
-					.coordinate(new Coordinate(destination))
-					.speed(speed)
+					.coordinate(destination)
+					.speed(speed())
 					.bearing(bearing())
 					.build();
 		};

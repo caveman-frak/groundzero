@@ -1,4 +1,4 @@
-package uk.co.bluegecko.marine.model.travel;
+package uk.co.bluegecko.marine.model.position;
 
 import static org.assertj.core.condition.AllOf.allOf;
 

@@ -1,4 +1,4 @@
-package uk.co.bluegecko.marine.model.travel;
+package uk.co.bluegecko.marine.model.position;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.offset;
@@ -25,7 +25,7 @@ import org.locationtech.spatial4j.context.SpatialContext;
 import org.locationtech.spatial4j.context.SpatialContextFactory;
 import tech.units.indriya.quantity.Quantities;
 import uk.co.bluegecko.marine.model.AbstractTest;
-import uk.co.bluegecko.marine.model.travel.Resolution.Partition;
+import uk.co.bluegecko.marine.model.position.Resolution.Partition;
 
 class TrackTest extends AbstractTest {
 
@@ -37,7 +37,7 @@ class TrackTest extends AbstractTest {
 		setUpClock();
 		h3Core = H3Core.newInstance();
 		SpatialContext ctx = SpatialContextFactory.makeSpatialContext(Map.of("geo", "true"), null);
-		SimpleCourse course = new SimpleCourse(ctx, clock, Quantities.getQuantity(10, KNOT),
+		SimpleCourse course = new SimpleCourse(new Calculator(ctx), clock, Quantities.getQuantity(10, KNOT),
 				new Point2D.Double(0.0001, 0.0001));
 		Trace trace = Trace.builder()
 				.vesselId(new UUID(0, 0))

@@ -1,4 +1,4 @@
-package uk.co.bluegecko.marine.model.travel;
+package uk.co.bluegecko.marine.model.position;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.offset;
@@ -10,7 +10,6 @@ import java.awt.Point;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Month;
-import java.util.Map;
 import java.util.UUID;
 import javax.measure.Quantity;
 import javax.measure.quantity.Speed;
@@ -18,7 +17,6 @@ import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.locationtech.spatial4j.context.SpatialContext;
-import org.locationtech.spatial4j.context.SpatialContextFactory;
 import tech.units.indriya.quantity.Quantities;
 import uk.co.bluegecko.common.clock.SteppingClock;
 import uk.co.bluegecko.marine.model.compass.Bearing;
@@ -28,14 +26,14 @@ import uk.co.bluegecko.marine.model.compass.Longitude;
 
 class SimpleCourseTest {
 
-	private SpatialContext ctx;
+	private Calculator calculator;
 	private SteppingClock clock;
 	private Quantity<Speed> speed;
 	private Offset<Double> offset;
 
 	@BeforeEach
 	void setUp() {
-		ctx = SpatialContextFactory.makeSpatialContext(Map.of("geo", "true"), null);
+		calculator = new Calculator(SpatialContext.GEO);
 		clock = stepping(LocalDate.of(2020, Month.JANUARY, 1), LocalTime.of(12, 0));
 		speed = Quantities.getQuantity(1, KNOT);
 		offset = offset(0.00000001);
@@ -43,35 +41,35 @@ class SimpleCourseTest {
 
 	@Test
 	void bearing45() {
-		SimpleCourse course = new SimpleCourse(ctx, clock, speed, new Point(1, 1));
+		SimpleCourse course = new SimpleCourse(calculator, clock, speed, new Point(1, 1));
 
 		assertThat(course.bearing().to(DEGREE).getValue().doubleValue()).isEqualTo(45.0);
 	}
 
 	@Test
 	void bearing135() {
-		SimpleCourse course = new SimpleCourse(ctx, clock, speed, new Point(1, -1));
+		SimpleCourse course = new SimpleCourse(calculator, clock, speed, new Point(1, -1));
 
 		assertThat(course.bearing().to(DEGREE).getValue().doubleValue()).isEqualTo(135.0);
 	}
 
 	@Test
 	void bearing225() {
-		SimpleCourse course = new SimpleCourse(ctx, clock, speed, new Point(-1, -1));
+		SimpleCourse course = new SimpleCourse(calculator, clock, speed, new Point(-1, -1));
 
 		assertThat(course.bearing().to(DEGREE).getValue().doubleValue()).isEqualTo(225.0);
 	}
 
 	@Test
 	void bearing315() {
-		SimpleCourse course = new SimpleCourse(ctx, clock, speed, new Point(-1, 1));
+		SimpleCourse course = new SimpleCourse(calculator, clock, speed, new Point(-1, 1));
 
 		assertThat(course.bearing().to(DEGREE).getValue().doubleValue()).isEqualTo(315.0);
 	}
 
 	@Test
 	void next() {
-		SimpleCourse course = new SimpleCourse(ctx, clock, speed, new Point(1, 1));
+		SimpleCourse course = new SimpleCourse(calculator, clock, speed, new Point(1, 1));
 		Trace traceInitial = Trace.builder()
 				.vesselId(new UUID(0, 0))
 				.timestamp(clock.instant())
