@@ -10,7 +10,6 @@ import java.awt.geom.Point2D;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Map;
 import java.util.function.UnaryOperator;
 import javax.measure.Quantity;
 import javax.measure.quantity.Length;
@@ -21,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;
 import org.locationtech.spatial4j.context.SpatialContext;
-import org.locationtech.spatial4j.context.SpatialContextFactory;
 import org.locationtech.spatial4j.distance.DistanceUtils;
 import org.locationtech.spatial4j.shape.Point;
 import tech.units.indriya.quantity.Quantities;
@@ -34,14 +32,13 @@ import uk.co.bluegecko.marine.model.compass.Coordinate;
 @Accessors(fluent = true)
 public class SimpleCourse implements Course {
 
+	SpatialContext ctx;
 	Clock clock;
 	Quantity<Speed> speed;
 	Point2D vector;
 	@Getter(lazy = true)
 	Bearing bearing = new Bearing(
 			Quantities.getQuantity(Math.atan2(vector.getX(), vector.getY()), RADIAN).to(DEGREE));
-	@Getter(lazy = true)
-	SpatialContext ctx = SpatialContextFactory.makeSpatialContext(Map.of("geo", "true"), null);
 
 
 	@Override
