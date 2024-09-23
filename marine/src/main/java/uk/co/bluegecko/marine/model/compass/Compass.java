@@ -27,6 +27,14 @@ public abstract class Compass implements Angle, ComparableQuantity<Angle> {
 		return limit.range();
 	}
 
+	public double degrees() {
+		return angle.to(DEGREE).getValue().doubleValue();
+	}
+
+	public double radians() {
+		return angle.toSystemUnit().getValue().doubleValue();
+	}
+
 	protected abstract ComparableQuantity<Angle> wrap(ComparableQuantity<Angle> angle);
 
 	@Override
@@ -153,7 +161,7 @@ public abstract class Compass implements Angle, ComparableQuantity<Angle> {
 
 	@Override
 	public boolean equals(Object obj) {
-		return getClass().equals(obj.getClass()) && angle.equals(obj);
+		return obj != null && getClass().equals(obj.getClass()) && angle.equals(obj);
 	}
 
 	@Override

@@ -1,5 +1,8 @@
 package uk.co.bluegecko.rabbit.out;
 
+import static si.uom.NonSI.KNOT;
+import static uk.co.bluegecko.marine.model.travel.Trace.DEGREE_PER_MINUTE;
+
 import java.time.Clock;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -18,6 +21,8 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import tech.units.indriya.quantity.Quantities;
+import uk.co.bluegecko.marine.model.compass.Bearing;
 import uk.co.bluegecko.marine.model.travel.Trace;
 
 @Slf4j
@@ -38,13 +43,12 @@ public class Sender implements CommandLineRunner {
 				.vesselId(new UUID(0, 10))
 				.timestamp(Clock.systemUTC().instant())
 				.coordinates(40.0, -20.0)
-				.bearing(30.0)
-				.speed(10.0)
-				.rateOfTurn(0.0)
+				.bearing(Bearing.asDegrees(30.0))
+				.speed(Quantities.getQuantity(10.0, KNOT))
 				.build();
 		futures.add(confirm(send(trace)));
 		Thread.sleep(Duration.ofSeconds(15));
-		futures.add(confirm(send(trace.withRateOfTurn(-1.5))));
+		futures.add(confirm(send(trace.withRateOfTurn(Quantities.getQuantity(-150, DEGREE_PER_MINUTE)))));
 		CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new)).join();
 	}
 

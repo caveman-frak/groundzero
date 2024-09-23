@@ -6,6 +6,8 @@ import static systems.uom.ucum.UCUM.RADIAN;
 import com.uber.h3core.util.LatLng;
 import java.awt.geom.Point2D;
 import java.awt.geom.Point2D.Double;
+import org.locationtech.spatial4j.context.SpatialContext;
+import org.locationtech.spatial4j.shape.Point;
 import tech.units.indriya.quantity.Quantities;
 
 public record Coordinate(Latitude latitude, Longitude longitude) {
@@ -28,6 +30,10 @@ public record Coordinate(Latitude latitude, Longitude longitude) {
 		this(latLng.lat, latLng.lng);
 	}
 
+	public Coordinate(Point point) {
+		this(point.getLat(), point.getLon());
+	}
+
 	public Coordinate with(Latitude latitude) {
 		return new Coordinate(latitude, longitude);
 	}
@@ -37,11 +43,15 @@ public record Coordinate(Latitude latitude, Longitude longitude) {
 	}
 
 	public Point2D toPoint() {
-		return new Double(latitude.to(DEGREE).getValue().doubleValue(), longitude.to(DEGREE).getValue().doubleValue());
+		return new Double(latitude.degrees(), longitude.degrees());
 	}
 
 	public LatLng toLatLng() {
-		return new LatLng(latitude.to(DEGREE).getValue().doubleValue(), longitude.to(DEGREE).getValue().doubleValue());
+		return new LatLng(latitude.degrees(), longitude.degrees());
+	}
+
+	public Point toPoint(SpatialContext ctx) {
+		return ctx.getShapeFactory().pointLatLon(latitude.degrees(), longitude.degrees());
 	}
 
 }

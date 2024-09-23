@@ -12,7 +12,7 @@ import java.time.Duration;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
-public class SimpleLatingTest extends AbstractSpatialTest<LatLng> {
+public class SimpleLatLngTest extends AbstractSpatialTest<LatLng> {
 
 	@NotNull
 	@Override
