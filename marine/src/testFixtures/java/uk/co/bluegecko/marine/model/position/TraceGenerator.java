@@ -1,28 +1,38 @@
 package uk.co.bluegecko.marine.model.position;
 
 import java.awt.Shape;
-import java.time.Clock;
+import java.time.Duration;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import uk.co.bluegecko.common.clock.SteppingClock;
 import uk.co.bluegecko.common.generate.Generator;
 
 @RequiredArgsConstructor(staticName = "generator")
+@FieldDefaults(makeFinal = true, level = AccessLevel.PROTECTED)
+@Builder
 public class TraceGenerator implements Generator<Trace> {
 
 	@NonNull
-	private final UUID vessel;
+	UUID vessel;
 	@NonNull
-	private final Clock clock;
+	SteppingClock clock;
 	@NonNull
-	private final Shape bounds;
+	@Default
+	Duration interval = Duration.ofMinutes(10);
 	@NonNull
-	private final Course course;
-	private final AtomicReference<Trace> last = new AtomicReference<>(initialTrace());
+	Shape bounds;
+	@NonNull
+	Course course;
+	AtomicReference<Trace> last = new AtomicReference<>(initialTrace());
 
-	private Trace initialTrace() {
+	protected Trace initialTrace() {
 		return Trace.builder()
 				.vesselId(vessel)
 				.timestamp(clock.instant())
@@ -32,6 +42,7 @@ public class TraceGenerator implements Generator<Trace> {
 
 	@Override
 	public Optional<Trace> generate() {
+		clock.tick(interval);
 		Trace trace = last.getAndUpdate(course.next());
 		if (bounds.contains(trace.position())) {
 			return Optional.of(trace);
