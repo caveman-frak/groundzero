@@ -1,9 +1,7 @@
-package uk.co.bluegecko.marine.model.position;
+package uk.co.bluegecko.marine.model.position.partition;
 
-import com.uber.h3core.H3Core;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -27,23 +25,16 @@ public enum Resolution {
 		return duration.toMillis();
 	}
 
+	public long epochIntervals(Instant timestamp) {
+		return timestamp.toEpochMilli() / millis();
+	}
+
 	public Instant start(long epochIntervals) {
 		return Instant.EPOCH.plus(duration.multipliedBy(epochIntervals));
 	}
 
 	public Instant end(long epochIntervals) {
 		return start(epochIntervals).plus(duration());
-	}
-
-	public Partition partition(H3Core h3Core, Trace trace) {
-		long h3Cell = h3Core.latLngToCell(trace.latitude(), trace.longitude(), h3());
-		long epochIntervals = trace.getTimestamp().toEpochMilli() / millis();
-
-		return new Partition(this, trace.getVesselId(), epochIntervals, h3Cell);
-	}
-
-	public record Partition(Resolution resolution, UUID id, long epochIntervals, long h3Cell) {
-
 	}
 
 }

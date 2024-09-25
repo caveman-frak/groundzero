@@ -1,39 +1,35 @@
 package uk.co.bluegecko.marine.model.position;
 
-import com.uber.h3core.H3Core;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
-import uk.co.bluegecko.marine.model.position.Resolution.Partition;
+import uk.co.bluegecko.marine.model.position.partition.Partition;
+import uk.co.bluegecko.marine.model.position.partition.Partitioner;
+import uk.co.bluegecko.marine.model.position.partition.Resolution;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Value
 public class Track {
 
-	Resolution resolution;
-	UUID vesselId;
-	long h3Cell;
-	long epochIntervals;
+	Partition partition;
 	List<Trace> traces;
 	Instant earliest;
 
 	private Track(Map.Entry<Partition, List<Trace>> entry) {
-		Partition partition = entry.getKey();
 		List<Trace> traces = entry.getValue();
 		Instant earliest = traces.stream().map(Trace::getTimestamp).sorted().findFirst().orElse(null);
-		this(partition.resolution(), partition.id(), partition.h3Cell(), partition.epochIntervals(), traces, earliest);
+		this(entry.getKey(), traces, earliest);
 	}
 
-	public static List<Track> tracks(H3Core h3Core, Resolution resolution, Collection<Trace> traces) {
+	public static List<Track> tracks(Resolution resolution, Collection<Trace> traces, Partitioner partitioner) {
 		return traces.stream().collect(() -> new HashMap<Partition, List<Trace>>(),
-						(r, t) -> r.compute(resolution.partition(h3Core, t),
+						(r, t) -> r.compute(partitioner.apply(resolution, t),
 								(_, v) -> (v == null ? new ArrayList<>() : v)).add(t),
 						Map::putAll)
 				.entrySet().stream().map(Track::new).toList();

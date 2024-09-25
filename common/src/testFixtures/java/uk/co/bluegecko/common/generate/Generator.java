@@ -6,6 +6,8 @@ import java.util.function.Consumer;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+@SuppressWarnings("unchecked")
+@FunctionalInterface
 public interface Generator<T> {
 
 	Optional<T> generate();
