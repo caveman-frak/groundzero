@@ -16,6 +16,7 @@ import tech.units.indriya.quantity.Quantities;
 import uk.co.bluegecko.marine.model.AbstractTest;
 import uk.co.bluegecko.marine.model.compass.Bearing;
 import uk.co.bluegecko.marine.model.position.partition.LocationPartition;
+import uk.co.bluegecko.marine.model.position.partition.LocationTimePartition;
 import uk.co.bluegecko.marine.model.position.partition.Resolution;
 
 public class AbstractTrackTest extends AbstractTest {
@@ -23,12 +24,20 @@ public class AbstractTrackTest extends AbstractTest {
 	protected H3Core h3Core;
 	protected List<Trace> traces;
 
-	protected Track buildTrack(long cell, List<Trace> traces) {
+	protected Track buildLocationTrack(long cell, List<Trace> traces) {
 		return new Track(new LocationPartition(Resolution.MEDIUM, cell), traces, clock.instant());
 	}
 
-	protected Track buildTrack(long cell, Trace trace) {
-		return buildTrack(cell, List.of(trace));
+	protected Track buildLocationTrack(long cell, Trace trace) {
+		return buildLocationTrack(cell, List.of(trace));
+	}
+
+	protected Track buildLocationTimeTrack(long cell, long epochIntervals, List<Trace> traces) {
+		return new Track(new LocationTimePartition(Resolution.MEDIUM, cell, epochIntervals), traces, clock.instant());
+	}
+
+	protected Track buildLocationTimeTrack(long cell, long epochIntervals, Trace trace) {
+		return buildLocationTimeTrack(cell, epochIntervals, List.of(trace));
 	}
 
 	protected Trace buildTrace(UUID vesselId) {

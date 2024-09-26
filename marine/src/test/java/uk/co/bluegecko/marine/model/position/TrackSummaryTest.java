@@ -29,23 +29,23 @@ class TrackSummaryTest extends AbstractTrackTest {
 
 	@Test
 	void condenseSingleRoute() {
-		List<Track> tracks = List.of(buildTrack(10, buildTrace(vessel1)));
+		List<Track> tracks = List.of(buildLocationTrack(10, buildTrace(vessel1)));
 		assertThat(trackSummary.condenseRoute(tracks)).as("Tracks").hasSize(1);
 	}
 
 	@Test
 	void condenseSimpleRoute() {
 		List<Track> tracks = List.of(
-				buildTrack(10, buildTrace(vessel1)),
-				buildTrack(11, buildTrace(vessel2)));
+				buildLocationTrack(10, buildTrace(vessel1)),
+				buildLocationTrack(11, buildTrace(vessel2)));
 		assertThat(trackSummary.condenseRoute(tracks)).as("Tracks").hasSize(2);
 	}
 
 	@Test
 	void condenseMergeableRoute() {
 		List<Track> tracks = List.of(
-				buildTrack(10, buildTrace(vessel1)),
-				buildTrack(10, buildTrace(vessel2)));
+				buildLocationTrack(10, buildTrace(vessel1)),
+				buildLocationTrack(10, buildTrace(vessel2)));
 		List<Track> result = trackSummary.condenseRoute(tracks);
 		assertThat(result).as("Tracks").hasSize(1);
 		assertThat(result.getFirst())
@@ -53,10 +53,21 @@ class TrackSummaryTest extends AbstractTrackTest {
 	}
 
 	@Test
+	void condenseMergeableRouteWithTime() {
+		List<Track> tracks = List.of(
+				buildLocationTimeTrack(10, 10, buildTrace(vessel1)),
+				buildLocationTimeTrack(10, 20, buildTrace(vessel1)));
+		List<Track> result = trackSummary.condenseRoute(tracks);
+		assertThat(result).as("Tracks").hasSize(1);
+		assertThat(result.getFirst())
+				.extracting(Track::getTraces, COLLECTION).as("Traces").hasSize(1);
+	}
+
+	@Test
 	void condenseMergeableRouteDuplicateTrace() {
 		List<Track> tracks = List.of(
-				buildTrack(10, buildTrace(vessel1)),
-				buildTrack(10, buildTrace(vessel1)));
+				buildLocationTrack(10, buildTrace(vessel1)),
+				buildLocationTrack(10, buildTrace(vessel1)));
 		List<Track> result = trackSummary.condenseRoute(tracks);
 		assertThat(result).as("Tracks").hasSize(1);
 		assertThat(result.getFirst())

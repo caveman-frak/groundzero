@@ -11,12 +11,15 @@ import java.util.stream.Gatherer;
 import java.util.stream.Gatherer.Downstream;
 import org.jetbrains.annotations.NotNull;
 import uk.co.bluegecko.marine.model.position.partition.ByLocation;
+import uk.co.bluegecko.marine.model.position.partition.LocationPartition;
 import uk.co.bluegecko.marine.model.position.partition.Partition;
 
 public class TrackSummary {
 
 	public List<Track> condenseRoute(List<Track> tracks) {
 		return tracks.stream().filter(t -> t.getPartition() instanceof ByLocation)
+				.map(t -> t.withPartition(LocationPartition.class))
+				.filter(Optional::isPresent).map(Optional::get)
 				.gather(routeGatherer())
 				.toList();
 	}
@@ -36,20 +39,16 @@ public class TrackSummary {
 	private Gatherer<Track, AtomicReference<Track>, Track> routeGatherer() {
 		return Gatherer.ofSequential(AtomicReference::new,
 				(state, track, downstream) -> {
-					Track original = state.get();
-					if (original == null) {
-						state.set(track);
-					} else if (original.getPartition().equals(track.getPartition())) {
-						Optional<Track> merged = original.merge(track);
-						if (merged.isPresent()) {
-							state.set(merged.get());
-						} else {
-							return downstream.push(track);
+					state.getAndAccumulate(track, (o, n) -> {
+						if (o == null) {
+							return n;
 						}
-					} else {
-						state.set(track);
-						return downstream.push(original);
-					}
+						Optional<Track> merged = o.merge(n);
+						if (merged.isEmpty()) {
+							downstream.push(o);
+						}
+						return merged.orElse(n);
+					});
 					return true;
 				}, atomicFinisher());
 	}
