@@ -21,7 +21,7 @@ class LocationTimeVesselPartitionTest extends PartitionTest {
 
 	@Test
 	void tracksFine() {
-		List<Track> tracks = Track.tracks(Resolution.FINE, traces, partitioner);
+		List<Track> tracks = Track.fromTraces(Resolution.FINE, traces, partitioner);
 		assertThat(tracks).hasSize(11)
 				.extracting(t -> ((ByVessel) t.getPartition()).vessel()).as("Vessel")
 				.containsOnly(new UUID(0, 0));
@@ -45,7 +45,7 @@ class LocationTimeVesselPartitionTest extends PartitionTest {
 
 	@Test
 	void tracksMedium() {
-		List<Track> tracks = Track.tracks(Resolution.MEDIUM, traces, partitioner);
+		List<Track> tracks = Track.fromTraces(Resolution.MEDIUM, traces, partitioner);
 		assertThat(tracks).hasSize(4)
 				.extracting(t -> ((ByVessel) t.getPartition()).vessel()).as("Vessel")
 				.containsOnly(new UUID(0, 0));
@@ -62,7 +62,7 @@ class LocationTimeVesselPartitionTest extends PartitionTest {
 
 	@Test
 	void tracksCoarse() {
-		List<Track> tracks = Track.tracks(Resolution.COARSE, traces, partitioner);
+		List<Track> tracks = Track.fromTraces(Resolution.COARSE, traces, partitioner);
 		assertThat(tracks).hasSize(1)
 				.extracting(t -> ((ByVessel) t.getPartition()).vessel()).as("Vessel")
 				.containsOnly(new UUID(0, 0));

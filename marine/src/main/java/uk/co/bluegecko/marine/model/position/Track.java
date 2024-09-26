@@ -11,13 +11,14 @@ import java.util.stream.Stream;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
+import uk.co.bluegecko.common.utility.Mergeable;
 import uk.co.bluegecko.marine.model.position.partition.Partition;
 import uk.co.bluegecko.marine.model.position.partition.Partitioner;
 import uk.co.bluegecko.marine.model.position.partition.Resolution;
 
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 @Value
-public class Track {
+public class Track implements Mergeable<Track> {
 
 	Partition partition;
 	List<Trace> traces;
@@ -29,6 +30,7 @@ public class Track {
 		this(entry.getKey(), traces, earliest);
 	}
 
+	@Override
 	public Optional<Track> merge(Track track) {
 		if (partition.equals(track.partition)) {
 			return Optional.of(new Track(partition,
@@ -43,12 +45,16 @@ public class Track {
 		return getPartition().to(partitionClass).map(p -> new Track(p, traces, earliest));
 	}
 
-	public static List<Track> tracks(Resolution resolution, Collection<Trace> traces, Partitioner partitioner) {
+	public static List<Track> fromTraces(Resolution resolution, Collection<Trace> traces, Partitioner partitioner) {
 		return traces.stream().collect(() -> new HashMap<Partition, List<Trace>>(),
 						(r, t) -> r.compute(partitioner.apply(resolution, t),
 								(_, v) -> (v == null ? new ArrayList<>() : v)).add(t),
 						Map::putAll)
 				.entrySet().stream().map(Track::new).toList();
+	}
+
+	public static List<Track> fromTracks(Resolution resolution, Collection<Track> tracks, Partitioner partitioner) {
+		return fromTraces(resolution, tracks.stream().flatMap(t -> t.getTraces().stream()).toList(), partitioner);
 	}
 
 }

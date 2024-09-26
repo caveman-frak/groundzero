@@ -20,7 +20,7 @@ class LocationTimePartitionTest extends PartitionTest {
 
 	@Test
 	void tracksFine() {
-		List<Track> tracks = Track.tracks(Resolution.FINE, traces, partitioner);
+		List<Track> tracks = Track.fromTraces(Resolution.FINE, traces, partitioner);
 		assertThat(tracks).hasSize(11)
 				.extracting(t -> ((ByLocation) t.getPartition()).cell()).as("Location")
 				.containsOnly(605546023066009599L, 605546011120631807L, 605546023602880511L, 605546007630970879L,
@@ -42,7 +42,7 @@ class LocationTimePartitionTest extends PartitionTest {
 
 	@Test
 	void tracksMedium() {
-		List<Track> tracks = Track.tracks(Resolution.MEDIUM, traces, partitioner);
+		List<Track> tracks = Track.fromTraces(Resolution.MEDIUM, traces, partitioner);
 		assertThat(tracks).hasSize(4)
 				.extracting(t -> ((ByLocation) t.getPartition()).cell()).as("Location")
 				.containsOnly(596538813879156735L, 596538831059025919L, 596538564771053567L);
@@ -57,7 +57,7 @@ class LocationTimePartitionTest extends PartitionTest {
 
 	@Test
 	void tracksCoarse() {
-		List<Track> tracks = Track.tracks(Resolution.COARSE, traces, partitioner);
+		List<Track> tracks = Track.fromTraces(Resolution.COARSE, traces, partitioner);
 		assertThat(tracks).hasSize(1)
 				.extracting(t -> ((ByLocation) t.getPartition()).cell()).as("Location")
 				.containsExactly(587531734883500031L);
