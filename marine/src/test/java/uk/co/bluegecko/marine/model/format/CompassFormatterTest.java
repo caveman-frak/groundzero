@@ -13,6 +13,7 @@ import uk.co.bluegecko.marine.model.compass.Bearing;
 import uk.co.bluegecko.marine.model.compass.Compass;
 import uk.co.bluegecko.marine.model.compass.Latitude;
 import uk.co.bluegecko.marine.model.compass.Longitude;
+import uk.co.bluegecko.marine.model.compass.format.CompassFormatter;
 
 class CompassFormatterTest {
 

@@ -1,4 +1,4 @@
-package uk.co.bluegecko.marine.model.format;
+package uk.co.bluegecko.marine.model.compass.format;
 
 import static systems.uom.ucum.UCUM.DEGREE;
 

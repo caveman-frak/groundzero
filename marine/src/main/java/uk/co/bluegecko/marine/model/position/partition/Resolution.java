@@ -14,9 +14,12 @@ import lombok.experimental.FieldDefaults;
 @Accessors(fluent = true)
 public enum Resolution {
 
+	FINEST(10, Duration.ofMinutes(1)),
+	FINER(8, Duration.ofMinutes(6)),
 	FINE(6, Duration.ofMinutes(10)),
 	MEDIUM(4, Duration.ofHours(1)),
-	COARSE(2, Duration.ofHours(6));
+	COARSE(2, Duration.ofHours(6)),
+	COARSEST(0, Duration.ofDays(1));
 
 	int h3;
 	Duration duration;

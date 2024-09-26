@@ -2,13 +2,11 @@ package uk.co.bluegecko.marine.model.compass;
 
 import java.util.EnumSet;
 import java.util.Set;
-import javax.measure.quantity.Angle;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;
-import tech.units.indriya.ComparableQuantity;
 
 @RequiredArgsConstructor
 @Getter
@@ -48,15 +46,7 @@ public enum Point {
 		return EnumSet.allOf(Point.class);
 	}
 
-	public static Set<Point> latitude() {
-		return EnumSet.of(N, S);
-	}
-
-	public static Set<Point> longitude() {
-		return EnumSet.of(E, W);
-	}
-
-	public static Point nearest(ComparableQuantity<Angle> bearing, Set<Point> points) {
+	public static Point nearest(Bearing bearing, Set<Point> points) {
 		Point before = null;
 		Point after = null;
 		for (Point compass : points) {
@@ -77,7 +67,7 @@ public enum Point {
 		}
 	}
 
-	public static Point nearest(ComparableQuantity<Angle> degrees) {
+	public static Point nearest(Bearing degrees) {
 		return nearest(degrees, sixteenWinds());
 	}
 
