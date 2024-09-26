@@ -2,54 +2,30 @@ package uk.co.bluegecko.marine.model.position;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.offset;
+import static org.assertj.core.api.InstanceOfAssertFactories.COLLECTION;
 import static org.assertj.core.api.InstanceOfAssertFactories.DOUBLE;
-import static si.uom.NonSI.KNOT;
 
 import com.uber.h3core.AreaUnit;
-import com.uber.h3core.H3Core;
-import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.locationtech.spatial4j.context.SpatialContext;
-import org.locationtech.spatial4j.context.SpatialContextFactory;
-import tech.units.indriya.quantity.Quantities;
-import uk.co.bluegecko.marine.model.AbstractTest;
+import uk.co.bluegecko.marine.model.position.partition.LocationPartition;
+import uk.co.bluegecko.marine.model.position.partition.LocationTimePartition;
 import uk.co.bluegecko.marine.model.position.partition.LocationTimeVesselPartition;
 import uk.co.bluegecko.marine.model.position.partition.Resolution;
 
-class TrackTest extends AbstractTest {
-
-	private H3Core h3Core;
-	private List<Trace> traces;
+class TrackTest extends AbstractTrackTest {
 
 	@BeforeEach
 	void setUp() throws IOException {
-		setUpClock();
-		h3Core = H3Core.newInstance();
-		SpatialContext ctx = SpatialContextFactory.makeSpatialContext(Map.of("geo", "true"), null);
-		SimpleCourse course = new SimpleCourse(new Calculator(ctx), clock, Quantities.getQuantity(10, KNOT),
-				new Point2D.Double(0.0001, 0.0001));
-		Trace trace = Trace.builder()
-				.vesselId(new UUID(0, 0))
-				.timestamp(clock.instant())
-				.build();
-
-		traces = new ArrayList<>(List.of(trace));
-		for (int i = 0; i < 10; i++) {
-			clock.tick(Duration.ofMinutes(10));
-			trace = course.next().apply(trace);
-			traces.add(trace);
-		}
+		setUpTraces();
 	}
 
 	@Test
@@ -89,7 +65,31 @@ class TrackTest extends AbstractTest {
 				.extracting(l -> h3Core.h3ToString(l)).contains("84754a9ffffffff")
 				.contains("84754e7ffffffff", "84754e5ffffffff", "84755dbffffffff", "84754adffffffff", "84754a9ffffffff",
 						"84754e3ffffffff", "84754e1ffffffff");
+	}
 
+	@Test
+	void mergeDistinct() {
+		LocationPartition partition = new LocationPartition(Resolution.MEDIUM, 100L);
+		Track track1 = new Track(partition, List.of(buildTrace(new UUID(0, 0))), clock.instant());
+		Track track2 = new Track(partition, List.of(buildTrace(new UUID(0, 1))), clock.instant());
+		assertThat(track1.merge(track2)).isPresent().get().extracting(Track::getTraces, COLLECTION).hasSize(2);
+	}
+
+	@Test
+	void mergeOverlapping() {
+		LocationPartition partition = new LocationPartition(Resolution.MEDIUM, 100L);
+		Track track1 = new Track(partition, List.of(buildTrace(new UUID(0, 0))), clock.instant());
+		Track track2 = new Track(partition, List.of(buildTrace(new UUID(0, 0))), clock.instant());
+		assertThat(track1.merge(track2)).isPresent().get().extracting(Track::getTraces, COLLECTION).hasSize(1);
+	}
+
+	@Test
+	void mergeDifferentPartition() {
+		Track track1 = new Track(new LocationPartition(Resolution.MEDIUM, 100L), List.of
+				(buildTrace(new UUID(0, 0))), clock.instant());
+		Track track2 = new Track(new LocationTimePartition(Resolution.MEDIUM, 100L, 2000L), List.of(
+				buildTrace(new UUID(0, 1))), clock.instant());
+		assertThat(track1.merge(track2)).isEmpty();
 	}
 
 }

@@ -1,5 +1,6 @@
 package uk.co.bluegecko.marine.model.position.partition;
 
+import java.util.Optional;
 import java.util.UUID;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -12,7 +13,7 @@ public class VesselTimePartition extends AbstractPartition implements ByVessel, 
 	private final long epochIntervals;
 
 
-	protected VesselTimePartition(Resolution resolution, UUID vessel, long epochIntervals) {
+	public VesselTimePartition(Resolution resolution, UUID vessel, long epochIntervals) {
 		super(resolution);
 
 		this.vessel = vessel;
@@ -31,6 +32,13 @@ public class VesselTimePartition extends AbstractPartition implements ByVessel, 
 
 	public static Partitioner partitioner() {
 		return (r, t) -> new VesselTimePartition(r, t.getVesselId(), r.epochIntervals(t.getTimestamp()));
+	}
+
+	static Optional<Partition> from(Partition partition) {
+		if ((partition instanceof ByTime pT) && (partition instanceof ByVessel pV)) {
+			return Optional.of(new VesselTimePartition(partition.resolution(), pV.vessel(), pT.epochIntervals()));
+		}
+		return Optional.empty();
 	}
 
 }
