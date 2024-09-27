@@ -12,20 +12,24 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZoneOffset;
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import uk.co.bluegecko.marine.model.position.partition.LocationPartition;
-import uk.co.bluegecko.marine.model.position.partition.LocationTimePartition;
 import uk.co.bluegecko.marine.model.position.partition.LocationTimeVesselPartition;
 import uk.co.bluegecko.marine.model.position.partition.Resolution;
 
 class TrackTest extends AbstractTrackTest {
 
+	private UUID vessel1;
+	private UUID vessel2;
+
 	@BeforeEach
 	void setUp() throws IOException {
 		setUpTraces();
+		vessel1 = new UUID(0, 1);
+		vessel2 = new UUID(0, 2);
 	}
 
 	@Test
@@ -69,26 +73,22 @@ class TrackTest extends AbstractTrackTest {
 
 	@Test
 	void mergeDistinct() {
-		LocationPartition partition = new LocationPartition(Resolution.MEDIUM, 100L);
-		Track track1 = new Track(partition, List.of(buildTrace(new UUID(0, 0))), clock.instant());
-		Track track2 = new Track(partition, List.of(buildTrace(new UUID(0, 1))), clock.instant());
+		Track track1 = buildLocationTrack(100L, buildTrace(vessel1));
+		Track track2 = buildLocationTrack(100L, buildTrace(vessel2));
 		assertThat(track1.merge(track2)).isPresent().get().extracting(Track::getTraces, COLLECTION).hasSize(2);
 	}
 
 	@Test
 	void mergeOverlapping() {
-		LocationPartition partition = new LocationPartition(Resolution.MEDIUM, 100L);
-		Track track1 = new Track(partition, List.of(buildTrace(new UUID(0, 0))), clock.instant());
-		Track track2 = new Track(partition, List.of(buildTrace(new UUID(0, 0))), clock.instant());
+		Track track1 = buildLocationTrack(100L, buildTrace(vessel1));
+		Track track2 = buildLocationTrack(100L, buildTrace(vessel1));
 		assertThat(track1.merge(track2)).isPresent().get().extracting(Track::getTraces, COLLECTION).hasSize(1);
 	}
 
 	@Test
 	void mergeDifferentPartition() {
-		Track track1 = new Track(new LocationPartition(Resolution.MEDIUM, 100L), List.of
-				(buildTrace(new UUID(0, 0))), clock.instant());
-		Track track2 = new Track(new LocationTimePartition(Resolution.MEDIUM, 100L, 2000L), List.of(
-				buildTrace(new UUID(0, 1))), clock.instant());
+		Track track1 = buildLocationTrack(Resolution.MEDIUM, 100L, new TreeSet<>(Set.of(buildTrace(vessel1))));
+		Track track2 = buildLocationTrack(Resolution.COARSE, 100L, new TreeSet<>(Set.of(buildTrace(vessel2))));
 		assertThat(track1.merge(track2)).isEmpty();
 	}
 

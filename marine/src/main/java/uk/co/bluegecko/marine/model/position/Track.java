@@ -1,13 +1,13 @@
 package uk.co.bluegecko.marine.model.position;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Stream;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
@@ -21,20 +21,22 @@ import uk.co.bluegecko.marine.model.position.partition.Resolution;
 public class Track implements Mergeable<Track> {
 
 	Partition partition;
-	List<Trace> traces;
+	SortedSet<Trace> traces;
 	Instant earliest;
 
-	Track(Map.Entry<Partition, List<Trace>> entry) {
-		List<Trace> traces = entry.getValue();
-		Instant earliest = traces.stream().map(Trace::getTimestamp).sorted().findFirst().orElse(null);
+	Track(Map.Entry<Partition, SortedSet<Trace>> entry) {
+		SortedSet<Trace> traces = entry.getValue();
+		Instant earliest = traces.isEmpty() ? null : traces.first().getTimestamp();
 		this(entry.getKey(), traces, earliest);
 	}
 
 	@Override
 	public Optional<Track> merge(Track track) {
 		if (partition.equals(track.partition)) {
+			SortedSet<Trace> traces = new TreeSet<>(this.traces);
+			traces.addAll(track.traces);
 			return Optional.of(new Track(partition,
-					Stream.concat(traces.stream(), track.traces.stream()).distinct().toList(),
+					traces,
 					earliest.isBefore(track.earliest) ? earliest : track.earliest));
 		} else {
 			return Optional.empty();
@@ -46,9 +48,9 @@ public class Track implements Mergeable<Track> {
 	}
 
 	public static List<Track> fromTraces(Resolution resolution, Collection<Trace> traces, Partitioner partitioner) {
-		return traces.stream().collect(() -> new HashMap<Partition, List<Trace>>(),
+		return traces.stream().collect(() -> new HashMap<Partition, SortedSet<Trace>>(),
 						(r, t) -> r.compute(partitioner.apply(resolution, t),
-								(_, v) -> (v == null ? new ArrayList<>() : v)).add(t),
+								(_, v) -> (v == null ? new TreeSet<>() : v)).add(t),
 						Map::putAll)
 				.entrySet().stream().map(Track::new).toList();
 	}

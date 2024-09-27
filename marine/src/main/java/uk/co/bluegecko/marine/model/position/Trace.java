@@ -17,6 +17,7 @@ import lombok.Builder.Default;
 import lombok.Value;
 import lombok.With;
 import lombok.extern.jackson.Jacksonized;
+import org.apache.commons.lang3.builder.CompareToBuilder;
 import si.uom.quantity.AngularSpeed;
 import tech.units.indriya.unit.ProductUnit;
 import uk.co.bluegecko.marine.model.compass.Bearing;
@@ -26,7 +27,7 @@ import uk.co.bluegecko.marine.model.compass.Coordinate;
 @Builder(toBuilder = true)
 @With
 @Jacksonized
-public class Trace {
+public class Trace implements Comparable<Trace> {
 
 	public static final Unit<AngularSpeed> DEGREE_PER_MINUTE = new ProductUnit<>(DEGREE.divide(MINUTE));
 
@@ -54,8 +55,12 @@ public class Trace {
 		return coordinate.toPoint();
 	}
 
-	public LatLng latLng() {
-		return coordinate.toLatLng();
+	@Override
+	public int compareTo(Trace o) {
+		return new CompareToBuilder()
+				.append(timestamp, o.timestamp)
+				.append(vesselId, o.vesselId)
+				.build();
 	}
 
 	public static class TraceBuilder {

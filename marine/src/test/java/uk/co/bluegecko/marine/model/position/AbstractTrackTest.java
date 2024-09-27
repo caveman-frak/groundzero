@@ -9,6 +9,9 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.UUID;
 import org.locationtech.spatial4j.context.SpatialContext;
 import org.locationtech.spatial4j.context.SpatialContextFactory;
@@ -24,20 +27,24 @@ public class AbstractTrackTest extends AbstractTest {
 	protected H3Core h3Core;
 	protected List<Trace> traces;
 
-	protected Track buildLocationTrack(long cell, List<Trace> traces) {
-		return new Track(new LocationPartition(Resolution.MEDIUM, cell), traces, clock.instant());
+	protected Track buildLocationTrack(Resolution resolution, long cell, SortedSet<Trace> traces) {
+		return new Track(new LocationPartition(resolution, cell), traces, clock.instant());
+	}
+
+	protected Track buildLocationTrack(long cell, SortedSet<Trace> traces) {
+		return buildLocationTrack(Resolution.MEDIUM, cell, traces);
 	}
 
 	protected Track buildLocationTrack(long cell, Trace trace) {
-		return buildLocationTrack(cell, List.of(trace));
+		return buildLocationTrack(cell, new TreeSet<>(Set.of(trace)));
 	}
 
-	protected Track buildLocationTimeTrack(long cell, long epochIntervals, List<Trace> traces) {
+	protected Track buildLocationTimeTrack(long cell, long epochIntervals, SortedSet<Trace> traces) {
 		return new Track(new LocationTimePartition(Resolution.MEDIUM, cell, epochIntervals), traces, clock.instant());
 	}
 
 	protected Track buildLocationTimeTrack(long cell, long epochIntervals, Trace trace) {
-		return buildLocationTimeTrack(cell, epochIntervals, List.of(trace));
+		return buildLocationTimeTrack(cell, epochIntervals, new TreeSet<>(Set.of(trace)));
 	}
 
 	protected Trace buildTrace(UUID vesselId) {
