@@ -10,7 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import uk.co.bluegecko.marine.model.position.Track;
 
-class LocationTimePartitionTest extends PartitionTest {
+class LocationTimePartitionTest extends AbstractPartitionTest {
 
 	@BeforeEach
 	void setUp() throws IOException {

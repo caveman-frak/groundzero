@@ -18,7 +18,7 @@ import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import uk.co.bluegecko.marine.model.position.partition.Resolution;
-import uk.co.bluegecko.marine.model.position.partition.VesselLocationTimePartition;
+import uk.co.bluegecko.marine.model.position.partition.VesselTimeLocationPartition;
 
 class TrackTest extends AbstractTrackTest {
 
@@ -46,7 +46,7 @@ class TrackTest extends AbstractTrackTest {
 	@Test
 	void calcPartition() {
 		Resolution resolution = Resolution.MEDIUM;
-		VesselLocationTimePartition partition = (VesselLocationTimePartition) VesselLocationTimePartition
+		VesselTimeLocationPartition partition = (VesselTimeLocationPartition) VesselTimeLocationPartition
 				.partitioner(h3Core).apply(resolution, traces.get(1));
 		long epochIntervals = partition.epochIntervals();
 		assertThat(Instant.EPOCH.plus(resolution.duration().multipliedBy(epochIntervals))).isEqualTo(

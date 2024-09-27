@@ -11,12 +11,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import uk.co.bluegecko.marine.model.position.Track;
 
-class VesselLocationTimePartitionTest extends AbstractPartitionTest {
+class VesselTimeLocationPartitionTest extends AbstractPartitionTest {
 
 	@BeforeEach
 	void setUp() throws IOException {
 		setUpTraces();
-		partitioner = VesselLocationTimePartition.partitioner(h3Core);
+		partitioner = VesselTimeLocationPartition.partitioner(h3Core);
 	}
 
 	@Test
@@ -54,7 +54,7 @@ class VesselLocationTimePartitionTest extends AbstractPartitionTest {
 		assertThat(tracks).extracting(t -> ((ByTime) t.getPartition()).epochIntervals()).as("Time")
 				.containsOnly(438300L, 438301L);
 		assertThat(tracks).extracting(Track::getTraces).extracting(Collection::size).as("No of traces")
-				.containsExactly(1, 2, 5, 3);
+				.containsExactly(1, 2, 3, 5);
 		assertThat(tracks).extracting(Track::getEarliest).extracting(Instant::toString).as("Earliest")
 				.containsOnly("2020-01-01T12:00:00Z", "2020-01-01T12:10:00Z",
 						"2020-01-01T12:40:00Z", "2020-01-01T13:00:00Z");

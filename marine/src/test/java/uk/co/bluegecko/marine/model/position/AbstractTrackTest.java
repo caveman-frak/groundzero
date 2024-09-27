@@ -19,10 +19,10 @@ import tech.units.indriya.quantity.Quantities;
 import uk.co.bluegecko.marine.model.AbstractTest;
 import uk.co.bluegecko.marine.model.compass.Bearing;
 import uk.co.bluegecko.marine.model.position.partition.LocationPartition;
-import uk.co.bluegecko.marine.model.position.partition.LocationTimePartition;
 import uk.co.bluegecko.marine.model.position.partition.Resolution;
+import uk.co.bluegecko.marine.model.position.partition.TimeLocationPartition;
 
-public class AbstractTrackTest extends AbstractTest {
+public abstract class AbstractTrackTest extends AbstractTest {
 
 	protected H3Core h3Core;
 	protected List<Trace> traces;
@@ -40,7 +40,7 @@ public class AbstractTrackTest extends AbstractTest {
 	}
 
 	protected Track buildLocationTimeTrack(long cell, long epochIntervals, SortedSet<Trace> traces) {
-		return new Track(new LocationTimePartition(Resolution.MEDIUM, cell, epochIntervals), traces, clock.instant());
+		return new Track(new TimeLocationPartition(Resolution.MEDIUM, epochIntervals, cell), traces, clock.instant());
 	}
 
 	protected Track buildLocationTimeTrack(long cell, long epochIntervals, Trace trace) {
