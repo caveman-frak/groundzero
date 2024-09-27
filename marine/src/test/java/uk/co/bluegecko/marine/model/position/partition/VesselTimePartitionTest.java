@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,7 @@ class VesselTimePartitionTest extends PartitionTest {
 
 	@Test
 	void tracksFine() {
-		List<Track> tracks = Track.fromTraces(Resolution.FINE, traces, partitioner);
+		Set<Track> tracks = Track.fromTraces(Resolution.FINE, traces, partitioner);
 		assertThat(tracks).hasSize(11)
 				.extracting(t -> ((ByVessel) t.getPartition()).vessel()).as("Vessel")
 				.containsOnly(new UUID(0, 0));
@@ -38,21 +38,21 @@ class VesselTimePartitionTest extends PartitionTest {
 
 	@Test
 	void tracksMedium() {
-		List<Track> tracks = Track.fromTraces(Resolution.MEDIUM, traces, partitioner);
+		Set<Track> tracks = Track.fromTraces(Resolution.MEDIUM, traces, partitioner);
 		assertThat(tracks).hasSize(2)
 				.extracting(t -> ((ByVessel) t.getPartition()).vessel()).as("Vessel")
 				.containsOnly(new UUID(0, 0));
 		assertThat(tracks).extracting(t -> ((ByTime) t.getPartition()).epochIntervals()).as("Time")
 				.containsOnly(438300L, 438301L);
 		assertThat(tracks).extracting(Track::getTraces).extracting(Collection::size).as("No of traces")
-				.containsExactlyInAnyOrder(5, 6);
+				.containsExactly(6, 5);
 		assertThat(tracks).extracting(Track::getEarliest).extracting(Instant::toString).as("Earliest")
 				.containsOnly("2020-01-01T12:00:00Z", "2020-01-01T13:00:00Z");
 	}
 
 	@Test
 	void tracksCoarse() {
-		List<Track> tracks = Track.fromTraces(Resolution.COARSE, traces, partitioner);
+		Set<Track> tracks = Track.fromTraces(Resolution.COARSE, traces, partitioner);
 		assertThat(tracks).hasSize(1)
 				.extracting(t -> ((ByVessel) t.getPartition()).vessel()).as("Vessel")
 				.containsOnly(new UUID(0, 0));

@@ -3,7 +3,6 @@ package uk.co.bluegecko.marine.model.position;
 import static systems.uom.ucum.UCUM.DEGREE;
 import static systems.uom.ucum.UCUM.MINUTE;
 
-import com.uber.h3core.util.LatLng;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import java.awt.geom.Point2D;

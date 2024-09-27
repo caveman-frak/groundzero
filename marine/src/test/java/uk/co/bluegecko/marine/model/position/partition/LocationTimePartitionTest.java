@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import uk.co.bluegecko.marine.model.position.Track;
@@ -20,7 +20,7 @@ class LocationTimePartitionTest extends PartitionTest {
 
 	@Test
 	void tracksFine() {
-		List<Track> tracks = Track.fromTraces(Resolution.FINE, traces, partitioner);
+		Set<Track> tracks = Track.fromTraces(Resolution.FINE, traces, partitioner);
 		assertThat(tracks).hasSize(11)
 				.extracting(t -> ((ByLocation) t.getPartition()).cell()).as("Location")
 				.containsOnly(605546023066009599L, 605546011120631807L, 605546023602880511L, 605546007630970879L,
@@ -42,14 +42,14 @@ class LocationTimePartitionTest extends PartitionTest {
 
 	@Test
 	void tracksMedium() {
-		List<Track> tracks = Track.fromTraces(Resolution.MEDIUM, traces, partitioner);
+		Set<Track> tracks = Track.fromTraces(Resolution.MEDIUM, traces, partitioner);
 		assertThat(tracks).hasSize(4)
 				.extracting(t -> ((ByLocation) t.getPartition()).cell()).as("Location")
 				.containsOnly(596538813879156735L, 596538831059025919L, 596538564771053567L);
 		assertThat(tracks).extracting(t -> ((ByTime) t.getPartition()).epochIntervals()).as("Time")
 				.containsOnly(438300L, 438301L);
 		assertThat(tracks).extracting(Track::getTraces).extracting(Collection::size).as("No of Traces")
-				.containsExactlyInAnyOrder(5, 2, 3, 1);
+				.containsExactlyInAnyOrder(1, 2, 5, 3);
 		assertThat(tracks).extracting(Track::getEarliest).extracting(Instant::toString).as("Earliest")
 				.containsOnly("2020-01-01T12:00:00Z", "2020-01-01T12:10:00Z",
 						"2020-01-01T12:40:00Z", "2020-01-01T13:00:00Z");
@@ -57,7 +57,7 @@ class LocationTimePartitionTest extends PartitionTest {
 
 	@Test
 	void tracksCoarse() {
-		List<Track> tracks = Track.fromTraces(Resolution.COARSE, traces, partitioner);
+		Set<Track> tracks = Track.fromTraces(Resolution.COARSE, traces, partitioner);
 		assertThat(tracks).hasSize(1)
 				.extracting(t -> ((ByLocation) t.getPartition()).cell()).as("Location")
 				.containsExactly(587531734883500031L);

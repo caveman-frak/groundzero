@@ -2,7 +2,7 @@ package uk.co.bluegecko.marine.model.position.partition;
 
 import java.time.Instant;
 
-public interface ByTime extends Partition {
+public interface ByTime extends ByResolution {
 
 	long epochIntervals();
 

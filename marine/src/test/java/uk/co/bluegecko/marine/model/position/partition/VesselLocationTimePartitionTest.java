@@ -5,23 +5,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import uk.co.bluegecko.marine.model.position.Track;
 
-class LocationTimeVesselPartitionTest extends PartitionTest {
+class VesselLocationTimePartitionTest extends PartitionTest {
 
 	@BeforeEach
 	void setUp() throws IOException {
 		setUpTraces();
-		partitioner = LocationTimeVesselPartition.partitioner(h3Core);
+		partitioner = VesselLocationTimePartition.partitioner(h3Core);
 	}
 
 	@Test
 	void tracksFine() {
-		List<Track> tracks = Track.fromTraces(Resolution.FINE, traces, partitioner);
+		Set<Track> tracks = Track.fromTraces(Resolution.FINE, traces, partitioner);
 		assertThat(tracks).hasSize(11)
 				.extracting(t -> ((ByVessel) t.getPartition()).vessel()).as("Vessel")
 				.containsOnly(new UUID(0, 0));
@@ -45,7 +45,7 @@ class LocationTimeVesselPartitionTest extends PartitionTest {
 
 	@Test
 	void tracksMedium() {
-		List<Track> tracks = Track.fromTraces(Resolution.MEDIUM, traces, partitioner);
+		Set<Track> tracks = Track.fromTraces(Resolution.MEDIUM, traces, partitioner);
 		assertThat(tracks).hasSize(4)
 				.extracting(t -> ((ByVessel) t.getPartition()).vessel()).as("Vessel")
 				.containsOnly(new UUID(0, 0));
@@ -54,7 +54,7 @@ class LocationTimeVesselPartitionTest extends PartitionTest {
 		assertThat(tracks).extracting(t -> ((ByTime) t.getPartition()).epochIntervals()).as("Time")
 				.containsOnly(438300L, 438301L);
 		assertThat(tracks).extracting(Track::getTraces).extracting(Collection::size).as("No of traces")
-				.containsExactlyInAnyOrder(5, 2, 3, 1);
+				.containsExactly(1, 2, 5, 3);
 		assertThat(tracks).extracting(Track::getEarliest).extracting(Instant::toString).as("Earliest")
 				.containsOnly("2020-01-01T12:00:00Z", "2020-01-01T12:10:00Z",
 						"2020-01-01T12:40:00Z", "2020-01-01T13:00:00Z");
@@ -62,7 +62,7 @@ class LocationTimeVesselPartitionTest extends PartitionTest {
 
 	@Test
 	void tracksCoarse() {
-		List<Track> tracks = Track.fromTraces(Resolution.COARSE, traces, partitioner);
+		Set<Track> tracks = Track.fromTraces(Resolution.COARSE, traces, partitioner);
 		assertThat(tracks).hasSize(1)
 				.extracting(t -> ((ByVessel) t.getPartition()).vessel()).as("Vessel")
 				.containsOnly(new UUID(0, 0));

@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import uk.co.bluegecko.marine.model.position.Track;
@@ -20,7 +20,7 @@ class LocationPartitionTest extends PartitionTest {
 
 	@Test
 	void tracksFine() {
-		List<Track> tracks = Track.fromTraces(Resolution.FINE, traces, partitioner);
+		Set<Track> tracks = Track.fromTraces(Resolution.FINE, traces, partitioner);
 		assertThat(tracks).hasSize(6)
 				.extracting(t -> ((ByLocation) t.getPartition()).cell()).as("Location")
 				.containsOnly(605546023066009599L, 605546011120631807L, 605546023602880511L, 605546007630970879L,
@@ -29,7 +29,7 @@ class LocationPartitionTest extends PartitionTest {
 				.containsOnly("86754e64fffffff", "86754e66fffffff", "86754e39fffffff", "86754e387ffffff",
 						"86754e297ffffff", "86754e2b7ffffff");
 		assertThat(tracks).extracting(Track::getTraces).extracting(Collection::size).as("No of Traces")
-				.containsExactlyInAnyOrder(2, 2, 2, 2, 2, 1);
+				.containsExactly(2, 2, 2, 2, 1, 2);
 		assertThat(tracks).extracting(Track::getEarliest).extracting(Instant::toString).as("Earliest")
 				.containsOnly("2020-01-01T12:50:00Z", "2020-01-01T12:30:00Z", "2020-01-01T13:30:00Z",
 						"2020-01-01T13:10:00Z", "2020-01-01T12:10:00Z", "2020-01-01T12:00:00Z");
@@ -37,19 +37,19 @@ class LocationPartitionTest extends PartitionTest {
 
 	@Test
 	void tracksMedium() {
-		List<Track> tracks = Track.fromTraces(Resolution.MEDIUM, traces, partitioner);
+		Set<Track> tracks = Track.fromTraces(Resolution.MEDIUM, traces, partitioner);
 		assertThat(tracks).hasSize(3)
 				.extracting(t -> ((ByLocation) t.getPartition()).cell()).as("Location")
 				.containsOnly(596538813879156735L, 596538831059025919L, 596538564771053567L);
 		assertThat(tracks).extracting(Track::getTraces).extracting(Collection::size).as("No of Traces")
-				.containsExactlyInAnyOrder(7, 3, 1);
+				.containsExactly(1, 7, 3);
 		assertThat(tracks).extracting(Track::getEarliest).extracting(Instant::toString).as("Earliest")
 				.containsOnly("2020-01-01T12:40:00Z", "2020-01-01T12:10:00Z", "2020-01-01T12:00:00Z");
 	}
 
 	@Test
 	void tracksCoarse() {
-		List<Track> tracks = Track.fromTraces(Resolution.COARSE, traces, partitioner);
+		Set<Track> tracks = Track.fromTraces(Resolution.COARSE, traces, partitioner);
 		assertThat(tracks).hasSize(1)
 				.extracting(t -> ((ByLocation) t.getPartition()).cell()).as("Location")
 				.containsExactly(587531734883500031L);

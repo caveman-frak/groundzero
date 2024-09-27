@@ -9,7 +9,7 @@ import uk.co.bluegecko.marine.model.position.partition.Partition;
 
 public class TrackSummary {
 
-	public List<Track> condense(Collection<Track> tracks, Class<? extends Partition> partitionClass) {
+	public List<Track> condense(Collection<Track> tracks, Class<? extends Partition<?>> partitionClass) {
 		return tracks.stream().map(t -> t.withPartition(partitionClass))
 				.filter(Optional::isPresent).map(Optional::get)
 				.gather(new MergeGatherer<>())

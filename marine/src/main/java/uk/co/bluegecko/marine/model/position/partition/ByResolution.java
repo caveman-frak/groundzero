@@ -1,7 +1,7 @@
 package uk.co.bluegecko.marine.model.position.partition;
 
-public interface ByLocation {
+public interface ByResolution {
 
-	long cell();
-
+	Resolution resolution();
+	
 }
