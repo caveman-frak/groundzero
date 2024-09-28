@@ -14,4 +14,8 @@ public interface ByTime extends ByResolution {
 		return resolution().end(epochIntervals());
 	}
 
+	default boolean isWithin(Instant instant) {
+		return instant.isAfter(start()) && instant.isBefore(end());
+	}
+
 }

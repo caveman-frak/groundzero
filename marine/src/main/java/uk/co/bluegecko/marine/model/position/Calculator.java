@@ -34,7 +34,8 @@ public record Calculator(SpatialContext ctx) {
 	}
 
 	public Coordinate pointOnBearing(Coordinate initial, Quantity<Length> distance, Bearing bearing) {
-		return new Coordinate(pointOnBearing(initial.toPoint(ctx), distanceAsAngle(distance), bearing));
+		return new Coordinate(pointOnBearing(initial.toPoint(ctx.getShapeFactory()),
+				distanceAsAngle(distance), bearing));
 	}
 
 	private Point pointOnBearing(Point point, Quantity<Angle> distanceAsAngle, Bearing bearing) {

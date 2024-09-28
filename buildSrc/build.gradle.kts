@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-gradle-plugin:3.3.3")
+    implementation("org.springframework.boot:spring-boot-gradle-plugin:3.3.4")
     implementation("io.freefair.gradle:lombok-plugin:8.10")
     implementation("com.adarshr:gradle-test-logger-plugin:4.0.0")
 }

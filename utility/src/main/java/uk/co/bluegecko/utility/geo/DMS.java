@@ -1,7 +1,7 @@
 package uk.co.bluegecko.utility.geo;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import uk.co.bluegecko.common.style.LombokStyle;
+import uk.co.bluegecko.common.style.LombokToStringStyle;
 
 public interface DMS extends Angle {
 
@@ -12,7 +12,7 @@ public interface DMS extends Angle {
 	double getSeconds();
 
 	default ToStringBuilder getToStringBuilder() {
-		return new ToStringBuilder(this, new LombokStyle())
+		return new ToStringBuilder(this, new LombokToStringStyle())
 				.append("degrees", getDegrees())
 				.append("minutes", getMinutes())
 				.append("seconds", getSeconds());
