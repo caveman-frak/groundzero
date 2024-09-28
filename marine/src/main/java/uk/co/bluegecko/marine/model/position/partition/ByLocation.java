@@ -20,23 +20,21 @@ public interface ByLocation extends ByResolution {
 	default Shape polygon(H3Core core, ShapeFactory factory) {
 		return core.cellToBoundary(cell()).stream()
 				.map(p -> factory.pointLatLon(p.lat, p.lng))
-				.collect(() -> new FactoryCloser(factory),
-						FactoryCloser::point,
+				.collect(() -> new ClosingBuilder(factory),
+						ClosingBuilder::point,
 						(_, _) -> {
 						}).build();
 	}
 
-	record FactoryCloser(PolygonBuilder builder, AtomicReference<Point> start) {
+	record ClosingBuilder(PolygonBuilder builder, AtomicReference<Point> start) {
 
-		FactoryCloser(ShapeFactory factory) {
+		ClosingBuilder(ShapeFactory factory) {
 			this(factory.polygon(), new AtomicReference<>());
 		}
 
-		FactoryCloser point(Point point) {
+		void point(Point point) {
 			builder.pointLatLon(point.getLat(), point.getLon());
 			start.compareAndSet(null, point);
-
-			return this;
 		}
 
 		Shape build() {
