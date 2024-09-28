@@ -1,4 +1,4 @@
-package uk.co.bluegecko.marine.model.format;
+package uk.co.bluegecko.marine.model.compass.format;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatException;
@@ -13,7 +13,6 @@ import uk.co.bluegecko.marine.model.compass.Bearing;
 import uk.co.bluegecko.marine.model.compass.Compass;
 import uk.co.bluegecko.marine.model.compass.Latitude;
 import uk.co.bluegecko.marine.model.compass.Longitude;
-import uk.co.bluegecko.marine.model.compass.format.CompassFormatter;
 
 class CompassFormatterTest {
 

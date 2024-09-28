@@ -27,6 +27,19 @@ public abstract class AbstractTrackTest extends AbstractTest {
 	protected H3Core h3Core;
 	protected List<Trace> traces;
 
+	protected void setUpCore() throws IOException {
+		setUpClock();
+		h3Core = H3Core.newInstance();
+	}
+
+	protected void setUpTraces() throws IOException {
+		setUpCore();
+		SpatialContext ctx = SpatialContextFactory.makeSpatialContext(Map.of("geo", "true"), null);
+		SimpleCourse course = new SimpleCourse(new Calculator(ctx), clock, Quantities.getQuantity(10, KNOT),
+				new Point2D.Double(0.0001, 0.0001));
+		traces = generateTraces(course, new UUID(0, 0));
+	}
+
 	protected Track buildLocationTrack(Resolution resolution, long cell, SortedSet<Trace> traces) {
 		return new Track(new LocationPartition(resolution, cell), traces, clock.instant());
 	}
@@ -71,15 +84,6 @@ public abstract class AbstractTrackTest extends AbstractTest {
 			traces.add(trace);
 		}
 		return traces;
-	}
-
-	protected void setUpTraces() throws IOException {
-		setUpClock();
-		h3Core = H3Core.newInstance();
-		SpatialContext ctx = SpatialContextFactory.makeSpatialContext(Map.of("geo", "true"), null);
-		SimpleCourse course = new SimpleCourse(new Calculator(ctx), clock, Quantities.getQuantity(10, KNOT),
-				new Point2D.Double(0.0001, 0.0001));
-		traces = generateTraces(course, new UUID(0, 0));
 	}
 
 
