@@ -46,7 +46,7 @@ public class Vessel extends Polygon {
 	}
 
 	public String getPositionAndSpeed(Duration duration) {
-		return StringTemplate.STR."\{getPosition()}, \{getSpeed(duration)}";
+		return String.format("%s, %s", getPosition(), getSpeed(duration));
 	}
 
 	public String getBearing() {
